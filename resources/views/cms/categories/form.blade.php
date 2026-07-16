@@ -1,4 +1,35 @@
 @extends('layouts.cms')
-@section('title',$category->exists?'Edit kategori':'Tambah kategori')
-@section('content')<div class="row justify-content-center"><div class="col-xl-7"><h1 class="font-display display-5">{{ $category->exists?'Edit kategori':'Tambah kategori' }}</h1><form class="cms-card p-4" method="post" action="{{ $category->exists?route('cms.categories.update',$category):route('cms.categories.store') }}">@csrf @if($category->exists)@method('PUT')@endif<div class="mb-3"><label class="form-label">Nama</label><input class="form-control" name="name" value="{{ old('name',$category->name) }}" required></div><div class="mb-3"><label class="form-label">Slug (opsional)</label><input class="form-control" name="slug" value="{{ old('slug',$category->slug) }}"></div><div class="mb-3"><label class="form-label">Deskripsi</label><textarea class="form-control" name="description" rows="4">{{ old('description',$category->description) }}</textarea></div><div class="mb-3"><label class="form-label">Urutan</label><input class="form-control" type="number" min="0" name="sort_order" value="{{ old('sort_order',$category->sort_order??0) }}" required></div><label class="form-check mb-4"><input type="hidden" name="is_active" value="0"><input class="form-check-input" type="checkbox" name="is_active" value="1" @checked(old('is_active',$category->exists?$category->is_active:true))> Kategori aktif</label><div class="d-flex gap-2"><button class="btn btn-primary">Simpan</button><a class="btn btn-outline-secondary" href="{{ route('cms.categories.index') }}">Batal</a></div></form>@if($category->exists)<form class="mt-3" method="post" action="{{ route('cms.categories.destroy',$category) }}" onsubmit="return confirm('Hapus kategori ini?')">@csrf @method('DELETE')<button class="btn btn-link text-danger px-0">Hapus kategori</button></form>@endif</div></div>
+@section('title', $category->exists ? 'Edit kategori' : 'Tambah kategori')
+@section('content')<div class="row justify-content-center">
+        <div class="col-xl-7">
+            <h1 class="font-display display-5">{{ $category->exists ? 'Edit kategori' : 'Tambah kategori' }}</h1>
+            <form class="cms-card p-4" method="post"
+                action="{{ $category->exists ? route('cms.categories.update', $category) : route('cms.categories.store') }}">@csrf
+                @if ($category->exists)
+                    @method('PUT')
+                @endif
+                <div class="mb-3">
+                    <label class="form-label">Nama</label><input class="form-control" name="name"
+                        value="{{ old('name', $category->name) }}" required>
+                </div>
+                <div class="mb-3"><label class="form-label">Slug (opsional)</label><input class="form-control"
+                        name="slug" value="{{ old('slug', $category->slug) }}"></div>
+                <div class="mb-3"><label class="form-label">Deskripsi</label>
+                    <textarea class="form-control" name="description" rows="4">{{ old('description', $category->description) }}</textarea>
+                </div>
+                <div class="mb-3"><label class="form-label">Urutan</label><input class="form-control" type="number"
+                        min="0" name="sort_order" value="{{ old('sort_order', $category->sort_order ?? 0) }}" required>
+                </div><label class="form-check mb-4"><input type="hidden" name="is_active" value="0"><input
+                        class="form-check-input" type="checkbox" name="is_active" value="1"
+                        @checked(old('is_active', $category->exists ? $category->is_active : true))> Kategori aktif</label>
+                <div class="d-flex gap-2"><button class="btn btn-primary">Simpan</button><a
+                        class="btn btn-outline-secondary" href="{{ route('cms.categories.index') }}">Batal</a></div>
+            </form>
+            @if ($category->exists)
+                <form class="mt-3" method="post" action="{{ route('cms.categories.destroy', $category) }}"
+                    onsubmit="return confirm('Hapus kategori ini?')">@csrf @method('DELETE')<button
+                        class="btn btn-link text-danger px-0">Hapus kategori</button></form>
+            @endif
+        </div>
+    </div>
 @endsection

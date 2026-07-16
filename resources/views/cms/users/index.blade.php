@@ -1,4 +1,36 @@
 @extends('layouts.cms')
-@section('title','Pengguna')
-@section('content')<div class="d-flex justify-content-between align-items-end mb-4"><div><p class="section-kicker mb-1">Akses CMS</p><h1 class="font-display display-5 mb-0">Pengguna</h1></div><a class="btn btn-primary" href="{{ route('cms.users.create') }}">Tambah pengguna</a></div><div class="cms-card table-responsive"><table class="table align-middle mb-0"><thead><tr><th>Nama</th><th>Role</th><th>Status</th><th></th></tr></thead><tbody>@foreach($users as $user)<tr><td><strong>{{ $user->name }}</strong><small class="d-block text-muted">{{ $user->email }}</small></td><td>{{ $user->role->label() }}</td><td><span class="badge text-bg-{{ $user->is_active?'success':'secondary' }}">{{ $user->is_active?'Aktif':'Nonaktif' }}</span></td><td class="text-end"><a class="btn btn-sm btn-outline-primary" href="{{ route('cms.users.edit',$user) }}">Edit</a></td></tr>@endforeach</tbody></table></div><div class="mt-4">{{ $users->links() }}</div>
+@section('title', 'Pengguna')
+@section('content')<div class="d-flex justify-content-between align-items-end mb-4">
+        <div>
+            <p class="section-kicker mb-1">Akses CMS</p>
+            <h1 class="font-display display-5 mb-0">Pengguna</h1>
+        </div><a class="btn btn-primary" href="{{ route('cms.users.create') }}">Tambah pengguna</a>
+    </div>
+    <div class="cms-card table-responsive">
+        <table class="table align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>Nama</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($users as $user)
+                    <tr>
+                        <td><strong>{{ $user->name }}</strong><small class="d-block text-muted">{{ $user->email }}</small>
+                        </td>
+                        <td>{{ $user->role->label() }}</td>
+                        <td><span
+                                class="badge text-bg-{{ $user->is_active ? 'success' : 'secondary' }}">{{ $user->is_active ? 'Aktif' : 'Nonaktif' }}</span>
+                        </td>
+                        <td class="text-end"><a class="btn btn-sm btn-outline-primary"
+                                href="{{ route('cms.users.edit', $user) }}">Edit</a></td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+    <div class="mt-4">{{ $users->links() }}</div>
 @endsection

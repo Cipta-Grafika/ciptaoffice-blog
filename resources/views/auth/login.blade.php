@@ -12,16 +12,8 @@
 
         <div class="mb-3">
             <label class="form-label" for="email">Email</label>
-            <input
-                class="form-control form-control-lg @error('email') is-invalid @enderror"
-                type="email"
-                id="email"
-                name="email"
-                value="{{ old('email') }}"
-                autocomplete="email"
-                required
-                autofocus
-            >
+            <input class="form-control form-control-lg @error('email') is-invalid @enderror" type="email" id="email"
+                name="email" value="{{ old('email') }}" autocomplete="email" required autofocus>
             @error('email')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
@@ -29,14 +21,8 @@
 
         <div class="mb-3">
             <label class="form-label" for="password">Kata sandi</label>
-            <input
-                class="form-control form-control-lg"
-                type="password"
-                id="password"
-                name="password"
-                autocomplete="current-password"
-                required
-            >
+            <input class="form-control form-control-lg" type="password" id="password" name="password"
+                autocomplete="current-password" required>
         </div>
 
         <div class="d-flex justify-content-between mb-4">

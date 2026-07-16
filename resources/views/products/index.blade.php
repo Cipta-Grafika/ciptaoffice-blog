@@ -1,8 +1,59 @@
 @extends('layouts.app')
-@section('title','Katalog Produk — CiptaOffice')
-@section('meta_description','Katalog informatif meja, kursi, brankas, dan kebutuhan kantor dari CiptaOffice.')
+@section('title', 'Katalog Produk — CiptaOffice')
+@section('meta_description', 'Katalog informatif meja, kursi, brankas, dan kebutuhan kantor dari CiptaOffice.')
 @section('content')
-<header class="page-hero"><div class="container"><p class="section-kicker">Katalog informatif</p><div class="row align-items-end"><div class="col-lg-8"><h1 class="page-title">Produk untuk kerja yang lebih siap.</h1></div><div class="col-lg-4"><p class="text-muted">Tanyakan ketersediaan kepada tim kami. Jika pilihan utama tidak tersedia, kami akan mengusulkan alternatif berkualitas setara.</p></div></div></div></header>
-<section class="section-space"><div class="container"><nav class="d-flex flex-wrap gap-2 mb-5" aria-label="Filter kategori"><a class="btn {{ !$category?'btn-primary':'btn-outline-secondary' }}" href="{{ route('products.index') }}">Semua</a>@foreach($categories as $item)<a class="btn {{ $category===$item->slug?'btn-primary':'btn-outline-secondary' }}" href="{{ route('products.index',['category'=>$item->slug]) }}">{{ $item->name }}</a>@endforeach</nav>
-@if($products->isEmpty())<div class="empty-state"><h2>Produk belum tersedia</h2><p class="text-muted">Hubungi kami untuk mendiskusikan kebutuhan spesifik Anda.</p><a class="btn btn-primary" href="{{ route('contact.create') }}">Hubungi CiptaOffice</a></div>@else<div class="row g-4">@foreach($products as $product)<div class="col-md-6 col-lg-4"><article class="product-card"><div class="card-visual">@if($product->cover_image_path)<img src="{{ Storage::disk('public')->url($product->cover_image_path) }}" alt="{{ $product->cover_image_alt }}">@else<i class="bi bi-lamp" aria-hidden="true"></i>@endif</div><div class="p-4"><p class="article-meta">{{ $product->category->name }}</p><h2 class="card-title"><a class="stretched-link text-dark text-decoration-none" href="{{ route('products.show',$product) }}">{{ $product->name }}</a></h2><p class="text-muted mb-0">{{ $product->summary }}</p></div></article></div>@endforeach</div><div class="mt-5">{{ $products->links() }}</div>@endif</div></section>
+    <header class="page-hero">
+        <div class="container">
+            <p class="section-kicker">Katalog informatif</p>
+            <div class="row align-items-end">
+                <div class="col-lg-8">
+                    <h1 class="page-title">Produk untuk kerja yang lebih siap.</h1>
+                </div>
+                <div class="col-lg-4">
+                    <p class="text-muted">Tanyakan ketersediaan kepada tim kami. Jika pilihan utama tidak tersedia, kami akan
+                        mengusulkan alternatif berkualitas setara.</p>
+                </div>
+            </div>
+        </div>
+    </header>
+    <section class="section-space">
+        <div class="container">
+            <nav class="d-flex flex-wrap gap-2 mb-5" aria-label="Filter kategori"><a
+                    class="btn {{ !$category ? 'btn-primary' : 'btn-outline-secondary' }}"
+                    href="{{ route('products.index') }}">Semua</a>
+                @foreach ($categories as $item)
+                    <a class="btn {{ $category === $item->slug ? 'btn-primary' : 'btn-outline-secondary' }}"
+                        href="{{ route('products.index', ['category' => $item->slug]) }}">{{ $item->name }}</a>
+                @endforeach
+            </nav>
+            @if ($products->isEmpty())
+                <div class="empty-state">
+                    <h2>Produk belum tersedia</h2>
+                    <p class="text-muted">Hubungi kami untuk mendiskusikan kebutuhan spesifik Anda.</p><a
+                        class="btn btn-primary" href="{{ route('contact.create') }}">Hubungi CiptaOffice</a>
+            </div>@else<div class="row g-4">
+                    @foreach ($products as $product)
+                        <div class="col-md-6 col-lg-4">
+                            <article class="product-card">
+                                <div class="card-visual">
+                                    @if ($product->cover_image_path)
+                                        <img src="{{ Storage::disk('public')->url($product->cover_image_path) }}"
+                                        alt="{{ $product->cover_image_alt }}">@else<i class="bi bi-lamp"
+                                            aria-hidden="true"></i>
+                                    @endif
+                                </div>
+                                <div class="p-4">
+                                    <p class="article-meta">{{ $product->category->name }}</p>
+                                    <h2 class="card-title"><a class="stretched-link text-dark text-decoration-none"
+                                            href="{{ route('products.show', $product) }}">{{ $product->name }}</a></h2>
+                                    <p class="text-muted mb-0">{{ $product->summary }}</p>
+                                </div>
+                            </article>
+                        </div>
+                    @endforeach
+                </div>
+                <div class="mt-5">{{ $products->links() }}</div>
+            @endif
+        </div>
+    </section>
 @endsection
