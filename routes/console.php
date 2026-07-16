@@ -1,8 +1,14 @@
 <?php
 
-use Illuminate\Foundation\Inspiring;
-use Illuminate\Support\Facades\Artisan;
+use App\Models\PostMedia;
+use Illuminate\Support\Facades\Schedule;
+use Illuminate\Support\Facades\Storage;
 
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote');
+Schedule::call(function (): void {
+    PostMedia::query()->where('created_at', '<', now()->subDay())->with('post')->each(function (PostMedia $media): void {
+        $url = Storage::disk('public')->url($media->path);
+        if (! str_contains($media->post?->body_html ?? '', $url)) {
+            $media->delete();
+        }
+    });
+})->daily()->name('cleanup-orphaned-post-media')->withoutOverlapping();
