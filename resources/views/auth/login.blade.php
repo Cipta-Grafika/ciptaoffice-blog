@@ -12,7 +12,7 @@
 
         <div class="mb-3">
             <label class="form-label" for="email">Email</label>
-            <input class="form-control form-control-lg @error('email') is-invalid @enderror" type="email" id="email"
+            <input class="form-control form-control-lg fs-6 @error('email') is-invalid @enderror" type="email" id="email"
                 name="email" value="{{ old('email') }}" autocomplete="email" required autofocus>
             @error('email')
                 <div class="invalid-feedback">{{ $message }}</div>
@@ -21,8 +21,14 @@
 
         <div class="mb-3">
             <label class="form-label" for="password">Kata sandi</label>
-            <input class="form-control form-control-lg" type="password" id="password" name="password"
-                autocomplete="current-password" required>
+            <div class="input-group">
+                <input class="form-control form-control-lg fs-6" type="password" id="password" name="password"
+                    autocomplete="current-password" required>
+                <button class="btn btn-outline-secondary rounded-end-3 px-3" type="button" data-password-toggle="#password"
+                    aria-label="Tampilkan kata sandi" aria-pressed="false">
+                    <i class="bi bi-eye" aria-hidden="true"></i>
+                </button>
+            </div>
         </div>
 
         <div class="d-flex justify-content-between mb-4">

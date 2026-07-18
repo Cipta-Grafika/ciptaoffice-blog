@@ -10,6 +10,23 @@ const observer = 'IntersectionObserver' in window ? new IntersectionObserver(ent
 }), { threshold: .12 }) : null;
 document.querySelectorAll('.reveal').forEach(el => observer ? observer.observe(el) : el.classList.add('is-visible'));
 
+document.querySelectorAll('[data-password-toggle]').forEach((button) => {
+    const input = document.querySelector(button.dataset.passwordToggle);
+    if (!input) return;
+
+    button.addEventListener('click', () => {
+        const shouldShow = input.type === 'password';
+        const icon = button.querySelector('i');
+
+        input.type = shouldShow ? 'text' : 'password';
+        button.setAttribute('aria-label', shouldShow ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi');
+        button.setAttribute('aria-pressed', String(shouldShow));
+        icon?.classList.toggle('bi-eye', !shouldShow);
+        icon?.classList.toggle('bi-eye-slash', shouldShow);
+        input.focus({ preventScroll: true });
+    });
+});
+
 document.querySelectorAll('[data-quill]').forEach((element) => {
     const input = document.querySelector(element.dataset.input);
     const uploadUrl = element.dataset.uploadUrl;

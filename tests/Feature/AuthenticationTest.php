@@ -19,6 +19,7 @@ class AuthenticationTest extends TestCase
             ->assertSee('Selamat datang kembali.')
             ->assertSee('name="email"', false)
             ->assertSee('name="password"', false)
+            ->assertSee('data-password-toggle="#password"', false)
             ->assertDontSee("@yield('content')", false);
     }
 
