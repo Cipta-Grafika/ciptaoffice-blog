@@ -9,9 +9,15 @@
 </head>
 
 <body class="cms-body">
-    <aside class="cms-sidebar"><a class="d-flex align-items-center gap-2 text-white text-decoration-none mb-4"
-            href="{{ route('cms.dashboard') }}"><span class="brand-mark bg-light text-dark">CO</span><strong>CiptaOffice
-                CMS</strong></a>
+    <aside class="offcanvas-lg offcanvas-start cms-sidebar" tabindex="-1" id="cmsSidebar"
+        aria-labelledby="cmsSidebarLabel">
+        <div class="d-flex align-items-center justify-content-between gap-3 mb-4">
+            <a class="d-flex align-items-center gap-2 text-white text-decoration-none" id="cmsSidebarLabel"
+                href="{{ route('cms.dashboard') }}"><span
+                    class="brand-mark bg-light text-dark">CO</span><strong>CiptaOffice CMS</strong></a>
+            <button class="btn-close btn-close-white d-lg-none" type="button" data-bs-dismiss="offcanvas"
+                data-bs-target="#cmsSidebar" aria-label="Tutup navigasi CMS"></button>
+        </div>
         <p class="small text-uppercase text-white-50 letter-space mb-2">Editorial</p>
         <nav class="nav flex-column gap-1"><a class="nav-link {{ request()->routeIs('cms.dashboard') ? 'active' : '' }}"
                 href="{{ route('cms.dashboard') }}"><i class="bi bi-grid me-2"></i>Dashboard</a><a
@@ -36,8 +42,13 @@
     </aside>
     <div class="cms-main">
         <header class="cms-topbar d-flex justify-content-between align-items-center">
-            <div><span class="small text-muted">{{ auth()->user()->role->label() }}</span><strong
-                    class="d-block">{{ auth()->user()->name }}</strong></div>
+            <div class="d-flex align-items-center gap-3">
+                <button class="btn btn-sm btn-outline-dark cms-sidebar-toggle d-lg-none" type="button"
+                    data-bs-toggle="offcanvas" data-bs-target="#cmsSidebar" aria-controls="cmsSidebar"
+                    aria-label="Buka navigasi CMS"><i class="bi bi-list fs-5" aria-hidden="true"></i></button>
+                <div><span class="small text-muted">{{ auth()->user()->role->label() }}</span><strong
+                        class="d-block">{{ auth()->user()->name }}</strong></div>
+            </div>
             <div class="d-flex gap-2"><a class="btn btn-sm btn-outline-secondary" href="{{ route('home') }}"
                     target="_blank"><i class="bi bi-box-arrow-up-right"></i> Lihat situs</a>
                 <div class="dropdown"><button class="btn btn-sm btn-outline-dark dropdown-toggle"

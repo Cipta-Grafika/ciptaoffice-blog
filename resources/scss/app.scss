@@ -99,10 +99,12 @@ a { text-underline-offset: .2em; }
 .auth-shell { min-height:100vh; background:linear-gradient(115deg,var(--forest) 0 42%,var(--ivory) 42%); }
 .auth-card { max-width:31rem; padding:clamp(2rem,5vw,4rem); background:var(--paper); border:1px solid var(--line); box-shadow:var(--shadow); }
 .cms-body { background:#f0eee8; }
-.cms-sidebar { position:fixed; inset:0 auto 0 0; width:17rem; z-index:1000; padding:1.5rem; color:#d9e1de; background:var(--ink); overflow-y:auto; }
+.cms-sidebar { --bs-offcanvas-width:min(17rem, calc(100vw - 3.5rem)); position:fixed; inset:0 auto 0 0; width:17rem; z-index:1045; padding:1.5rem; color:#d9e1de; background:var(--ink)!important; overflow-y:auto; }
 .cms-sidebar .nav-link { color:#b8c2be; border-radius:.3rem; }.cms-sidebar .nav-link:hover,.cms-sidebar .nav-link.active{color:#fff;background:rgba(255,255,255,.08)}
+.cms-sidebar .btn-close { flex:0 0 auto; opacity:.75; }
 .cms-main { min-height:100vh; margin-left:17rem; padding:2rem; }
 .cms-topbar { margin:-2rem -2rem 2rem; padding:1rem 2rem; background:#fff; border-bottom:1px solid var(--line); }
+.cms-sidebar-toggle { display:grid; width:2.25rem; height:2.25rem; flex:0 0 auto; padding:0; place-items:center; }
 .cms-card { background:#fff; border:1px solid rgba(23,32,30,.11); box-shadow:0 8px 28px rgba(23,32,30,.045); }
 .stat-value { color:var(--forest); font-family:'Cormorant Garamond',serif; font-size:3rem; font-weight:700; }
 .table > :not(caption) > * > * { padding:.9rem .75rem; }
@@ -112,4 +114,4 @@ a { text-underline-offset: .2em; }
 
 .reveal { opacity:0; transform:translateY(18px); transition:opacity .65s ease,transform .65s ease; }.reveal.is-visible{opacity:1;transform:none}
 @media (prefers-reduced-motion: reduce) { html{scroll-behavior:auto}*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}.reveal{opacity:1;transform:none} }
-@media (max-width: 991.98px) { .hero{min-height:auto}.material-board{margin-top:3rem}.cms-sidebar{position:static;width:auto}.cms-main{margin-left:0;padding:1rem}.cms-topbar{margin:-1rem -1rem 1.5rem;padding:1rem}.auth-shell{background:var(--ivory)} }
+@media (max-width: 991.98px) { .hero{min-height:auto}.material-board{margin-top:3rem}.cms-main{margin-left:0;padding:1rem}.cms-topbar{margin:-1rem -1rem 1.5rem;padding:1rem}.auth-shell{background:var(--ivory)} }
