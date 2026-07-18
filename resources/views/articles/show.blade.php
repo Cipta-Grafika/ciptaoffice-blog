@@ -39,9 +39,9 @@
                         <div class="col-md-4">
                             <article class="article-card p-4">
                                 <p class="article-meta">{{ $item->published_at->translatedFormat('d M Y') }}</p>
-                                <h3 class="card-title"><a class="stretched-link text-dark text-decoration-none"
+                                <h3 class="card-title card-text-clamp"><a class="stretched-link text-dark text-decoration-none"
                                         href="{{ route('articles.show', $item) }}">{{ $item->title }}</a></h3>
-                                <p class="text-muted">{{ $item->excerpt }}</p>
+                                <p class="card-text-clamp text-muted mt-1">{{ $item->excerpt }}</p>
                             </article>
                         </div>
                     @endforeach

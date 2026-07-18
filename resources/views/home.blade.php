@@ -104,9 +104,9 @@
                                 <div class="p-4">
                                     <p class="article-meta mb-3">{{ $post->published_at->translatedFormat('d M Y') }} ·
                                         {{ $post->author?->name ?? 'Tim CiptaOffice' }}</p>
-                                    <h3 class="card-title mb-3"><a class="stretched-link text-decoration-none text-dark"
+                                    <h3 class="card-title card-text-clamp mb-3"><a class="stretched-link text-decoration-none text-dark"
                                             href="{{ route('articles.show', $post) }}">{{ $post->title }}</a></h3>
-                                    <p class="text-muted mb-0">{{ $post->excerpt }}</p>
+                                    <p class="card-text-clamp text-muted mt-1 mb-0">{{ $post->excerpt }}</p>
                                 </div>
                             </article>
                         </div>

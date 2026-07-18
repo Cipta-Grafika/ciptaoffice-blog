@@ -44,9 +44,9 @@
                                 </div>
                                 <div class="p-4">
                                     <p class="article-meta">{{ $product->category->name }}</p>
-                                    <h2 class="card-title"><a class="stretched-link text-dark text-decoration-none"
+                                    <h2 class="card-title card-text-clamp"><a class="stretched-link text-dark text-decoration-none"
                                             href="{{ route('products.show', $product) }}">{{ $product->name }}</a></h2>
-                                    <p class="text-muted mb-0">{{ $product->summary }}</p>
+                                    <p class="card-text-clamp text-muted mt-1 mb-0">{{ $product->summary }}</p>
                                 </div>
                             </article>
                         </div>

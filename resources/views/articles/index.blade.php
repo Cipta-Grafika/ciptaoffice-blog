@@ -38,9 +38,9 @@
                                 <div class="card-visual"><i class="bi bi-journal-richtext"></i></div>
                                 <div class="p-4">
                                     <p class="article-meta">{{ $post->published_at->translatedFormat('d M Y') }}</p>
-                                    <h2 class="card-title"><a class="stretched-link text-dark text-decoration-none"
+                                    <h2 class="card-title card-text-clamp"><a class="stretched-link text-dark text-decoration-none"
                                             href="{{ route('articles.show', $post) }}">{{ $post->title }}</a></h2>
-                                    <p class="text-muted">{{ $post->excerpt }}</p>
+                                    <p class="card-text-clamp text-muted mt-1">{{ $post->excerpt }}</p>
                                 </div>
                             </article>
                         </div>

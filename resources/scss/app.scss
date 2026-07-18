@@ -75,6 +75,7 @@ a { text-underline-offset: .2em; }
 .card-visual i { font-size:4rem; }
 .article-meta { color:var(--brass); font-size:.7rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; }
 .card-title { font-size:1.75rem; line-height:1.05; }
+.card-text-clamp { display:-webkit-box; overflow:hidden; -webkit-box-orient:vertical; -webkit-line-clamp:3; line-clamp:3; }
 .link-arrow { color:var(--forest); font-size:.8rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; text-decoration:none; }
 .link-arrow i { transition:transform .2s ease; }.link-arrow:hover i { transform:translateX(4px); }
 
