@@ -1,17 +1,21 @@
 @extends('layouts.cms')
 @section('title', 'Artikel baru')
-@section('content')<div class="row justify-content-center">
-        <div class="col-xl-8"><a class="link-arrow" href="{{ route('cms.posts.index') }}"><i class="bi bi-arrow-left"></i>
-                Kembali</a>
+@section('content')
+    <div class="row justify-content-center">
+        <div class="col-xl-8">
+            <a class="link-arrow" href="{{ route('cms.posts.index') }}"><i class="bi bi-arrow-left"></i> Kembali</a>
             <div class="cms-card p-4 p-lg-5 mt-3">
                 <p class="section-kicker">Langkah pertama</p>
                 <h1 class="font-display display-5">Beri judul pada artikel.</h1>
                 <p class="text-muted">Sistem akan membuat draft dan slug unik. Judul, ringkasan, isi, serta gambar dapat
                     dilengkapi pada editor berikutnya.</p>
-                <form method="post" action="{{ route('cms.posts.store') }}">@csrf<label class="form-label"
-                        for="title">Judul artikel</label><input class="form-control form-control-lg" id="title"
-                        name="title" value="{{ old('title') }}" maxlength="180" required autofocus><button
-                        class="btn btn-primary btn-lg mt-4">Buat draft & lanjutkan</button></form>
+                <form method="post" action="{{ route('cms.posts.store') }}">
+                    @csrf
+                    <label class="form-label" for="title">Judul artikel</label>
+                    <input class="form-control form-control-lg" id="title" name="title" value="{{ old('title') }}"
+                        maxlength="180" required autofocus>
+                    <button class="btn btn-primary btn-lg mt-4">Buat draft & lanjutkan</button>
+                </form>
             </div>
         </div>
     </div>
