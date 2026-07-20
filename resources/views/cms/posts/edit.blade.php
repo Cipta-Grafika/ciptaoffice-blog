@@ -46,13 +46,6 @@
                     <label class="form-label" for="excerpt">Ringkasan</label>
                     <textarea class="form-control" id="excerpt" name="excerpt" rows="3" maxlength="500" required>{{ old('excerpt', $post->excerpt) }}</textarea>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">Isi artikel</label>
-                    <input type="hidden" id="body_html" name="body_html" value="{{ old('body_html', $post->body_html) }}">
-                    <div data-quill data-input="#body_html" data-upload-url="{{ route('cms.posts.media.store', $post) }}">
-                    </div>
-                    <div class="form-text">Gambar inline memerlukan alt text dan maksimum 4 MB.</div>
-                </div>
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label class="form-label" for="cover_image">Cover artikel</label>
@@ -65,6 +58,16 @@
                             value="{{ old('cover_image_alt', $post->cover_image_alt) }}">
                     </div>
                 </div>
+                <div class="mt-3">
+                    <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
+                        <label class="form-label mb-0">Isi artikel</label>
+                        <span class="form-text mt-0 text-end">Gambar inline memerlukan alt text dan maksimum 4 MB.</span>
+                    </div>
+                    <input type="hidden" id="body_html" name="body_html" value="{{ old('body_html', $post->body_html) }}">
+                    <div data-quill data-input="#body_html" data-upload-url="{{ route('cms.posts.media.store', $post) }}">
+                    </div>
+                </div>
+
                 <button class="btn btn-primary mt-4">Simpan perubahan</button>
             </form>
         </div>

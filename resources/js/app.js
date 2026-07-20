@@ -79,7 +79,8 @@ document.querySelectorAll('[data-quill]').forEach((element) => {
         theme: 'snow',
         modules: { toolbar: { container: [[{ header: [2, 3, false] }], ['bold', 'italic', 'underline', 'strike'], [{ list: 'ordered' }, { list: 'bullet' }], ['blockquote', 'link', 'image'], ['clean']], handlers: { image: imageHandler } } },
     });
-    quill.root.innerHTML = input.value || '';
+    const initialContent = quill.clipboard.convert({ html: input.value || '' });
+    quill.setContents(initialContent, Quill.sources.SILENT);
     quill.on('text-change', () => { input.value = quill.root.innerHTML; });
 
     function imageHandler() {
