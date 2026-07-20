@@ -25,10 +25,11 @@ class MediaAndHomepageSecurityTest extends TestCase
         $author = User::factory()->create();
         $post = $this->draftFor($author);
         $image = UploadedFile::fake()->createWithContent('office.png', base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII='))->mimeType('image/png');
-        $this->actingAs($author)->postJson(route('cms.posts.media.store', $post), ['image' => $image, 'alt_text' => 'Kursi kantor di ruang rapat'])->assertOk()->assertJsonStructure(['url', 'alt']);
+        $response = $this->actingAs($author)->postJson(route('cms.posts.media.store', $post), ['image' => $image, 'alt_text' => 'Kursi kantor di ruang rapat'])->assertOk()->assertJsonStructure(['url', 'alt']);
         $media = $post->media()->first();
         $this->assertNotNull($media);
         Storage::disk('public')->assertExists($media->path);
+        $this->assertSame('/storage/'.$media->path, $response->json('url'));
         $this->assertSame('Kursi kantor di ruang rapat', $media->alt_text);
     }
 

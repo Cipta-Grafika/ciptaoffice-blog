@@ -22,8 +22,9 @@
                     <div class="material-board">
                         @if ($settings->hero_image_path)
                             <img class="board-image" src="{{ Storage::disk('public')->url($settings->hero_image_path) }}"
-                            alt="{{ $settings->hero_image_alt }}">@else<div
-                                class="board-image d-flex align-items-center justify-content-center bg-white">
+                                alt="{{ $settings->hero_image_alt }}">
+                        @else
+                            <div class="board-image d-flex align-items-center justify-content-center bg-white">
                                 <div class="swatch mx-4" role="img"
                                     aria-label="Palet material furnitur kantor berwarna hijau, brass, dan kayu"></div>
                             </div>
@@ -104,8 +105,11 @@
                                 <div class="p-4">
                                     <p class="article-meta mb-3">{{ $post->published_at->translatedFormat('d M Y') }} ·
                                         {{ $post->author?->name ?? 'Tim CiptaOffice' }}</p>
-                                    <h3 class="card-title card-text-clamp mb-3"><a class="stretched-link text-decoration-none text-dark"
-                                            href="{{ route('articles.show', $post) }}">{{ $post->title }}</a></h3>
+                                    <h3 class="card-title card-text-clamp mb-3">
+                                        <a class="stretched-link text-decoration-none text-dark"
+                                            href="{{ route('articles.show', $post) }}">{{ $post->title }}
+                                        </a>
+                                    </h3>
                                     <p class="card-text-clamp text-muted mt-1 mb-0">{{ $post->excerpt }}</p>
                                 </div>
                             </article>
