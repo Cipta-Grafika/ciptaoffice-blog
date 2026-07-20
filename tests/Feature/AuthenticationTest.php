@@ -34,6 +34,8 @@ class AuthenticationTest extends TestCase
             ->assertOk()
             ->assertSee('Dashboard')
             ->assertSee('data-bs-target="#cmsSidebar"', false)
+            ->assertSee('data-cms-sidebar-collapse', false)
+            ->assertSee('data-cms-sidebar-brand', false)
             ->assertDontSee("@yield('content')", false);
 
         $this->post(route('cms.logout'))->assertRedirect(route('home'));
