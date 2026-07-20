@@ -7,6 +7,8 @@
             <span class="badge text-bg-{{ $post->status->badge() }}">{{ $post->status->label() }}</span>
         </div>
         <div class="d-flex flex-wrap gap-2">
+            <a class="btn btn-outline-dark" href="{{ route('cms.posts.preview', $post) }}" target="_blank"
+                rel="noopener noreferrer"><i class="bi bi-eye me-1"></i>Preview artikel</a>
             @can('submit', $post)
                 <form method="post" action="{{ route('cms.posts.submit', $post) }}">
                     @csrf

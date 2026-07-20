@@ -77,11 +77,25 @@ document.querySelectorAll('[data-quill]').forEach((element) => {
     const uploadUrl = element.dataset.uploadUrl;
     const quill = new Quill(element, {
         theme: 'snow',
-        modules: { toolbar: { container: [[{ header: [2, 3, false] }], ['bold', 'italic', 'underline', 'strike'], [{ list: 'ordered' }, { list: 'bullet' }], ['blockquote', 'link', 'image'], ['clean']], handlers: { image: imageHandler } } },
+        modules: { toolbar: { container: [[{ header: [2, 3, false] }], ['bold', 'italic', 'underline', 'strike'], [{ list: 'ordered' }, { list: 'bullet' }], ['blockquote', 'link', 'image'], ['clean']], handlers: { image: imageHandler, list: listHandler } } },
     });
     const initialContent = quill.clipboard.convert({ html: input.value || '' });
     quill.setContents(initialContent, Quill.sources.SILENT);
     quill.on('text-change', () => { input.value = quill.root.innerHTML; });
+
+    function listHandler(value) {
+        const range = quill.getSelection();
+        if (!range) return;
+
+        quill.getLines(range.index, Math.max(range.length, 1)).forEach((line) => {
+            const lineIndex = quill.getIndex(line);
+            const formats = quill.getFormat(lineIndex, line.length());
+            if (formats.header) return;
+
+            quill.formatLine(lineIndex, line.length(), 'list', value, Quill.sources.USER);
+        });
+        quill.setSelection(range.index, range.length, Quill.sources.SILENT);
+    }
 
     function imageHandler() {
         if (!uploadUrl) return;

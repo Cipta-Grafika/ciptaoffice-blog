@@ -41,6 +41,29 @@ class EditorialWorkflowTest extends TestCase
         $this->actingAs($other)->get(route('cms.posts.edit', $post))->assertForbidden();
     }
 
+    public function test_author_can_preview_own_draft_but_cannot_preview_another_authors_draft(): void
+    {
+        $author = User::factory()->create();
+        $other = User::factory()->create();
+        $post = Post::create([
+            'author_id' => $author->id,
+            'title' => 'Preview Ruang Kerja',
+            'slug' => 'preview-ruang-kerja',
+            'excerpt' => 'Ringkasan preview',
+            'body_html' => '<h2>Isi preview</h2><p>Konten yang sudah disimpan.</p>',
+            'status' => PostStatus::Draft,
+        ]);
+
+        $this->actingAs($author)->get(route('cms.posts.preview', $post))
+            ->assertOk()
+            ->assertSee('Mode preview')
+            ->assertSee('Belum diterbitkan')
+            ->assertSee('Isi preview')
+            ->assertSee('noindex,nofollow', false);
+
+        $this->actingAs($other)->get(route('cms.posts.preview', $post))->assertForbidden();
+    }
+
     public function test_author_cannot_access_admin_modules(): void
     {
         $this->actingAs(User::factory()->create())->get(route('cms.users.index'))->assertForbidden();

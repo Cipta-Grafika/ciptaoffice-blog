@@ -91,6 +91,10 @@ a { text-underline-offset: .2em; }
 .category-tile:nth-child(2) { background:#71583e; }.category-tile:nth-child(3) { background:#4d5d59; }
 
 .page-hero { padding:9rem 0 4rem; border-bottom:1px solid var(--line); }
+.article-preview-bar { padding:6.25rem 0 1rem; color:#d5ddd9; background:var(--ink); }
+.article-preview-bar strong { color:#fff; font-size:.7rem; }
+.article-preview-bar span { font-size:.85rem; }
+.page-hero--preview { padding-top:4rem; }
 .page-title { color:var(--ink); font-size:clamp(3.5rem,7vw,6.5rem); line-height:.88; }
 .prose { max-width:48rem; margin-inline:auto; font-size:1.05rem; line-height:1.85; }
 .prose h2,.prose h3 { margin-top:1.75em; color:var(--ink); }.prose > :first-child{margin-top:0}.prose img{max-width:100%;height:auto}.prose blockquote{padding-left:1.3rem;border-left:3px solid var(--brass);color:var(--muted)}

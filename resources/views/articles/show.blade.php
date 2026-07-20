@@ -1,16 +1,41 @@
 @extends('layouts.app')
-@section('title', $post->title . ' — CiptaOffice')
+@php($isPreview = $isPreview ?? false)
+@section('title', ($isPreview ? 'Preview — ' : '') . $post->title . ' — CiptaOffice')
 @section('meta_description', $post->excerpt)
 @section('canonical', route('articles.show', $post))
 @section('og_title', $post->title)
 @section('og_type', 'article')
+@if ($isPreview)
+    @push('head')
+        <meta name="robots" content="noindex,nofollow">
+    @endpush
+@endif
 @section('content')
+    @if ($isPreview)
+        <div class="article-preview-bar">
+            <div class="container d-flex flex-wrap align-items-center justify-content-between gap-3">
+                <div>
+                    <strong class="d-block text-uppercase letter-space">Mode preview</strong>
+                    <span>Menampilkan versi terakhir yang sudah disimpan. Artikel belum diterbitkan dari halaman ini.</span>
+                </div>
+                @can('update', $post)
+                    <a class="btn btn-sm btn-outline-light" href="{{ route('cms.posts.edit', $post) }}">
+                        <i class="bi bi-arrow-left me-1"></i>Kembali ke editor
+                    </a>
+                @else
+                    <a class="btn btn-sm btn-outline-light" href="{{ route('cms.posts.index') }}">
+                        <i class="bi bi-arrow-left me-1"></i>Kembali ke daftar artikel
+                    </a>
+                @endcan
+            </div>
+        </div>
+    @endif
     <article>
-        <header class="page-hero">
+        <header class="page-hero {{ $isPreview ? 'page-hero--preview' : '' }}">
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-xl-9 text-center">
-                        <p class="article-meta mb-4">{{ $post->published_at->translatedFormat('d F Y') }} ·
+                        <p class="article-meta mb-4">{{ $post->published_at?->translatedFormat('d F Y') ?? 'Belum diterbitkan' }} ·
                             {{ $post->author?->name ?? 'Tim CiptaOffice' }}</p>
                         <h1 class="page-title">{{ $post->title }}</h1>
                         <p class="lead text-muted mt-4">{{ $post->excerpt }}</p>

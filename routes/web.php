@@ -47,6 +47,7 @@ Route::prefix('cms')->name('cms.')->middleware(['auth', 'active'])->group(functi
     Route::put('/password', [PasswordController::class, 'update'])->name('password.update');
 
     Route::resource('posts', CmsPostController::class)->except('show');
+    Route::get('/posts/{post}/preview', [CmsPostController::class, 'preview'])->name('posts.preview');
     Route::post('/posts/{post}/submit', [PostWorkflowController::class, 'submit'])->name('posts.submit');
     Route::post('/posts/{post}/media', [MediaUploadController::class, 'store'])->name('posts.media.store');
 

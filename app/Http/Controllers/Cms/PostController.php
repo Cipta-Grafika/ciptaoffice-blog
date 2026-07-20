@@ -53,6 +53,15 @@ class PostController extends Controller
         return view('cms.posts.edit', compact('post'));
     }
 
+    public function preview(Post $post): View
+    {
+        $this->authorize('view', $post);
+        $post->load('author');
+        $latest = Post::published()->whereKeyNot($post->id)->latest('published_at')->limit(3)->get();
+
+        return view('articles.show', ['post' => $post, 'latest' => $latest, 'isPreview' => true]);
+    }
+
     public function update(UpdatePostRequest $request, Post $post, HtmlSanitizer $sanitizer): RedirectResponse
     {
         $data = $request->safe()->except('cover_image');

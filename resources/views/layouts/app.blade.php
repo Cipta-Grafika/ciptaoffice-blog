@@ -32,7 +32,7 @@
                             href="{{ route('about') }}">Tentang</a></li>
                     <li class="nav-item"><a class="nav-link {{ request()->routeIs('products.*') ? 'active' : '' }}"
                             href="{{ route('products.index') }}">Produk</a></li>
-                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('articles.*') ? 'active' : '' }}"
+                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('articles.*', 'cms.posts.preview') ? 'active' : '' }}"
                             href="{{ route('articles.index') }}">Artikel</a></li>
                     <li class="nav-item ms-lg-2"><a class="btn btn-primary px-4"
                             href="{{ route('contact.create') }}">Konsultasi kebutuhan</a></li>
