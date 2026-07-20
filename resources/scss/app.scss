@@ -41,6 +41,7 @@ a { text-underline-offset: .2em; }
 .letter-space { letter-spacing: .16em; }
 .text-muted-custom { color: var(--muted); }
 .section-space { padding-block: clamp(4.5rem, 9vw, 8rem); }
+.section-space--compact-top { padding-top: clamp(2.5rem, 4vw, 4rem); }
 .section-kicker { color: var(--brass); font-size: .72rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; }
 .section-title { color: var(--ink); font-size: clamp(2.5rem, 5vw, 4.75rem); line-height: .98; }
 
@@ -92,7 +93,7 @@ a { text-underline-offset: .2em; }
 .page-hero { padding:9rem 0 4rem; border-bottom:1px solid var(--line); }
 .page-title { color:var(--ink); font-size:clamp(3.5rem,7vw,6.5rem); line-height:.88; }
 .prose { max-width:48rem; margin-inline:auto; font-size:1.05rem; line-height:1.85; }
-.prose h2,.prose h3 { margin-top:2.3em; color:var(--ink); }.prose img{max-width:100%;height:auto}.prose blockquote{padding-left:1.3rem;border-left:3px solid var(--brass);color:var(--muted)}
+.prose h2,.prose h3 { margin-top:1.75em; color:var(--ink); }.prose > :first-child{margin-top:0}.prose img{max-width:100%;height:auto}.prose blockquote{padding-left:1.3rem;border-left:3px solid var(--brass);color:var(--muted)}
 .empty-state { padding:4rem 2rem; text-align:center; background:rgba(255,253,248,.65); border:1px dashed rgba(23,32,30,.25); }
 .site-footer { padding:4rem 0 2rem; color:#d5ddd9; background:var(--ink); }.site-footer a{color:#fff}
 

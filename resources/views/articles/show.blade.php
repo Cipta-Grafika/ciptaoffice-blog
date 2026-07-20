@@ -19,11 +19,11 @@
             </div>
         </header>
         @if ($post->cover_image_path)
-            <div class="container mt-5"><img class="w-100" style="max-height:38rem;object-fit:cover"
+            <div class="container mt-4"><img class="w-100" style="max-height:38rem;object-fit:cover"
                     src="{{ Storage::disk('public')->url($post->cover_image_path) }}" alt="{{ $post->cover_image_alt }}">
             </div>
         @endif
-        <div class="section-space">
+        <div class="section-space section-space--compact-top">
             <div class="container">
                 <div class="prose">{!! $post->body_html !!}</div>
             </div>
@@ -39,7 +39,8 @@
                         <div class="col-md-4">
                             <article class="article-card p-4">
                                 <p class="article-meta">{{ $item->published_at->translatedFormat('d M Y') }}</p>
-                                <h3 class="card-title card-text-clamp"><a class="stretched-link text-dark text-decoration-none"
+                                <h3 class="card-title card-text-clamp"><a
+                                        class="stretched-link text-dark text-decoration-none"
                                         href="{{ route('articles.show', $item) }}">{{ $item->title }}</a></h3>
                                 <p class="card-text-clamp text-muted mt-1">{{ $item->excerpt }}</p>
                             </article>
