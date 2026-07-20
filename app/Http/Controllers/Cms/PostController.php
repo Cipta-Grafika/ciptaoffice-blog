@@ -62,6 +62,9 @@ class PostController extends Controller
                 Storage::disk('public')->delete($post->cover_image_path);
             } $data['cover_image_path'] = $request->file('cover_image')->store('articles/covers', 'public');
         }
+        if ($request->hasFile('cover_image') || $post->cover_image_path) {
+            $data['cover_image_alt'] = $data['title'];
+        }
         $post->update($data);
         $this->cleanUnusedMedia($post);
 

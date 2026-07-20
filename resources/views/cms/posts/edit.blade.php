@@ -46,22 +46,15 @@
                     <label class="form-label" for="excerpt">Ringkasan</label>
                     <textarea class="form-control" id="excerpt" name="excerpt" rows="3" maxlength="500" required>{{ old('excerpt', $post->excerpt) }}</textarea>
                 </div>
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label class="form-label" for="cover_image">Cover artikel</label>
-                        <input class="form-control" type="file" id="cover_image" name="cover_image"
-                            accept="image/jpeg,image/png,image/webp">
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label" for="cover_image_alt">Alt text cover</label>
-                        <input class="form-control" id="cover_image_alt" name="cover_image_alt"
-                            value="{{ old('cover_image_alt', $post->cover_image_alt) }}">
-                    </div>
+                <div class="mb-3">
+                    <label class="form-label" for="cover_image">Cover artikel</label>
+                    <input class="form-control" type="file" id="cover_image" name="cover_image"
+                        accept="image/jpeg,image/png,image/webp">
                 </div>
                 <div class="mt-3">
                     <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
                         <label class="form-label mb-0">Isi artikel</label>
-                        <span class="form-text mt-0 text-end">Gambar inline memerlukan alt text dan maksimum 4 MB.</span>
+                        <span class="form-text mt-0 text-end">Alt text gambar dibuat otomatis; maksimum 4 MB.</span>
                     </div>
                     <input type="hidden" id="body_html" name="body_html" value="{{ old('body_html', $post->body_html) }}">
                     <div data-quill data-input="#body_html" data-upload-url="{{ route('cms.posts.media.store', $post) }}">

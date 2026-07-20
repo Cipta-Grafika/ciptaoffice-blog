@@ -19,18 +19,38 @@ class MediaAndHomepageSecurityTest extends TestCase
         return Post::create(['author_id' => $author->id, 'title' => 'Media', 'slug' => $slug, 'status' => PostStatus::Draft]);
     }
 
-    public function test_author_can_upload_valid_inline_image_with_alt_text(): void
+    public function test_author_can_upload_valid_inline_image_with_automatic_alt_text(): void
     {
         Storage::fake('public');
         $author = User::factory()->create();
         $post = $this->draftFor($author);
-        $image = UploadedFile::fake()->createWithContent('office.png', base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII='))->mimeType('image/png');
-        $response = $this->actingAs($author)->postJson(route('cms.posts.media.store', $post), ['image' => $image, 'alt_text' => 'Kursi kantor di ruang rapat'])->assertOk()->assertJsonStructure(['url', 'alt']);
+        $image = UploadedFile::fake()->createWithContent('kursi-kantor-di-ruang-rapat.png', base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII='))->mimeType('image/png');
+        $response = $this->actingAs($author)->postJson(route('cms.posts.media.store', $post), ['image' => $image])->assertOk()->assertJsonStructure(['url', 'alt']);
         $media = $post->media()->first();
         $this->assertNotNull($media);
         Storage::disk('public')->assertExists($media->path);
         $this->assertSame('/storage/'.$media->path, $response->json('url'));
-        $this->assertSame('Kursi kantor di ruang rapat', $media->alt_text);
+        $this->assertSame('Kursi Kantor Di Ruang Rapat', $media->alt_text);
+        $this->assertSame($media->alt_text, $response->json('alt'));
+    }
+
+    public function test_cover_alt_text_is_generated_from_article_title(): void
+    {
+        Storage::fake('public');
+        $author = User::factory()->create();
+        $post = $this->draftFor($author, 'automatic-cover-alt');
+        $image = UploadedFile::fake()->createWithContent('cover.png', base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII='))->mimeType('image/png');
+
+        $this->actingAs($author)->put(route('cms.posts.update', $post), [
+            'title' => 'Ruang Kerja Modern',
+            'excerpt' => 'Ringkasan artikel',
+            'body_html' => '<p>Isi artikel</p>',
+            'cover_image' => $image,
+        ])->assertSessionHasNoErrors();
+
+        $post->refresh();
+        $this->assertSame('Ruang Kerja Modern', $post->cover_image_alt);
+        Storage::disk('public')->assertExists($post->cover_image_path);
     }
 
     public function test_upload_rejects_invalid_file(): void
@@ -39,7 +59,7 @@ class MediaAndHomepageSecurityTest extends TestCase
         $owner = User::factory()->create();
         $post = $this->draftFor($owner, 'media-invalid');
         $file = UploadedFile::fake()->createWithContent('malware.pdf', 'not an image')->mimeType('application/pdf');
-        $this->actingAs($owner)->post(route('cms.posts.media.store', $post), ['image' => $file, 'alt_text' => 'Dokumen'])->assertSessionHasErrors('image');
+        $this->actingAs($owner)->post(route('cms.posts.media.store', $post), ['image' => $file])->assertSessionHasErrors('image');
     }
 
     public function test_other_author_cannot_upload_to_post(): void

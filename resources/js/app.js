@@ -88,8 +88,7 @@ document.querySelectorAll('[data-quill]').forEach((element) => {
         const picker = document.createElement('input'); picker.type = 'file'; picker.accept = 'image/jpeg,image/png,image/webp'; picker.click();
         picker.onchange = async () => {
             const file = picker.files?.[0]; if (!file) return;
-            const alt = window.prompt('Tuliskan deskripsi singkat gambar (alt text):'); if (!alt) return;
-            const form = new FormData(); form.append('image', file); form.append('alt_text', alt);
+            const form = new FormData(); form.append('image', file);
             try {
                 const response = await fetch(uploadUrl, { method: 'POST', headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content, 'Accept': 'application/json' }, body: form });
                 if (!response.ok) throw new Error('Upload gagal');
