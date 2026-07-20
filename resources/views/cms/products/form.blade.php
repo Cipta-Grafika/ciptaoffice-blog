@@ -1,0 +1,57 @@
+@extends('layouts.cms')
+@section('title', $product->exists ? 'Edit produk' : 'Tambah produk')
+@section('content')<div class="row justify-content-center">
+        <div class="col-xl-9">
+            <h1 class="font-display display-5">{{ $product->exists ? 'Edit produk' : 'Tambah produk' }}</h1>
+            <form class="cms-card p-4" method="post" enctype="multipart/form-data"
+                action="{{ $product->exists ? route('cms.products.update', $product) : route('cms.products.store') }}">@csrf
+                @if ($product->exists)
+                    @method('PUT')
+                @endif
+                <div class="row g-3">
+                    <div class="col-md-5"><label class="form-label">Kategori</label><select class="form-select"
+                            name="product_category_id" required>
+                            @foreach ($categories as $category)
+                                <option value="{{ $category->id }}" @selected(old('product_category_id', $product->product_category_id) === $category->id)>{{ $category->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-7"><label class="form-label">Nama produk</label><input class="form-control"
+                            name="name" value="{{ old('name', $product->name) }}" required></div>
+                    <div class="col-12"><label class="form-label">Ringkasan</label>
+                        <textarea class="form-control" name="summary" rows="3" required>{{ old('summary', $product->summary) }}</textarea>
+                    </div>
+                    <div class="col-12"><label class="form-label">Deskripsi</label>
+                        <textarea class="form-control" name="description" rows="6">{{ old('description', $product->description) }}</textarea>
+                    </div>
+                    <div class="col-12"><label class="form-label">Spesifikasi</label>
+                        <textarea class="form-control" name="specifications_text" rows="5"
+                            placeholder="Material: Kayu olahan&#10;Layanan: Konsultasi">{{ old('specifications_text',collect($product->specifications ?? [])->map(fn($value, $key) => $key . ': ' . $value)->join("\n")) }}</textarea>
+                        <div class="form-text">Satu spesifikasi per baris dengan format Nama: Nilai.</div>
+                    </div>
+                    <div class="col-md-6"><label class="form-label">Gambar cover</label><input class="form-control"
+                            type="file" name="cover_image"></div>
+                    <div class="col-md-6"><label class="form-label">Alt text gambar</label><input class="form-control"
+                            name="cover_image_alt" value="{{ old('cover_image_alt', $product->cover_image_alt) }}"></div>
+                    <div class="col-md-4"><label class="form-label">Urutan</label><input class="form-control" type="number"
+                            min="0" name="sort_order" value="{{ old('sort_order', $product->sort_order ?? 0) }}"
+                            required></div>
+                    <div class="col-md-8 d-flex align-items-end gap-4 pb-2"><label class="form-check"><input type="hidden"
+                                name="is_active" value="0"><input class="form-check-input" type="checkbox"
+                                name="is_active" value="1" @checked(old('is_active', $product->exists ? $product->is_active : true))> Aktif</label><label
+                            class="form-check"><input type="hidden" name="is_featured" value="0"><input
+                                class="form-check-input" type="checkbox" name="is_featured" value="1"
+                                @checked(old('is_featured', $product->is_featured))> Produk unggulan</label></div>
+                    <div class="col-12 d-flex gap-2"><button class="btn btn-primary">Simpan</button><a
+                            class="btn btn-outline-secondary" href="{{ route('cms.products.index') }}">Batal</a></div>
+                </div>
+            </form>
+            @if ($product->exists)
+                <form class="mt-3" method="post" action="{{ route('cms.products.destroy', $product) }}"
+                    onsubmit="return confirm('Arsipkan produk ini?')">@csrf @method('DELETE')<button
+                        class="btn btn-link text-danger px-0">Arsipkan produk</button></form>
+            @endif
+        </div>
+    </div>
+@endsection

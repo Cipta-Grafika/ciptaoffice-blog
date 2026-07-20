@@ -1,0 +1,38 @@
+@extends('layouts.cms')
+@section('title', 'Inquiry')
+@section('content')<div class="mb-4">
+        <p class="section-kicker mb-1">Permintaan pelanggan</p>
+        <h1 class="font-display display-5">Inquiry</h1>
+    </div>
+    <div class="cms-card table-responsive">
+        <table class="table align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>Kontak</th>
+                    <th>Produk</th>
+                    <th>Status</th>
+                    <th>Diterima</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($inquiries as $inquiry)
+                    <tr>
+                        <td><strong>{{ $inquiry->name }}</strong><small
+                                class="d-block text-muted">{{ $inquiry->phone }}</small></td>
+                        <td>{{ $inquiry->product?->name ?? 'Kebutuhan umum' }}</td>
+                        <td><span
+                                class="badge text-bg-{{ ['new' => 'warning', 'contacted' => 'primary', 'closed' => 'secondary'][$inquiry->status] ?? 'secondary' }}">{{ ['new' => 'Baru', 'contacted' => 'Dihubungi', 'closed' => 'Selesai'][$inquiry->status] ?? $inquiry->status }}</span>
+                        </td>
+                        <td>{{ $inquiry->created_at->translatedFormat('d M Y H:i') }}</td>
+                        <td class="text-end"><a class="btn btn-sm btn-outline-primary"
+                                href="{{ route('cms.inquiries.show', $inquiry) }}">Buka</a></td>
+                </tr>@empty<tr>
+                        <td colspan="5" class="text-center py-5">Belum ada inquiry.</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+    <div class="mt-4">{{ $inquiries->links() }}</div>
+@endsection
