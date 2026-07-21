@@ -5,6 +5,68 @@ import 'quill/dist/quill.snow.css';
 const nav = document.querySelector('.site-nav');
 if (nav) window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 12), { passive: true });
 
+const metricStrip = document.querySelector('[data-metric-strip]');
+const metricStripSentinel = document.querySelector('[data-metric-strip-sentinel]');
+if (nav && metricStrip && metricStripSentinel) {
+    const root = document.documentElement;
+    const links = [...metricStrip.querySelectorAll('.metric-section-link')];
+    const sections = links.map(link => document.querySelector(link.hash));
+    let dockThreshold = 0;
+    let ticking = false;
+
+    const setDocked = (docked) => {
+        if (metricStrip.classList.contains('is-docked') === docked) return;
+
+        metricStrip.classList.toggle('is-docked', docked);
+        nav.classList.toggle('has-section-nav', docked);
+        links.forEach((link) => {
+            link.toggleAttribute('aria-hidden', !docked);
+            link.tabIndex = docked ? 0 : -1;
+        });
+        requestAnimationFrame(() => root.style.setProperty('--metric-nav-height', `${metricStrip.offsetHeight}px`));
+    };
+
+    const updateScrollState = () => {
+        const navHeight = nav.offsetHeight;
+        const docked = window.scrollY >= dockThreshold;
+        setDocked(docked);
+
+        const activationLine = navHeight + (docked ? metricStrip.offsetHeight : 0) + 32;
+        let activeSection = null;
+        sections.forEach((section) => {
+            if (section && section.getBoundingClientRect().top <= activationLine) activeSection = section.id;
+        });
+        links.forEach((link) => {
+            const active = docked && link.hash === `#${activeSection}`;
+            link.classList.toggle('active', active);
+            if (active) link.setAttribute('aria-current', 'location');
+            else link.removeAttribute('aria-current');
+        });
+    };
+
+    const queueScrollUpdate = () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+            updateScrollState();
+            ticking = false;
+        });
+    };
+
+    const measureStickyPosition = () => {
+        const navHeight = nav.offsetHeight;
+        root.style.setProperty('--site-nav-height', `${navHeight}px`);
+        dockThreshold = metricStripSentinel.getBoundingClientRect().top + window.scrollY - navHeight;
+        root.style.setProperty('--metric-nav-height', `${metricStrip.offsetHeight}px`);
+        updateScrollState();
+    };
+
+    measureStickyPosition();
+    window.addEventListener('scroll', queueScrollUpdate, { passive: true });
+    window.addEventListener('resize', measureStickyPosition, { passive: true });
+    if ('ResizeObserver' in window) new ResizeObserver(measureStickyPosition).observe(nav);
+}
+
 const observer = 'IntersectionObserver' in window ? new IntersectionObserver(entries => entries.forEach(entry => {
     if (entry.isIntersecting) { entry.target.classList.add('is-visible'); observer.unobserve(entry.target); }
 }), { threshold: .12 }) : null;

@@ -27,4 +27,14 @@ class HomepageTest extends TestCase
     {
         $this->get('/')->assertOk()->assertSee('Artikel pertama sedang disiapkan')->assertSee('Ulasan akan segera hadir');
     }
+
+    public function test_metric_strip_provides_navigation_to_homepage_sections(): void
+    {
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('data-metric-strip', false)
+            ->assertSee('href="#produk"', false)
+            ->assertSee('href="#artikel"', false)
+            ->assertSee('href="#testimoni"', false);
+    }
 }

@@ -38,18 +38,31 @@
             </div>
         </div>
     </section>
-    <div class="metric-strip">
+    <div class="metric-strip-sentinel" data-metric-strip-sentinel aria-hidden="true"></div>
+    <nav class="metric-strip" data-metric-strip aria-label="Navigasi bagian beranda">
         <div class="container">
-            <div class="row text-center text-md-start">
-                <div class="col-md-4 metric-item"><span class="metric-number">01</span><span class="ms-2">Kebutuhan
-                        dipetakan</span></div>
-                <div class="col-md-4 metric-item"><span class="metric-number">02</span><span class="ms-2">Pilihan
-                        dibandingkan</span></div>
-                <div class="col-md-4 metric-item"><span class="metric-number">03</span><span class="ms-2">Alternatif
-                        disiapkan</span></div>
+            <div class="metric-strip-grid">
+                <div class="metric-item">
+                    <div class="metric-strip-content metric-copy"><span class="metric-number">01</span><span>Kebutuhan
+                            dipetakan</span></div>
+                    <a class="metric-strip-content metric-section-link" href="#produk" tabindex="-1"
+                        aria-hidden="true"><span class="metric-nav-index">01</span><span>Produk</span></a>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-strip-content metric-copy"><span class="metric-number">02</span><span>Pilihan
+                            dibandingkan</span></div>
+                    <a class="metric-strip-content metric-section-link" href="#artikel" tabindex="-1"
+                        aria-hidden="true"><span class="metric-nav-index">02</span><span>Artikel</span></a>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-strip-content metric-copy"><span class="metric-number">03</span><span>Alternatif
+                            disiapkan</span></div>
+                    <a class="metric-strip-content metric-section-link" href="#testimoni" tabindex="-1"
+                        aria-hidden="true"><span class="metric-nav-index">03</span><span>Testimoni</span></a>
+                </div>
             </div>
         </div>
-    </div>
+    </nav>
     <section class="section-space" id="produk">
         <div class="container">
             <div class="row align-items-end mb-5 reveal">
@@ -77,7 +90,7 @@
             @endif
         </div>
     </section>
-    <section class="section-space bg-white">
+    <section class="section-space bg-white" id="artikel">
         <div class="container">
             <div class="row align-items-end mb-5 reveal">
                 <div class="col-lg-8">
@@ -119,7 +132,7 @@
             @endif
         </div>
     </section>
-    <section class="testimonial-section section-space">
+    <section class="testimonial-section section-space" id="testimoni">
         <div class="container">
             <div class="row mb-5 reveal">
                 <div class="col-lg-8">

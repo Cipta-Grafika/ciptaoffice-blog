@@ -30,6 +30,8 @@ $input-focus-box-shadow: 0 0 0 .2rem rgba(164,126,79,.14);
     --line: rgba(23, 32, 30, .15);
     --muted: #68736f;
     --shadow: 0 24px 70px rgba(26, 38, 34, .11);
+    --site-nav-height: 4.75rem;
+    --metric-nav-height: 3.25rem;
 }
 
 html { scroll-behavior: smooth; }
@@ -47,6 +49,7 @@ a { text-underline-offset: .2em; }
 
 .site-nav { background: rgba(247,243,235,.9); border-bottom: 1px solid transparent; backdrop-filter: blur(16px); transition: border-color .25s ease; }
 .site-nav.scrolled { border-color: var(--line); }
+.site-nav.has-section-nav { border-bottom-color:transparent; }
 .brand-mark { display: grid; width: 2.5rem; height: 2.5rem; place-items: center; color: #fff; background: var(--forest); border-radius: 50% 50% 50% .2rem; font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; font-weight: 700; }
 .navbar-brand { color: var(--ink); font-weight: 700; }
 .nav-link { color: #3e4946; font-size: .88rem; font-weight: 600; }
@@ -65,9 +68,23 @@ a { text-underline-offset: .2em; }
 .board-panel.bottom { right:-4%; bottom:8%; width:14rem; }
 .swatch { width:100%; height:8rem; background:linear-gradient(135deg,#33544a 0 42%,#b08a59 42% 67%,#d8c8b0 67%); border-radius:10rem 10rem .2rem .2rem; }
 
-.metric-strip { border-block:1px solid var(--line); background:rgba(255,253,248,.55); }
-.metric-item { padding:1.5rem 0; }
+.metric-strip-sentinel { height:0; }
+.metric-strip { position:sticky; top:var(--site-nav-height); z-index:1020; border-block:1px solid var(--line); background:rgba(255,253,248,.55); transition:background-color .35s ease,border-color .35s ease,box-shadow .35s ease; }
+.metric-strip-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); }
+.metric-item { display:grid; min-width:0; }
+.metric-strip-content { grid-area:1/1; display:flex; min-width:0; min-height:5rem; align-items:center; justify-content:center; gap:.65rem; text-align:center; transition:min-height .35s cubic-bezier(.2,.75,.25,1),opacity .22s ease,transform .35s cubic-bezier(.2,.75,.25,1),visibility 0s linear .35s; }
+.metric-copy { opacity:1; transform:none; visibility:visible; }
+.metric-section-link { color:var(--ink); font-size:.76rem; font-weight:700; letter-spacing:.12em; text-decoration:none; text-transform:uppercase; opacity:0; transform:translateY(.55rem); visibility:hidden; }
+.metric-section-link:hover,.metric-section-link.active { color:var(--brass); }
+.metric-section-link.active { background:rgba(164,126,79,.08); }
+.metric-nav-index { color:var(--brass); font-family:'Cormorant Garamond',serif; font-size:1.05rem; letter-spacing:0; }
+.metric-strip.is-docked { border-top-color:transparent; background:rgba(247,243,235,.94); box-shadow:0 12px 30px rgba(23,32,30,.08); backdrop-filter:blur(16px); }
+.metric-strip.is-docked .metric-strip-content { min-height:3.25rem; }
+.metric-strip.is-docked .metric-copy { opacity:0; transform:translateY(-.55rem); visibility:hidden; }
+.metric-strip.is-docked .metric-section-link { opacity:1; transform:none; visibility:visible; transition-delay:.08s,.08s,.08s,0s; }
+.metric-strip.is-docked .metric-item + .metric-item { border-left:1px solid var(--line); }
 .metric-number { font-family:'Cormorant Garamond',serif; color:var(--forest); font-size:2rem; font-weight:700; }
+#produk,#artikel,#testimoni { scroll-margin-top:calc(var(--site-nav-height) + var(--metric-nav-height) + 1rem); }
 
 .article-card, .product-card { position:relative; height:100%; overflow:hidden; background:var(--paper); border:1px solid var(--line); transition:transform .3s ease, box-shadow .3s ease; }
 .article-card:hover, .product-card:hover { transform:translateY(-6px); box-shadow:0 22px 50px rgba(27,41,36,.1); }
@@ -140,4 +157,9 @@ a { text-underline-offset: .2em; }
     .cms-sidebar-collapsed .cms-nav-section { height:1px; margin:1rem 0!important; color:transparent!important; background:rgba(255,255,255,.12); overflow:hidden; }
 }
 @media (max-width: 991.98px) { .hero{min-height:auto}.material-board{margin-top:3rem}.auth-shell{background:var(--ivory)} }
-@media (max-width: 767.98px) { .cms-main{margin-left:0;padding:1rem}.cms-topbar{margin:-1rem -1rem 1.5rem;padding:1rem} }
+@media (max-width: 767.98px) {
+    .metric-copy { flex-direction:column; gap:.1rem; font-size:.7rem; line-height:1.25; }
+    .metric-number { font-size:1.45rem; }
+    .metric-section-link { gap:.35rem; font-size:.66rem; letter-spacing:.08em; }
+    .cms-main{margin-left:0;padding:1rem}.cms-topbar{margin:-1rem -1rem 1.5rem;padding:1rem}
+}
