@@ -133,6 +133,10 @@ a { text-underline-offset: .2em; }
 .cms-topbar { margin:-2rem -2rem 2rem; padding:1rem 2rem; background:#fff; border-bottom:1px solid var(--line); }
 .cms-sidebar-toggle,.cms-sidebar-collapse { width:2.25rem; height:2.25rem; flex:0 0 auto; padding:0; place-items:center; }
 .cms-card { background:#fff; border:1px solid rgba(23,32,30,.11); box-shadow:0 8px 28px rgba(23,32,30,.045); }
+.cms-cover-field { display:grid; grid-template-columns:minmax(10rem,13rem) minmax(0,1fr); gap:1.25rem; align-items:center; padding:1rem; background:#faf9f5; border:1px solid rgba(23,32,30,.11); border-radius:.35rem; }
+.cms-cover-preview { display:grid; width:100%; aspect-ratio:16/10; place-items:center; overflow:hidden; color:var(--muted); background:#ebe8df; border:1px solid var(--line); border-radius:.25rem; }
+.cms-cover-preview img { width:100%; height:100%; object-fit:cover; }
+.cms-cover-placeholder { font-size:2rem; }
 .stat-value { color:var(--forest); font-family:'Cormorant Garamond',serif; font-size:3rem; font-weight:700; }
 .table > :not(caption) > * > * { padding:.9rem .75rem; }
 .form-label { color:#394440; font-size:.78rem; font-weight:700; letter-spacing:.05em; text-transform:uppercase; }
@@ -161,5 +165,6 @@ a { text-underline-offset: .2em; }
     .metric-copy { flex-direction:column; gap:.1rem; font-size:.7rem; line-height:1.25; }
     .metric-number { font-size:1.45rem; }
     .metric-section-link { gap:.35rem; font-size:.66rem; letter-spacing:.08em; }
+    .cms-cover-field { grid-template-columns:1fr; }
     .cms-main{margin-left:0;padding:1rem}.cms-topbar{margin:-1rem -1rem 1.5rem;padding:1rem}
 }
