@@ -59,6 +59,8 @@ class EditorialWorkflowTest extends TestCase
             ->assertSee('Mode preview')
             ->assertSee('Belum diterbitkan')
             ->assertSee('Isi preview')
+            ->assertSee('data-article-toc', false)
+            ->assertSee('Daftar isi')
             ->assertSee('noindex,nofollow', false);
 
         $this->actingAs($other)->get(route('cms.posts.preview', $post))->assertForbidden();

@@ -51,7 +51,23 @@
         @endif
         <div class="section-space section-space--compact-top">
             <div class="container">
-                <div class="prose">{!! $post->body_html !!}</div>
+                <div class="article-body-layout" data-article-toc>
+                    <div class="prose" data-article-content>{!! $post->body_html !!}</div>
+                    <aside class="article-toc" aria-label="Daftar isi artikel">
+                        <button class="article-toc-toggle" type="button" data-article-toc-toggle
+                            aria-controls="article-toc-panel" aria-expanded="false">
+                            <i class="bi bi-list-nested" aria-hidden="true"></i>
+                            <span class="visually-hidden">Buka daftar isi</span>
+                        </button>
+                        <div class="article-toc-panel" id="article-toc-panel" data-article-toc-panel>
+                            <p class="article-toc-kicker">Dalam artikel</p>
+                            <p class="article-toc-title">Daftar isi</p>
+                            <nav aria-label="Bagian artikel">
+                                <ol class="article-toc-list" data-article-toc-list></ol>
+                            </nav>
+                        </div>
+                    </aside>
+                </div>
             </div>
         </div>
     </article>
