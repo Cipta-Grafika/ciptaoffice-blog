@@ -64,6 +64,28 @@ class EditorialWorkflowTest extends TestCase
         $this->actingAs($other)->get(route('cms.posts.preview', $post))->assertForbidden();
     }
 
+    public function test_bullet_list_remains_unordered_after_article_is_saved(): void
+    {
+        $author = User::factory()->create();
+        $post = Post::create([
+            'author_id' => $author->id,
+            'title' => 'Daftar Kebutuhan',
+            'slug' => 'daftar-kebutuhan',
+            'status' => PostStatus::Draft,
+        ]);
+
+        $this->actingAs($author)->put(route('cms.posts.update', $post), [
+            'title' => 'Daftar Kebutuhan',
+            'excerpt' => 'Daftar perlengkapan kantor',
+            'body_html' => '<h2>Kebutuhan utama</h2><ul><li>Meja kantor</li><li>Kursi ergonomis</li></ul>',
+        ])->assertSessionHasNoErrors();
+
+        $body = $post->fresh()->body_html;
+        $this->assertStringContainsString('<ul>', $body);
+        $this->assertStringContainsString('<li>Meja kantor</li>', $body);
+        $this->assertStringNotContainsString('<ol>', $body);
+    }
+
     public function test_author_cannot_access_admin_modules(): void
     {
         $this->actingAs(User::factory()->create())->get(route('cms.users.index'))->assertForbidden();

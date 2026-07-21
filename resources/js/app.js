@@ -175,7 +175,8 @@ document.querySelectorAll('[data-quill]').forEach((element) => {
     });
     const initialContent = quill.clipboard.convert({ html: input.value || '' });
     quill.setContents(initialContent, Quill.sources.SILENT);
-    quill.on('text-change', () => { input.value = quill.root.innerHTML; });
+    const syncInput = () => { input.value = quill.getSemanticHTML(); };
+    quill.on('text-change', syncInput);
 
     function listHandler(value) {
         const range = quill.getSelection();
@@ -200,7 +201,7 @@ document.querySelectorAll('[data-quill]').forEach((element) => {
             try {
                 const response = await fetch(uploadUrl, { method: 'POST', headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content, 'Accept': 'application/json' }, body: form });
                 if (!response.ok) throw new Error('Upload gagal');
-                const data = await response.json(); const range = quill.getSelection(true); quill.insertEmbed(range.index, 'image', data.url); const images = quill.root.querySelectorAll('img'); const inserted = images[images.length - 1]; if (inserted) inserted.setAttribute('alt', data.alt); quill.setSelection(range.index + 1); input.value = quill.root.innerHTML;
+                const data = await response.json(); const range = quill.getSelection(true); quill.insertEmbed(range.index, 'image', data.url); const images = quill.root.querySelectorAll('img'); const inserted = images[images.length - 1]; if (inserted) inserted.setAttribute('alt', data.alt); quill.setSelection(range.index + 1); syncInput();
             } catch (error) { window.alert('Gambar gagal diunggah. Pastikan format dan ukuran sesuai.'); }
         };
     }
