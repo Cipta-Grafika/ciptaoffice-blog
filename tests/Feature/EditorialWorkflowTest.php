@@ -88,6 +88,27 @@ class EditorialWorkflowTest extends TestCase
         $this->assertStringNotContainsString('<ol>', $body);
     }
 
+    public function test_article_indentation_is_preserved_and_unapproved_classes_are_removed(): void
+    {
+        $author = User::factory()->create();
+        $post = Post::create([
+            'author_id' => $author->id,
+            'title' => 'Panduan Ruang Kerja',
+            'slug' => 'panduan-ruang-kerja',
+            'status' => PostStatus::Draft,
+        ]);
+
+        $this->actingAs($author)->put(route('cms.posts.update', $post), [
+            'title' => 'Panduan Ruang Kerja',
+            'excerpt' => 'Panduan menata ruang kerja',
+            'body_html' => '<p class="ql-indent-2 class-tidak-diizinkan">Paragraf menjorok</p>',
+        ])->assertSessionHasNoErrors();
+
+        $body = $post->fresh()->body_html;
+        $this->assertStringContainsString('class="ql-indent-2"', $body);
+        $this->assertStringNotContainsString('class-tidak-diizinkan', $body);
+    }
+
     public function test_author_cannot_access_admin_modules(): void
     {
         $this->actingAs(User::factory()->create())->get(route('cms.users.index'))->assertForbidden();

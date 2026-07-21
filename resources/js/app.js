@@ -287,7 +287,7 @@ document.querySelectorAll('[data-quill]').forEach((element) => {
     const uploadUrl = element.dataset.uploadUrl;
     const quill = new Quill(element, {
         theme: 'snow',
-        modules: { toolbar: { container: [[{ header: [2, 3, false] }], ['bold', 'italic', 'underline', 'strike'], [{ list: 'ordered' }, { list: 'bullet' }], ['blockquote', 'link', 'image'], ['clean']], handlers: { image: imageHandler, list: listHandler } } },
+        modules: { toolbar: { container: [[{ header: [2, 3, false] }], ['bold', 'italic', 'underline', 'strike'], [{ list: 'ordered' }, { list: 'bullet' }, { indent: '-1' }, { indent: '+1' }], ['blockquote', 'link', 'image'], ['clean']], handlers: { image: imageHandler, list: listHandler } } },
     });
     const initialContent = quill.clipboard.convert({ html: input.value || '' });
     quill.setContents(initialContent, Quill.sources.SILENT);

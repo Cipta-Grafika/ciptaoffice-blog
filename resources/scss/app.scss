@@ -115,6 +115,9 @@ a { text-underline-offset: .2em; }
 .page-title { color:var(--ink); font-size:clamp(3.5rem,7vw,6.5rem); line-height:.88; }
 .prose { max-width:48rem; margin-inline:auto; font-size:1.05rem; line-height:1.85; }
 .prose h2,.prose h3 { margin-top:1.75em; color:var(--ink); scroll-margin-top:calc(var(--site-nav-height) + 1.5rem); }.prose > :first-child{margin-top:0}.prose img{max-width:100%;height:auto}.prose blockquote{padding-left:1.3rem;border-left:3px solid var(--brass);color:var(--muted)}
+@for $level from 1 through 8 {
+    .prose .ql-indent-#{$level} { margin-left:min(#{$level * 2}rem,45%); }
+}
 .article-body-layout { display:grid; grid-template-columns:minmax(0,48rem) 14rem; justify-content:center; align-items:start; gap:clamp(3rem,5vw,5.5rem); }
 .article-body-layout .prose { width:100%; margin-inline:0; }
 .article-toc { position:sticky; top:calc(var(--site-nav-height) + 2rem); align-self:start; }
@@ -190,5 +193,8 @@ a { text-underline-offset: .2em; }
     .metric-number { font-size:1.45rem; }
     .metric-section-link { gap:.35rem; font-size:.66rem; letter-spacing:.08em; }
     .cms-cover-field { grid-template-columns:1fr; }
+    @for $level from 1 through 8 {
+        .prose .ql-indent-#{$level} { margin-left:min(#{$level}rem,40%); }
+    }
     .cms-main{margin-left:0;padding:1rem}.cms-topbar{margin:-1rem -1rem 1.5rem;padding:1rem}
 }
