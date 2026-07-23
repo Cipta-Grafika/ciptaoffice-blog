@@ -3,6 +3,15 @@ import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
 
 const nav = document.querySelector('.site-nav');
+const siteHeader = document.querySelector('[data-site-header]');
+const syncSiteHeaderHeight = () => {
+    if (siteHeader) document.documentElement.style.setProperty('--site-nav-height', `${siteHeader.offsetHeight}px`);
+};
+if (siteHeader) {
+    syncSiteHeaderHeight();
+    window.addEventListener('resize', syncSiteHeaderHeight, { passive: true });
+    if ('ResizeObserver' in window) new ResizeObserver(syncSiteHeaderHeight).observe(siteHeader);
+}
 if (nav) window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 12), { passive: true });
 
 const metricStrip = document.querySelector('[data-metric-strip]');
@@ -27,7 +36,7 @@ if (nav && metricStrip && metricStripSentinel) {
     };
 
     const updateScrollState = () => {
-        const navHeight = nav.offsetHeight;
+        const navHeight = siteHeader?.offsetHeight ?? nav.offsetHeight;
         const docked = window.scrollY >= dockThreshold;
         setDocked(docked);
 
@@ -54,7 +63,7 @@ if (nav && metricStrip && metricStripSentinel) {
     };
 
     const measureStickyPosition = () => {
-        const navHeight = nav.offsetHeight;
+        const navHeight = siteHeader?.offsetHeight ?? nav.offsetHeight;
         root.style.setProperty('--site-nav-height', `${navHeight}px`);
         dockThreshold = metricStripSentinel.getBoundingClientRect().top + window.scrollY - navHeight;
         root.style.setProperty('--metric-nav-height', `${metricStrip.offsetHeight}px`);
@@ -64,7 +73,7 @@ if (nav && metricStrip && metricStripSentinel) {
     measureStickyPosition();
     window.addEventListener('scroll', queueScrollUpdate, { passive: true });
     window.addEventListener('resize', measureStickyPosition, { passive: true });
-    if ('ResizeObserver' in window) new ResizeObserver(measureStickyPosition).observe(nav);
+    if ('ResizeObserver' in window) new ResizeObserver(measureStickyPosition).observe(siteHeader ?? nav);
 }
 
 const observer = 'IntersectionObserver' in window ? new IntersectionObserver(entries => entries.forEach(entry => {

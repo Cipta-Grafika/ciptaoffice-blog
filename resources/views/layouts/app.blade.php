@@ -16,30 +16,61 @@
     @stack('head')
 </head>
 
+@php
+    $contactPhone = config('ciptaoffice.contact_phone');
+    $contactEmail = config('ciptaoffice.contact_email');
+    $contactPhoneHref = preg_replace('/[^\d+]/', '', $contactPhone);
+@endphp
+
 <body>
-    <nav class="navbar navbar-expand-lg fixed-top site-nav" aria-label="Navigasi utama">
-        <div class="container py-2">
-            <a class="navbar-brand d-flex align-items-center gap-2" href="{{ route('home') }}"><span
-                    class="brand-mark">CO</span><span>CiptaOffice</span></a>
-            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#siteMenu"
-                aria-controls="siteMenu" aria-expanded="false" aria-label="Buka navigasi"><span
-                    class="navbar-toggler-icon"></span></button>
-            <div class="collapse navbar-collapse" id="siteMenu">
-                <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
-                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}"
-                            href="{{ route('home') }}">Beranda</a></li>
-                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('about') ? 'active' : '' }}"
-                            href="{{ route('about') }}">Tentang</a></li>
-                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('products.*') ? 'active' : '' }}"
-                            href="{{ route('products.index') }}">Produk</a></li>
-                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('articles.*', 'cms.posts.preview') ? 'active' : '' }}"
-                            href="{{ route('articles.index') }}">Artikel</a></li>
-                    <li class="nav-item ms-lg-2"><a class="btn btn-primary px-4"
-                            href="{{ route('contact.create') }}">Konsultasi kebutuhan</a></li>
-                </ul>
+    <header class="site-header" data-site-header>
+        <div class="site-top-header">
+            <div class="container d-flex align-items-center justify-content-between gap-3">
+                <a class="top-header-logo" href="{{ route('home') }}" aria-label="CiptaOffice — Beranda">
+                    <img class="top-header-logo-image" src="{{ asset('images/logos/ciptaoffice-logo-brand.png') }}"
+                        width="867" height="60" alt="CiptaOffice">
+                </a>
+                <div class="site-contact-list" aria-label="Kontak CiptaOffice">
+                    <a href="tel:{{ $contactPhoneHref }}">
+                        <i class="bi bi-telephone-fill" aria-hidden="true"></i>
+                        <span class="site-contact-text">{{ $contactPhone }}</span>
+                        <span class="visually-hidden d-md-none">Telepon CiptaOffice</span>
+                    </a>
+                    <a href="mailto:{{ $contactEmail }}">
+                        <i class="bi bi-envelope-fill" aria-hidden="true"></i>
+                        <span class="site-contact-text">{{ $contactEmail }}</span>
+                        <span class="visually-hidden d-md-none">Email CiptaOffice</span>
+                    </a>
+                </div>
             </div>
         </div>
-    </nav>
+        <nav class="navbar navbar-expand-lg site-nav" aria-label="Navigasi utama">
+            <div class="container py-2">
+                <div class="site-nav-context" aria-label="Bidang layanan CiptaOffice">
+                    <span class="site-nav-context-line" aria-hidden="true"></span>
+                    <span>Solusi kebutuhan kantor</span>
+                </div>
+                <button class="navbar-toggler border-0 ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#siteMenu"
+                    aria-controls="siteMenu" aria-expanded="false" aria-label="Buka navigasi"><span
+                        class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="siteMenu">
+                    <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
+                        <li class="nav-item"><a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}"
+                                href="{{ route('home') }}">Beranda</a></li>
+                        <li class="nav-item"><a class="nav-link {{ request()->routeIs('about') ? 'active' : '' }}"
+                                href="{{ route('about') }}">Tentang</a></li>
+                        <li class="nav-item"><a class="nav-link {{ request()->routeIs('products.*') ? 'active' : '' }}"
+                                href="{{ route('products.index') }}">Produk</a></li>
+                        <li class="nav-item"><a
+                                class="nav-link {{ request()->routeIs('articles.*', 'cms.posts.preview') ? 'active' : '' }}"
+                                href="{{ route('articles.index') }}">Artikel</a></li>
+                        <li class="nav-item ms-lg-2"><a class="btn btn-primary px-4"
+                                href="{{ route('contact.create') }}">Konsultasi kebutuhan</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
     <main>
         @if (session('success'))
             <div class="container position-relative" style="z-index:1031">
