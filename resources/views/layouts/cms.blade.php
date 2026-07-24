@@ -73,9 +73,11 @@
     <div class="cms-main">
         <header class="cms-topbar">
             <div class="cms-topbar-left">
-                <button class="btn btn-sm btn-outline-dark cms-sidebar-toggle d-md-none" type="button"
+                <button class="cms-topbar-icon-button cms-sidebar-toggle d-md-none" type="button"
                     data-bs-toggle="offcanvas" data-bs-target="#cmsSidebar" aria-controls="cmsSidebar"
-                    aria-label="Buka navigasi CMS"><i class="bi bi-list fs-5" aria-hidden="true"></i></button>
+                    aria-label="Buka navigasi CMS" title="Menu navigasi">
+                    <x-cms-icon name="menu" />
+                </button>
                 <button class="cms-topbar-icon-button" type="button" data-cms-back
                     data-fallback-url="{{ route('cms.dashboard') }}" aria-label="Kembali ke halaman sebelumnya"
                     title="Kembali">
