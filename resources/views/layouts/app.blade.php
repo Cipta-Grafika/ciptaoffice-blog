@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    @include('partials.favicons')
     <title>@yield('title', 'CiptaOffice — Solusi Kebutuhan Kantor')</title>
     <meta name="description" content="@yield('meta_description', 'Furnitur dan perlengkapan kantor dengan rekomendasi alternatif berkualitas setara dari CiptaOffice.')">
     <link rel="canonical" href="@yield('canonical', url()->current())">
