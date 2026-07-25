@@ -51,9 +51,9 @@
                     <span class="site-nav-context-line" aria-hidden="true"></span>
                     <span>Solusi kebutuhan kantor</span>
                 </div>
-                <button class="navbar-toggler border-0 ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#siteMenu"
-                    aria-controls="siteMenu" aria-expanded="false" aria-label="Buka navigasi"><span
-                        class="navbar-toggler-icon"></span></button>
+                <button class="navbar-toggler border-0 ms-auto" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#siteMenu" aria-controls="siteMenu" aria-expanded="false"
+                    aria-label="Buka navigasi"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="siteMenu">
                     <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
                         <li class="nav-item"><a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}"
@@ -92,7 +92,7 @@
                         setara.</p>
                 </div>
                 <div class="col-lg-6 text-lg-end">
-                    <p class="small text-uppercase letter-space text-white-50 mb-2">Informasi footer akan dilengkapi</p>
+                    {{-- <p class="small text-uppercase letter-space text-white-50 mb-2">Informasi footer akan dilengkapi</p> --}}
                     <p class="mb-0 small">&copy; {{ date('Y') }} CiptaOffice. Seluruh hak dilindungi.</p>
                 </div>
             </div>
