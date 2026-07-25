@@ -89,7 +89,8 @@
             <div class="cms-topbar-tools">
                 <div class="dropdown">
                     <button class="cms-topbar-icon-button" id="cmsSearchMenuButton" type="button"
-                        data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false"
+                        data-bs-toggle="dropdown" data-bs-auto-close="outside" data-bs-offset="0,8"
+                        data-bs-boundary="viewport" aria-expanded="false"
                         aria-label="Cari menu CMS" title="Cari menu">
                         <x-cms-icon name="search" />
                     </button>
@@ -118,7 +119,8 @@
                 </div>
                 <div class="dropdown cms-quick-dropdown">
                     <button class="cms-topbar-icon-button" id="cmsQuickMenuButton" type="button"
-                        data-bs-toggle="dropdown" aria-expanded="false" aria-label="Buka akses cepat"
+                        data-bs-toggle="dropdown" data-bs-offset="0,8" data-bs-boundary="viewport"
+                        aria-expanded="false" aria-label="Buka akses cepat"
                         title="Akses cepat">
                         <x-cms-icon name="grid" />
                     </button>
@@ -138,7 +140,8 @@
                 </div>
                 <div class="dropdown">
                     <button class="cms-topbar-icon-button" id="cmsNotificationMenuButton" type="button"
-                        data-bs-toggle="dropdown" aria-expanded="false" aria-label="Buka notifikasi"
+                        data-bs-toggle="dropdown" data-bs-offset="0,8" data-bs-boundary="viewport"
+                        aria-expanded="false" aria-label="Buka notifikasi"
                         title="Notifikasi">
                         <x-cms-icon name="bell" />
                     </button>
@@ -154,7 +157,8 @@
                 </div>
                 <div class="dropdown cms-account-dropdown">
                     <button class="cms-topbar-icon-button cms-account-trigger" id="cmsAccountMenuButton"
-                        type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Buka menu akun"
+                        type="button" data-bs-toggle="dropdown" data-bs-offset="0,8" data-bs-boundary="viewport"
+                        aria-expanded="false" aria-label="Buka menu akun"
                         title="Akun">
                         <x-cms-icon name="person-circle" />
                     </button>
