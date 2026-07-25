@@ -28,63 +28,48 @@
                 </form>
                 <p class="cms-record-count mb-0">{{ $posts->total() }} artikel ditemukan</p>
             </div>
-            <div class="table-responsive">
-                <table class="table table-hover cms-table align-middle mb-0">
-                    <thead>
-                        <tr>
-                            <th>Artikel</th>
-                            @can('admin')
-                                <th>Author</th>
-                            @endcan
-                            <th>Status</th>
-                            <th>Terakhir diubah</th>
-                            <th class="text-end">Tindakan</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($posts as $post)
-                            <tr>
-                                <td><span class="cms-table-primary">{{ $post->title }}</span><span
-                                        class="cms-table-secondary">/{{ $post->slug }}</span></td>
-                                @can('admin')
-                                    <td>{{ $post->author?->name ?? 'Konten impor' }}</td>
+            <x-cms-table :paginator="$posts" :column-count="auth()->user()->can('admin') ? 5 : 4" :empty="$posts->isEmpty()"
+                empty-icon="file-earmark-text" empty-title="Belum ada artikel"
+                empty-description="Mulai alur editorial dengan membuat draft pertama.">
+                <x-slot:head>
+                    <th>Artikel</th>
+                    @can('admin')
+                        <th>Author</th>
+                    @endcan
+                    <th>Status</th>
+                    <th>Terakhir diubah</th>
+                    <th class="text-end">Tindakan</th>
+                </x-slot:head>
+                @foreach ($posts as $post)
+                    <tr>
+                        <td><span class="cms-table-primary">{{ $post->title }}</span><span
+                                class="cms-table-secondary">/{{ $post->slug }}</span></td>
+                        @can('admin')
+                            <td>{{ $post->author?->name ?? 'Konten impor' }}</td>
+                        @endcan
+                        <td><span
+                                class="cms-status cms-status--{{ $post->status->badge() }}">{{ $post->status->label() }}</span>
+                        </td>
+                        <td>{{ $post->updated_at->diffForHumans() }}</td>
+                        <td>
+                            <div class="cms-table-actions">
+                                @can('update', $post)
+                                    <a class="btn btn-sm btn-outline-primary" href="{{ route('cms.posts.edit', $post) }}"><i
+                                            class="bi bi-pencil-square" aria-hidden="true"></i>Edit</a>
+                                @elsecan('admin')
+                                    <a class="btn btn-sm btn-outline-primary" href="{{ route('cms.posts.edit', $post) }}"><i
+                                            class="bi bi-eye" aria-hidden="true"></i>Tinjau</a>
                                 @endcan
-                                <td><span
-                                        class="cms-status cms-status--{{ $post->status->badge() }}">{{ $post->status->label() }}</span>
-                                </td>
-                                <td>{{ $post->updated_at->diffForHumans() }}</td>
-                                <td>
-                                    <div class="cms-table-actions">
-                                        @can('update', $post)
-                                            <a class="btn btn-sm btn-outline-primary"
-                                                href="{{ route('cms.posts.edit', $post) }}">Edit</a>
-                                        @elsecan('admin')
-                                            <a class="btn btn-sm btn-outline-primary"
-                                                href="{{ route('cms.posts.edit', $post) }}">Tinjau</a>
-                                        @endcan
-                                        @if ($post->status === \App\Enums\PostStatus::Published)
-                                            <a class="btn btn-sm btn-outline-secondary"
-                                                href="{{ route('articles.show', $post) }}" target="_blank"
-                                                rel="noopener noreferrer">Lihat</a>
-                                        @endif
-                                    </div>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="5">
-                                    <div class="cms-empty-state"><span class="cms-empty-state-icon"><i
-                                                class="bi bi-file-earmark-text"></i></span>
-                                        <h2>Belum ada artikel</h2>
-                                        <p class="mb-0">Mulai alur editorial dengan membuat draft pertama.</p>
-                                    </div>
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+                                @if ($post->status === \App\Enums\PostStatus::Published)
+                                    <a class="btn btn-sm btn-outline-secondary" href="{{ route('articles.show', $post) }}"
+                                        target="_blank" rel="noopener noreferrer"><i class="bi bi-box-arrow-up-right"
+                                            aria-hidden="true"></i>Lihat</a>
+                                @endif
+                            </div>
+                        </td>
+                    </tr>
+                @endforeach
+            </x-cms-table>
         </section>
-        <div class="cms-pagination">{{ $posts->links() }}</div>
     </div>
 @endsection

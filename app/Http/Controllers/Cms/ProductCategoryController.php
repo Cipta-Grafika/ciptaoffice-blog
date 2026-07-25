@@ -14,7 +14,7 @@ class ProductCategoryController extends Controller
 {
     public function index(): View
     {
-        return view('cms.categories.index', ['categories' => ProductCategory::withCount('products')->orderBy('sort_order')->get()]);
+        return view('cms.categories.index', ['categories' => ProductCategory::withCount('products')->orderBy('sort_order')->paginate(15)]);
     }
 
     public function create(): View

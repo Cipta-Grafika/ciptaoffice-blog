@@ -10,24 +10,23 @@
         </x-cms-page-header>
         <section class="cms-surface" aria-label="Daftar pengguna">
             <div class="cms-list-toolbar"><p class="cms-surface-kicker mb-0">Tim editorial</p><p class="cms-record-count mb-0">{{ $users->total() }} pengguna</p></div>
-            <div class="table-responsive">
-                <table class="table table-hover cms-table mb-0">
-                    <thead><tr><th>Nama</th><th>Role</th><th>Status</th><th class="text-end">Tindakan</th></tr></thead>
-                    <tbody>
-                        @forelse($users as $user)
-                            <tr>
-                                <td><span class="cms-table-primary">{{ $user->name }}</span><span class="cms-table-secondary">{{ $user->email }}</span></td>
-                                <td>{{ $user->role->label() }}</td>
-                                <td><span class="cms-status {{ $user->is_active ? 'cms-status--success' : '' }}">{{ $user->is_active ? 'Aktif' : 'Nonaktif' }}</span></td>
-                                <td><div class="cms-table-actions"><a class="btn btn-sm btn-outline-primary" href="{{ route('cms.users.edit', $user) }}">Edit</a></div></td>
-                            </tr>
-                        @empty
-                            <tr><td colspan="4"><div class="cms-empty-state"><span class="cms-empty-state-icon"><i class="bi bi-people"></i></span><h2>Belum ada pengguna</h2><p class="mb-0">Tambahkan anggota tim untuk memberi akses CMS.</p></div></td></tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+            <x-cms-table :paginator="$users" :column-count="4" :empty="$users->isEmpty()" empty-icon="people"
+                empty-title="Belum ada pengguna" empty-description="Tambahkan anggota tim untuk memberi akses CMS.">
+                <x-slot:head>
+                    <th>Nama</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th class="text-end">Tindakan</th>
+                </x-slot:head>
+                @foreach ($users as $user)
+                    <tr>
+                        <td><span class="cms-table-primary">{{ $user->name }}</span><span class="cms-table-secondary">{{ $user->email }}</span></td>
+                        <td>{{ $user->role->label() }}</td>
+                        <td><span class="cms-status {{ $user->is_active ? 'cms-status--success' : '' }}">{{ $user->is_active ? 'Aktif' : 'Nonaktif' }}</span></td>
+                        <td><div class="cms-table-actions"><a class="btn btn-sm btn-outline-primary" href="{{ route('cms.users.edit', $user) }}"><i class="bi bi-pencil-square" aria-hidden="true"></i>Edit</a></div></td>
+                    </tr>
+                @endforeach
+            </x-cms-table>
         </section>
-        <div class="cms-pagination">{{ $users->links() }}</div>
     </div>
 @endsection
