@@ -1,40 +1,33 @@
 @extends('layouts.cms')
+
 @section('title', 'Testimonial')
-@section('content')<div class="d-flex justify-content-between align-items-end mb-4">
-        <div>
-            <p class="section-kicker mb-1">Kepercayaan</p>
-            <h1 class="font-display display-5 mb-0">Testimonial</h1>
-        </div><a class="btn btn-primary" href="{{ route('cms.testimonials.create') }}">Tambah testimonial</a>
-    </div>
-    <div class="cms-card table-responsive">
-        <table class="table align-middle mb-0">
-            <thead>
-                <tr>
+
+@section('content')
+    <div class="cms-page">
+        <x-cms-page-header eyebrow="Kepercayaan" title="Testimonial"
+            description="Kelola kutipan pelanggan yang memperkuat reputasi CiptaOffice di homepage.">
+            <x-slot:actions><a class="btn btn-primary" href="{{ route('cms.testimonials.create') }}"><i class="bi bi-plus-lg"></i><span class="cms-action-label--compact">Tambah testimonial</span></a></x-slot:actions>
+        </x-cms-page-header>
+        <section class="cms-surface" aria-label="Daftar testimonial">
+            <x-cms-table kicker="Kutipan pelanggan" record-label="testimonial" :paginator="$testimonials" :column-count="5" :empty="$testimonials->isEmpty()" empty-icon="chat-quote"
+                empty-title="Belum ada testimonial" empty-description="Tambahkan pengalaman pelanggan pertama.">
+                <x-slot:head>
                     <th>Nama</th>
                     <th>Perusahaan</th>
                     <th>Status</th>
                     <th>Urutan</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($testimonials as $item)
+                    <th class="text-end">Tindakan</th>
+                </x-slot:head>
+                @foreach ($testimonials as $item)
                     <tr>
-                        <td><strong>{{ $item->reviewer_name }}</strong><small
-                                class="d-block text-muted">{{ Str::limit($item->quote, 70) }}</small></td>
+                        <td><span class="cms-table-primary">{{ $item->reviewer_name }}</span><span class="cms-table-secondary">{{ Str::limit($item->quote, 90) }}</span></td>
                         <td>{{ $item->company ?? '—' }}</td>
-                        <td><span
-                                class="badge text-bg-{{ $item->is_active ? 'success' : 'secondary' }}">{{ $item->is_active ? 'Aktif' : 'Nonaktif' }}</span>
-                        </td>
+                        <td><span class="cms-status {{ $item->is_active ? 'cms-status--success' : '' }}">{{ $item->is_active ? 'Aktif' : 'Nonaktif' }}</span></td>
                         <td>{{ $item->sort_order }}</td>
-                        <td class="text-end"><a class="btn btn-sm btn-outline-primary"
-                                href="{{ route('cms.testimonials.edit', $item) }}">Edit</a></td>
-                </tr>@empty<tr>
-                        <td colspan="5" class="text-center py-5">Belum ada testimonial.</td>
+                        <td><div class="cms-table-actions"><a class="btn btn-sm btn-outline-primary" href="{{ route('cms.testimonials.edit', $item) }}"><i class="bi bi-pencil-square" aria-hidden="true"></i>Edit</a></div></td>
                     </tr>
-                @endforelse
-            </tbody>
-        </table>
+                @endforeach
+            </x-cms-table>
+        </section>
     </div>
-    <div class="mt-4">{{ $testimonials->links() }}</div>
 @endsection

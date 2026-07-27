@@ -1,22 +1,28 @@
 @extends('layouts.cms')
+
 @section('title', 'Artikel baru')
+
 @section('content')
-    <div class="row justify-content-center">
-        <div class="col-xl-8">
-            <a class="link-arrow" href="{{ route('cms.posts.index') }}"><i class="bi bi-arrow-left"></i> Kembali</a>
-            <div class="cms-card p-4 p-lg-5 mt-3">
-                <p class="section-kicker">Langkah pertama</p>
-                <h1 class="font-display display-5">Beri judul pada artikel.</h1>
-                <p class="text-muted">Sistem akan membuat draft dan slug unik. Judul, ringkasan, isi, serta gambar dapat
-                    dilengkapi pada editor berikutnya.</p>
-                <form method="post" action="{{ route('cms.posts.store') }}">
-                    @csrf
-                    <label class="form-label" for="title">Judul artikel</label>
-                    <input class="form-control form-control-lg" id="title" name="title" value="{{ old('title') }}"
-                        maxlength="180" required autofocus>
-                    <button class="btn btn-primary btn-lg mt-4">Buat draft & lanjutkan</button>
-                </form>
+    <div class="cms-page cms-page--narrow">
+        <a class="cms-back-link" href="{{ route('cms.posts.index') }}"><i class="bi bi-arrow-left"></i> Daftar artikel</a>
+        <x-cms-page-header eyebrow="Langkah pertama" title="Buat artikel baru"
+            description="Mulai dengan judul yang jelas. Sistem akan menyiapkan draft dan slug unik untuk dilengkapi pada editor berikutnya." />
+        <form class="cms-form-surface" method="post" action="{{ route('cms.posts.store') }}">
+            @csrf
+            <div class="cms-form-section">
+                <div class="cms-form-section-heading">
+                    <h2>Identitas artikel</h2>
+                    <p>Judul masih dapat disunting sebelum artikel diterbitkan.</p>
+                </div>
+                <label class="form-label" for="title">Judul artikel</label>
+                <input class="form-control form-control-lg" id="title" name="title" value="{{ old('title') }}"
+                    maxlength="180" placeholder="Contoh: Merancang ruang kerja yang tetap relevan" required autofocus>
             </div>
-        </div>
+            <div class="cms-form-actions">
+                <button class="btn btn-primary" type="submit"><i class="bi bi-arrow-right"></i> Buat draft &
+                    lanjutkan</button>
+                <a class="btn btn-outline-secondary" href="{{ route('cms.posts.index') }}">Batal</a>
+            </div>
+        </form>
     </div>
 @endsection

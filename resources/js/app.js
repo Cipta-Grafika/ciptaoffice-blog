@@ -3,7 +3,78 @@ import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
 
 const nav = document.querySelector('.site-nav');
+const siteHeader = document.querySelector('[data-site-header]');
+const syncSiteHeaderHeight = () => {
+    if (siteHeader) document.documentElement.style.setProperty('--site-nav-height', `${siteHeader.offsetHeight}px`);
+};
+if (siteHeader) {
+    syncSiteHeaderHeight();
+    window.addEventListener('resize', syncSiteHeaderHeight, { passive: true });
+    if ('ResizeObserver' in window) new ResizeObserver(syncSiteHeaderHeight).observe(siteHeader);
+}
 if (nav) window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 12), { passive: true });
+
+const metricStrip = document.querySelector('[data-metric-strip]');
+const metricStripSentinel = document.querySelector('[data-metric-strip-sentinel]');
+if (nav && metricStrip && metricStripSentinel) {
+    const root = document.documentElement;
+    const links = [...metricStrip.querySelectorAll('.metric-section-link')];
+    const sections = links.map(link => document.querySelector(link.hash));
+    let dockThreshold = 0;
+    let ticking = false;
+
+    const setDocked = (docked) => {
+        if (metricStrip.classList.contains('is-docked') === docked) return;
+
+        metricStrip.classList.toggle('is-docked', docked);
+        nav.classList.toggle('has-section-nav', docked);
+        links.forEach((link) => {
+            link.toggleAttribute('aria-hidden', !docked);
+            link.tabIndex = docked ? 0 : -1;
+        });
+        requestAnimationFrame(() => root.style.setProperty('--metric-nav-height', `${metricStrip.offsetHeight}px`));
+    };
+
+    const updateScrollState = () => {
+        const navHeight = siteHeader?.offsetHeight ?? nav.offsetHeight;
+        const docked = window.scrollY >= dockThreshold;
+        setDocked(docked);
+
+        const activationLine = navHeight + (docked ? metricStrip.offsetHeight : 0) + 32;
+        let activeSection = null;
+        sections.forEach((section) => {
+            if (section && section.getBoundingClientRect().top <= activationLine) activeSection = section.id;
+        });
+        links.forEach((link) => {
+            const active = docked && link.hash === `#${activeSection}`;
+            link.classList.toggle('active', active);
+            if (active) link.setAttribute('aria-current', 'location');
+            else link.removeAttribute('aria-current');
+        });
+    };
+
+    const queueScrollUpdate = () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+            updateScrollState();
+            ticking = false;
+        });
+    };
+
+    const measureStickyPosition = () => {
+        const navHeight = siteHeader?.offsetHeight ?? nav.offsetHeight;
+        root.style.setProperty('--site-nav-height', `${navHeight}px`);
+        dockThreshold = metricStripSentinel.getBoundingClientRect().top + window.scrollY - navHeight;
+        root.style.setProperty('--metric-nav-height', `${metricStrip.offsetHeight}px`);
+        updateScrollState();
+    };
+
+    measureStickyPosition();
+    window.addEventListener('scroll', queueScrollUpdate, { passive: true });
+    window.addEventListener('resize', measureStickyPosition, { passive: true });
+    if ('ResizeObserver' in window) new ResizeObserver(measureStickyPosition).observe(siteHeader ?? nav);
+}
 
 const observer = 'IntersectionObserver' in window ? new IntersectionObserver(entries => entries.forEach(entry => {
     if (entry.isIntersecting) { entry.target.classList.add('is-visible'); observer.unobserve(entry.target); }
@@ -55,6 +126,46 @@ if (cmsSidebarCollapse) {
     breakpoint.addEventListener('change', () => applySidebarState(storedPreference()));
 }
 
+document.querySelectorAll('[data-cms-back]').forEach((button) => {
+    button.addEventListener('click', () => {
+        let sameOriginReferrer = false;
+        try {
+            const referrer = new URL(document.referrer);
+            const isAuthPage = ['/cms/login', '/forgot-password', '/reset-password'].some(
+                (path) => referrer.pathname.startsWith(path),
+            );
+            sameOriginReferrer = referrer.origin === window.location.origin && !isAuthPage;
+        } catch (error) {}
+
+        if (sameOriginReferrer && window.history.length > 1) window.history.back();
+        else window.location.assign(button.dataset.fallbackUrl);
+    });
+});
+
+document.querySelectorAll('[data-cms-nav-search]').forEach((input) => {
+    const dropdown = input.closest('.dropdown');
+    const items = [...dropdown.querySelectorAll('[data-cms-nav-search-item]')];
+    const empty = dropdown.querySelector('[data-cms-nav-search-empty]');
+
+    const filterItems = () => {
+        const query = input.value.trim().toLocaleLowerCase('id');
+        let visibleItems = 0;
+        items.forEach((item) => {
+            const visible = item.textContent.trim().toLocaleLowerCase('id').includes(query);
+            item.classList.toggle('d-none', !visible);
+            if (visible) visibleItems += 1;
+        });
+        empty?.classList.toggle('d-none', visibleItems > 0);
+    };
+
+    input.addEventListener('input', filterItems);
+    dropdown.addEventListener('shown.bs.dropdown', () => input.focus());
+    dropdown.addEventListener('hidden.bs.dropdown', () => {
+        input.value = '';
+        filterItems();
+    });
+});
+
 document.querySelectorAll('[data-password-toggle]').forEach((button) => {
     const input = document.querySelector(button.dataset.passwordToggle);
     if (!input) return;
@@ -72,16 +183,165 @@ document.querySelectorAll('[data-password-toggle]').forEach((button) => {
     });
 });
 
+document.querySelectorAll('[data-article-toc]').forEach((article) => {
+    const content = article.querySelector('[data-article-content]');
+    const toc = article.querySelector('.article-toc');
+    const list = article.querySelector('[data-article-toc-list]');
+    const panel = article.querySelector('[data-article-toc-panel]');
+    const toggle = article.querySelector('[data-article-toc-toggle]');
+
+    if (!content || !toc || !list || !panel || !toggle) return;
+
+    const headings = [...content.querySelectorAll('h2, h3')];
+    if (headings.length === 0) {
+        toc.remove();
+        return;
+    }
+
+    const headingElements = new Set(headings);
+    const usedIds = new Set(
+        [...document.querySelectorAll('[id]')]
+            .filter((element) => !headingElements.has(element))
+            .map((element) => element.id),
+    );
+    const slugify = (value) => value
+        .normalize('NFKD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+
+    headings.forEach((heading, index) => {
+        const baseId = heading.id || slugify(heading.textContent) || `bagian-${index + 1}`;
+        let headingId = baseId;
+        let suffix = 2;
+        while (usedIds.has(headingId)) headingId = `${baseId}-${suffix++}`;
+        heading.id = headingId;
+        usedIds.add(headingId);
+
+        const item = document.createElement('li');
+        const link = document.createElement('a');
+        item.className = `article-toc-item article-toc-item--${heading.tagName.toLowerCase()}`;
+        link.href = `#${headingId}`;
+        link.textContent = heading.textContent.trim();
+        link.dataset.articleTocLink = '';
+        item.append(link);
+        list.append(item);
+    });
+
+    const links = [...list.querySelectorAll('[data-article-toc-link]')];
+    const desktop = window.matchMedia('(min-width: 1200px)');
+    let open = false;
+    let ticking = false;
+
+    const applyPanelState = () => {
+        const expanded = desktop.matches || open;
+        toc.classList.toggle('is-open', open && !desktop.matches);
+        toggle.setAttribute('aria-expanded', String(expanded));
+        toggle.querySelector('.visually-hidden').textContent = expanded ? 'Tutup daftar isi' : 'Buka daftar isi';
+        panel.toggleAttribute('inert', !expanded);
+        panel.setAttribute('aria-hidden', String(!expanded));
+    };
+
+    const setActiveLink = () => {
+        const activationLine = Math.max(112, window.innerHeight * .22);
+        let activeHeading = headings[0];
+        headings.forEach((heading) => {
+            if (heading.getBoundingClientRect().top <= activationLine) activeHeading = heading;
+        });
+        links.forEach((link) => {
+            const active = link.hash === `#${activeHeading.id}`;
+            link.classList.toggle('active', active);
+            if (active) link.setAttribute('aria-current', 'location');
+            else link.removeAttribute('aria-current');
+        });
+    };
+
+    const queueActiveLinkUpdate = () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+            setActiveLink();
+            ticking = false;
+        });
+    };
+
+    toggle.addEventListener('click', () => {
+        open = !open;
+        applyPanelState();
+    });
+    links.forEach((link) => link.addEventListener('click', () => {
+        if (!desktop.matches) {
+            open = false;
+            applyPanelState();
+        }
+    }));
+    document.addEventListener('click', (event) => {
+        if (!desktop.matches && open && !toc.contains(event.target)) {
+            open = false;
+            applyPanelState();
+        }
+    });
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && open) {
+            open = false;
+            applyPanelState();
+            toggle.focus();
+        }
+    });
+    desktop.addEventListener('change', () => {
+        open = false;
+        applyPanelState();
+    });
+    window.addEventListener('scroll', queueActiveLinkUpdate, { passive: true });
+    applyPanelState();
+    setActiveLink();
+});
+
+document.querySelectorAll('[data-cover-picker]').forEach((picker) => {
+    const input = picker.querySelector('[data-cover-input]');
+    const preview = picker.querySelector('[data-cover-preview]');
+    const placeholder = picker.querySelector('[data-cover-placeholder]');
+    const filename = picker.querySelector('[data-cover-filename]');
+    const status = picker.querySelector('[data-cover-status]');
+    let previewUrl;
+
+    input?.addEventListener('change', () => {
+        const file = input.files?.[0];
+        if (previewUrl) URL.revokeObjectURL(previewUrl);
+
+        if (!file) {
+            previewUrl = undefined;
+            preview.src = preview.dataset.currentSrc || '';
+            preview.classList.toggle('d-none', !preview.dataset.currentSrc);
+            placeholder?.classList.toggle('d-none', Boolean(preview.dataset.currentSrc));
+            filename.textContent = 'Tidak ada file baru dipilih.';
+            status.textContent = status.dataset.currentStatus;
+            return;
+        }
+
+        previewUrl = URL.createObjectURL(file);
+        preview.src = previewUrl;
+        preview.alt = `Preview ${file.name}`;
+        preview.classList.remove('d-none');
+        placeholder?.classList.add('d-none');
+        filename.textContent = file.name;
+        status.textContent = 'Cover baru siap disimpan.';
+    });
+});
+
 document.querySelectorAll('[data-quill]').forEach((element) => {
     const input = document.querySelector(element.dataset.input);
     const uploadUrl = element.dataset.uploadUrl;
     const quill = new Quill(element, {
         theme: 'snow',
-        modules: { toolbar: { container: [[{ header: [2, 3, false] }], ['bold', 'italic', 'underline', 'strike'], [{ list: 'ordered' }, { list: 'bullet' }], ['blockquote', 'link', 'image'], ['clean']], handlers: { image: imageHandler, list: listHandler } } },
+        modules: { toolbar: { container: [[{ header: [2, 3, false] }], ['bold', 'italic', 'underline', 'strike'], [{ list: 'ordered' }, { list: 'bullet' }, { indent: '-1' }, { indent: '+1' }], ['blockquote', 'link', 'image'], ['clean']], handlers: { image: imageHandler, list: listHandler } } },
     });
     const initialContent = quill.clipboard.convert({ html: input.value || '' });
     quill.setContents(initialContent, Quill.sources.SILENT);
-    quill.on('text-change', () => { input.value = quill.root.innerHTML; });
+    const syncInput = () => { input.value = quill.getSemanticHTML(); };
+    quill.on('text-change', syncInput);
 
     function listHandler(value) {
         const range = quill.getSelection();
@@ -106,7 +366,7 @@ document.querySelectorAll('[data-quill]').forEach((element) => {
             try {
                 const response = await fetch(uploadUrl, { method: 'POST', headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content, 'Accept': 'application/json' }, body: form });
                 if (!response.ok) throw new Error('Upload gagal');
-                const data = await response.json(); const range = quill.getSelection(true); quill.insertEmbed(range.index, 'image', data.url); const images = quill.root.querySelectorAll('img'); const inserted = images[images.length - 1]; if (inserted) inserted.setAttribute('alt', data.alt); quill.setSelection(range.index + 1); input.value = quill.root.innerHTML;
+                const data = await response.json(); const range = quill.getSelection(true); quill.insertEmbed(range.index, 'image', data.url); const images = quill.root.querySelectorAll('img'); const inserted = images[images.length - 1]; if (inserted) inserted.setAttribute('alt', data.alt); quill.setSelection(range.index + 1); syncInput();
             } catch (error) { window.alert('Gambar gagal diunggah. Pastikan format dan ukuran sesuai.'); }
         };
     }

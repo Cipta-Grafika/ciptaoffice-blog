@@ -59,9 +59,54 @@ class EditorialWorkflowTest extends TestCase
             ->assertSee('Mode preview')
             ->assertSee('Belum diterbitkan')
             ->assertSee('Isi preview')
+            ->assertSee('data-article-toc', false)
+            ->assertSee('Daftar isi')
             ->assertSee('noindex,nofollow', false);
 
         $this->actingAs($other)->get(route('cms.posts.preview', $post))->assertForbidden();
+    }
+
+    public function test_bullet_list_remains_unordered_after_article_is_saved(): void
+    {
+        $author = User::factory()->create();
+        $post = Post::create([
+            'author_id' => $author->id,
+            'title' => 'Daftar Kebutuhan',
+            'slug' => 'daftar-kebutuhan',
+            'status' => PostStatus::Draft,
+        ]);
+
+        $this->actingAs($author)->put(route('cms.posts.update', $post), [
+            'title' => 'Daftar Kebutuhan',
+            'excerpt' => 'Daftar perlengkapan kantor',
+            'body_html' => '<h2>Kebutuhan utama</h2><ul><li>Meja kantor</li><li>Kursi ergonomis</li></ul>',
+        ])->assertSessionHasNoErrors();
+
+        $body = $post->fresh()->body_html;
+        $this->assertStringContainsString('<ul>', $body);
+        $this->assertStringContainsString('<li>Meja kantor</li>', $body);
+        $this->assertStringNotContainsString('<ol>', $body);
+    }
+
+    public function test_article_indentation_is_preserved_and_unapproved_classes_are_removed(): void
+    {
+        $author = User::factory()->create();
+        $post = Post::create([
+            'author_id' => $author->id,
+            'title' => 'Panduan Ruang Kerja',
+            'slug' => 'panduan-ruang-kerja',
+            'status' => PostStatus::Draft,
+        ]);
+
+        $this->actingAs($author)->put(route('cms.posts.update', $post), [
+            'title' => 'Panduan Ruang Kerja',
+            'excerpt' => 'Panduan menata ruang kerja',
+            'body_html' => '<p class="ql-indent-2 class-tidak-diizinkan">Paragraf menjorok</p>',
+        ])->assertSessionHasNoErrors();
+
+        $body = $post->fresh()->body_html;
+        $this->assertStringContainsString('class="ql-indent-2"', $body);
+        $this->assertStringNotContainsString('class-tidak-diizinkan', $body);
     }
 
     public function test_author_cannot_access_admin_modules(): void

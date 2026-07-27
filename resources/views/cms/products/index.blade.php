@@ -1,40 +1,33 @@
 @extends('layouts.cms')
+
 @section('title', 'Produk')
-@section('content')<div class="d-flex justify-content-between align-items-end mb-4">
-        <div>
-            <p class="section-kicker mb-1">Katalog</p>
-            <h1 class="font-display display-5 mb-0">Produk</h1>
-        </div><a class="btn btn-primary" href="{{ route('cms.products.create') }}">Tambah produk</a>
-    </div>
-    <div class="cms-card table-responsive">
-        <table class="table align-middle mb-0">
-            <thead>
-                <tr>
+
+@section('content')
+    <div class="cms-page">
+        <x-cms-page-header eyebrow="Katalog" title="Produk"
+            description="Atur informasi produk, visibilitas, dan pilihan unggulan pada katalog publik.">
+            <x-slot:actions><a class="btn btn-primary" href="{{ route('cms.products.create') }}"><i class="bi bi-plus-lg"></i><span class="cms-action-label--compact">Tambah produk</span></a></x-slot:actions>
+        </x-cms-page-header>
+        <section class="cms-surface" aria-label="Daftar produk">
+            <x-cms-table kicker="Katalog produk" record-label="produk" :paginator="$products" :column-count="5" :empty="$products->isEmpty()" empty-icon="box-seam"
+                empty-title="Belum ada produk" empty-description="Tambahkan produk pertama ke katalog.">
+                <x-slot:head>
                     <th>Produk</th>
                     <th>Kategori</th>
                     <th>Status</th>
-                    <th>Featured</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($products as $product)
+                    <th>Unggulan</th>
+                    <th class="text-end">Tindakan</th>
+                </x-slot:head>
+                @foreach ($products as $product)
                     <tr>
-                        <td><strong>{{ $product->name }}</strong><small
-                                class="d-block text-muted">{{ Str::limit($product->summary, 70) }}</small></td>
+                        <td><span class="cms-table-primary">{{ $product->name }}</span><span class="cms-table-secondary">{{ Str::limit($product->summary, 90) }}</span></td>
                         <td>{{ $product->category->name }}</td>
-                        <td><span
-                                class="badge text-bg-{{ $product->is_active ? 'success' : 'secondary' }}">{{ $product->is_active ? 'Aktif' : 'Nonaktif' }}</span>
-                        </td>
+                        <td><span class="cms-status {{ $product->is_active ? 'cms-status--success' : '' }}">{{ $product->is_active ? 'Aktif' : 'Nonaktif' }}</span></td>
                         <td>{{ $product->is_featured ? 'Ya' : 'Tidak' }}</td>
-                        <td class="text-end"><a class="btn btn-sm btn-outline-primary"
-                                href="{{ route('cms.products.edit', $product) }}">Edit</a></td>
-                </tr>@empty<tr>
-                        <td colspan="5" class="text-center py-5">Belum ada produk.</td>
+                        <td><div class="cms-table-actions"><a class="btn btn-sm btn-outline-primary" href="{{ route('cms.products.edit', $product) }}"><i class="bi bi-pencil-square" aria-hidden="true"></i>Edit</a></div></td>
                     </tr>
-                @endforelse
-            </tbody>
-        </table>
+                @endforeach
+            </x-cms-table>
+        </section>
     </div>
-    <div class="mt-4">{{ $products->links() }}</div>
 @endsection

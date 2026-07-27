@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    @include('partials.favicons')
     <title>@yield('title', 'CMS') — CiptaOffice</title>
     <script>
         try {
@@ -17,6 +18,14 @@
 </head>
 
 <body class="cms-body">
+    @php
+        $cmsUser = auth()->user();
+        $cmsUserInitials = collect(preg_split('/\s+/', trim($cmsUser->name)))
+            ->filter()
+            ->take(2)
+            ->map(fn ($name) => mb_strtoupper(mb_substr($name, 0, 1)))
+            ->implode('');
+    @endphp
     <aside class="offcanvas-md offcanvas-start cms-sidebar" tabindex="-1" id="cmsSidebar"
         aria-labelledby="cmsSidebarLabel">
         <div class="cms-sidebar-header d-flex align-items-center justify-content-between gap-3 mb-4">
@@ -62,25 +71,144 @@
         </nav>
     </aside>
     <div class="cms-main">
-        <header class="cms-topbar d-flex justify-content-between align-items-center">
-            <div class="d-flex align-items-center gap-3">
-                <button class="btn btn-sm btn-outline-dark cms-sidebar-toggle d-md-none" type="button"
+        <header class="cms-topbar">
+            <div class="cms-topbar-left">
+                <button class="cms-topbar-icon-button cms-sidebar-toggle d-md-none" type="button"
                     data-bs-toggle="offcanvas" data-bs-target="#cmsSidebar" aria-controls="cmsSidebar"
-                    aria-label="Buka navigasi CMS"><i class="bi bi-list fs-5" aria-hidden="true"></i></button>
-                <div><span class="small text-muted">{{ auth()->user()->role->label() }}</span><strong
-                        class="d-block">{{ auth()->user()->name }}</strong></div>
+                    aria-label="Buka navigasi CMS" title="Menu navigasi">
+                    <x-cms-icon name="menu" />
+                </button>
+                <button class="cms-topbar-icon-button" type="button" data-cms-back
+                    data-fallback-url="{{ route('cms.dashboard') }}" aria-label="Kembali ke halaman sebelumnya"
+                    title="Kembali">
+                    <x-cms-icon name="arrow-left" />
+                </button>
+                <span class="cms-topbar-divider" aria-hidden="true"></span>
+                <strong class="cms-topbar-title">@yield('title', 'CMS')</strong>
             </div>
-            <div class="d-flex gap-2"><a class="btn btn-sm btn-outline-secondary" href="{{ route('home') }}"
-                    target="_blank"><i class="bi bi-box-arrow-up-right"></i> Lihat situs</a>
-                <div class="dropdown"><button class="btn btn-sm btn-outline-dark dropdown-toggle"
-                        data-bs-toggle="dropdown">Akun</button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="{{ route('cms.password.edit') }}">Ganti kata sandi</a></li>
-                        <li>
-                            <form method="post" action="{{ route('cms.logout') }}">@csrf<button
-                                    class="dropdown-item text-danger">Keluar</button></form>
-                        </li>
-                    </ul>
+            <div class="cms-topbar-tools">
+                <div class="dropdown">
+                    <button class="cms-topbar-icon-button" id="cmsSearchMenuButton" type="button"
+                        data-bs-toggle="dropdown" data-bs-auto-close="outside" data-bs-offset="0,8"
+                        data-bs-boundary="viewport" aria-expanded="false"
+                        aria-label="Cari menu CMS" title="Cari menu">
+                        <x-cms-icon name="search" />
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end cms-topbar-popover cms-search-menu"
+                        aria-labelledby="cmsSearchMenuButton">
+                        <label class="form-label mb-2" for="cmsNavigationSearch">Cari menu CMS</label>
+                        <div class="cms-search-field">
+                            <x-cms-icon name="search" />
+                            <input class="form-control" id="cmsNavigationSearch" type="search"
+                                placeholder="Ketik nama menu..." autocomplete="off" data-cms-nav-search>
+                        </div>
+                        <div class="cms-search-results" data-cms-nav-search-results>
+                            <a href="{{ route('cms.dashboard') }}" data-cms-nav-search-item>Dashboard</a>
+                            <a href="{{ route('cms.posts.index') }}" data-cms-nav-search-item>Artikel</a>
+                            @can('admin')
+                                <a href="{{ route('cms.homepage.edit') }}" data-cms-nav-search-item>Homepage</a>
+                                <a href="{{ route('cms.testimonials.index') }}" data-cms-nav-search-item>Testimonial</a>
+                                <a href="{{ route('cms.products.index') }}" data-cms-nav-search-item>Produk</a>
+                                <a href="{{ route('cms.categories.index') }}" data-cms-nav-search-item>Kategori</a>
+                                <a href="{{ route('cms.inquiries.index') }}" data-cms-nav-search-item>Inquiry</a>
+                                <a href="{{ route('cms.users.index') }}" data-cms-nav-search-item>Pengguna</a>
+                            @endcan
+                            <p class="cms-search-empty d-none mb-0" data-cms-nav-search-empty>Menu tidak ditemukan.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="dropdown cms-quick-dropdown">
+                    <button class="cms-topbar-icon-button" id="cmsQuickMenuButton" type="button"
+                        data-bs-toggle="dropdown" data-bs-offset="0,8" data-bs-boundary="viewport"
+                        aria-expanded="false" aria-label="Buka akses cepat"
+                        title="Akses cepat">
+                        <x-cms-icon name="grid" />
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end cms-topbar-popover cms-quick-menu"
+                        aria-labelledby="cmsQuickMenuButton">
+                        <p class="cms-popover-kicker">Akses cepat</p>
+                        <div class="cms-quick-grid">
+                            <a href="{{ route('cms.dashboard') }}"><i class="bi bi-grid" aria-hidden="true"></i><span>Dashboard</span></a>
+                            <a href="{{ route('cms.posts.index') }}"><i class="bi bi-file-earmark-text" aria-hidden="true"></i><span>Artikel</span></a>
+                            @can('admin')
+                                <a href="{{ route('cms.products.index') }}"><i class="bi bi-box-seam" aria-hidden="true"></i><span>Produk</span></a>
+                            @endcan
+                            <a href="{{ route('home') }}" target="_blank" rel="noopener noreferrer"><i
+                                    class="bi bi-box-arrow-up-right" aria-hidden="true"></i><span>Lihat situs</span></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <button class="cms-topbar-icon-button" id="cmsNotificationMenuButton" type="button"
+                        data-bs-toggle="dropdown" data-bs-offset="0,8" data-bs-boundary="viewport"
+                        aria-expanded="false" aria-label="Buka notifikasi"
+                        title="Notifikasi">
+                        <x-cms-icon name="bell" />
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end cms-topbar-popover cms-notification-menu"
+                        aria-labelledby="cmsNotificationMenuButton">
+                        <p class="cms-popover-kicker">Notifikasi</p>
+                        <div class="cms-notification-empty">
+                            <span><x-cms-icon name="bell" /></span>
+                            <strong>Belum ada notifikasi</strong>
+                            <small>Pembaruan workflow akan muncul di sini.</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="dropdown cms-account-dropdown">
+                    <button class="cms-topbar-icon-button cms-account-trigger" id="cmsAccountMenuButton"
+                        type="button" data-bs-toggle="dropdown" data-bs-offset="0,8" data-bs-boundary="viewport"
+                        aria-expanded="false" aria-label="Buka menu akun"
+                        title="Akun">
+                        <x-cms-icon name="person-circle" />
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end cms-account-menu"
+                        aria-labelledby="cmsAccountMenuButton">
+                        <div class="cms-account-user">
+                            <span class="cms-account-avatar" aria-hidden="true">{{ $cmsUserInitials }}</span>
+                            <span class="cms-account-identity">
+                                <strong>{{ $cmsUser->name }}</strong>
+                                <small>{{ $cmsUser->email }}</small>
+                            </span>
+                        </div>
+                        <div class="cms-account-actions">
+                            <button class="cms-account-menu-item" type="button" disabled>
+                                <span class="cms-account-menu-icon"><i class="bi bi-person"
+                                        aria-hidden="true"></i></span>
+                                <span class="cms-account-menu-copy">
+                                    <strong>Profil</strong>
+                                    <small>Kelola informasi profil</small>
+                                </span>
+                                <i class="bi bi-chevron-right cms-account-menu-arrow" aria-hidden="true"></i>
+                            </button>
+                            <button class="cms-account-menu-item" type="button" disabled>
+                                <span class="cms-account-menu-icon"><i class="bi bi-clock-history"
+                                        aria-hidden="true"></i></span>
+                                <span class="cms-account-menu-copy">
+                                    <strong>Riwayat</strong>
+                                    <small>Lihat aktivitas editorial</small>
+                                </span>
+                                <i class="bi bi-chevron-right cms-account-menu-arrow" aria-hidden="true"></i>
+                            </button>
+                            <button class="cms-account-menu-item" type="button" disabled>
+                                <span class="cms-account-menu-icon"><i class="bi bi-gear"
+                                        aria-hidden="true"></i></span>
+                                <span class="cms-account-menu-copy">
+                                    <strong>Pengaturan</strong>
+                                    <small>Kelola preferensi akun</small>
+                                </span>
+                                <i class="bi bi-chevron-right cms-account-menu-arrow" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        <div class="cms-account-divider"></div>
+                        <form method="post" action="{{ route('cms.logout') }}">
+                            @csrf
+                            <button class="cms-account-signout" type="submit">
+                                <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
+                                <span>Keluar</span>
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </header>

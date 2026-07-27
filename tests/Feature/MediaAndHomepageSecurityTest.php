@@ -51,6 +51,11 @@ class MediaAndHomepageSecurityTest extends TestCase
         $post->refresh();
         $this->assertSame('Ruang Kerja Modern', $post->cover_image_alt);
         Storage::disk('public')->assertExists($post->cover_image_path);
+        $this->actingAs($author)->get(route('cms.posts.edit', $post))
+            ->assertOk()
+            ->assertSee('Cover tersimpan dan tetap digunakan.')
+            ->assertSee('Ganti cover')
+            ->assertSee('/storage/'.$post->cover_image_path, false);
     }
 
     public function test_upload_rejects_invalid_file(): void

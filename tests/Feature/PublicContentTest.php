@@ -15,9 +15,12 @@ class PublicContentTest extends TestCase
 
     public function test_only_published_articles_are_public_and_searchable(): void
     {
-        $published = Post::create(['title' => 'Ergonomi kantor', 'slug' => 'ergonomi-kantor', 'excerpt' => 'Panduan kursi', 'body_html' => '<p>Aman</p>', 'status' => PostStatus::Published, 'published_at' => now()]);
+        $published = Post::create(['title' => 'Ergonomi kantor', 'slug' => 'ergonomi-kantor', 'excerpt' => 'Panduan kursi', 'body_html' => '<h2>Posisi duduk</h2><p>Aman</p>', 'status' => PostStatus::Published, 'published_at' => now()]);
         $draft = Post::create(['title' => 'Draft', 'slug' => 'draft', 'status' => PostStatus::Draft]);
-        $this->get(route('articles.show', $published))->assertOk();
+        $this->get(route('articles.show', $published))
+            ->assertOk()
+            ->assertSee('data-article-toc', false)
+            ->assertSee('Daftar isi');
         $this->get(route('articles.show', $draft))->assertNotFound();
         $this->get(route('articles.index', ['q' => 'Ergonomi']))->assertSee('Ergonomi kantor');
         $this->get(route('articles.index', ['q' => 'tidak-ada']))->assertDontSee('Ergonomi kantor');

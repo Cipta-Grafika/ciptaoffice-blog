@@ -8,13 +8,27 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
+/**
+ * Handle user authentication sessions (login and logout).
+ */
 class AuthenticatedSessionController extends Controller
 {
+    /**
+     * Display the login view.
+     *
+     * @return \Illuminate\View\View
+     */
     public function create(): View
     {
         return view('auth.login');
     }
 
+    /**
+     * Handle an incoming authentication request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(Request $request): RedirectResponse
     {
         $credentials = $request->validate(['email' => ['required', 'email'], 'password' => ['required', 'string']]);
@@ -31,6 +45,12 @@ class AuthenticatedSessionController extends Controller
         return redirect()->intended(route('cms.dashboard'));
     }
 
+    /**
+     * Destroy an authenticated session (logout).
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function destroy(Request $request): RedirectResponse
     {
         Auth::logout();
