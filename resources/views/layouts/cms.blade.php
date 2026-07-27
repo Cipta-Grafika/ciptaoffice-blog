@@ -17,7 +17,7 @@
     @vite(['resources/scss/app.scss', 'resources/js/app.js'])
 </head>
 
-<body class="cms-body">
+<body class="cms-body" data-app-context="cms" data-cms-page="@yield('cms-page', 'default')">
     @php
         $cmsUser = auth()->user();
         $cmsUserInitials = collect(preg_split('/\s+/', trim($cmsUser->name)))

@@ -10,7 +10,7 @@
     @vite(['resources/scss/app.scss', 'resources/js/app.js'])
 </head>
 
-<body>
+<body data-app-context="auth">
     <main class="auth-shell d-flex align-items-center justify-content-center p-3">
         <div class="auth-card w-100">
             <a class="d-inline-flex align-items-center gap-2 text-decoration-none text-dark mb-5"

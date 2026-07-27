@@ -2,6 +2,8 @@
 
 @section('title', 'Artikel baru')
 
+@section('cms-page', 'posts-form')
+
 @section('content')
     <div class="cms-page cms-page--narrow">
         <a class="cms-back-link" href="{{ route('cms.posts.index') }}"><i class="bi bi-arrow-left"></i> Daftar artikel</a>

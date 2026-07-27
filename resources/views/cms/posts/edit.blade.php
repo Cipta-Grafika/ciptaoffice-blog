@@ -2,6 +2,8 @@
 
 @section('title', 'Edit ' . $post->title)
 
+@section('cms-page', 'posts-form')
+
 @section('content')
     <div class="cms-page">
         <a class="cms-back-link" href="{{ route('cms.posts.index') }}"><i class="bi bi-arrow-left"></i> Daftar artikel</a>
