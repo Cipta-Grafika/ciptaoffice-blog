@@ -41,7 +41,7 @@
             <div class="cms-form-actions"><button class="btn btn-primary" type="submit">Simpan produk</button><a class="btn btn-outline-secondary" href="{{ route('cms.products.index') }}">Batal</a></div>
         </form>
         @if ($product->exists)
-            <form class="cms-danger-action" method="post" action="{{ route('cms.products.destroy', $product) }}" onsubmit="return confirm('Arsipkan produk ini?')">@csrf @method('DELETE')<button class="btn btn-link text-danger px-0">Arsipkan produk</button></form>
+            <form class="cms-danger-action" method="post" action="{{ route('cms.products.destroy', $product) }}" data-cms-confirm-form data-confirm-variant="warning" data-confirm-title="Arsipkan produk?" data-confirm-message="Produk “{{ $product->name }}” tidak akan lagi tampil pada katalog publik." data-confirm-action="Arsipkan produk">@csrf @method('DELETE')<button class="btn btn-link text-danger px-0" type="submit">Arsipkan produk</button></form>
         @endif
     </div>
 @endsection

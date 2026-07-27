@@ -1,10 +1,12 @@
 import { initCmsBackButtons } from '../components/cms/global/back-button';
+import { initCmsConfirmModal } from '../components/cms/global/confirm-modal';
 import { initCmsNavigationSearch } from '../components/cms/global/navigation-search';
 import { initCmsSidebar } from '../components/cms/global/sidebar';
 
 const globalInitializers = [
     initCmsSidebar,
     initCmsBackButtons,
+    initCmsConfirmModal,
     initCmsNavigationSearch,
 ];
 

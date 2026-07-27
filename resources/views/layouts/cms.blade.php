@@ -227,6 +227,7 @@
         @endif
         @yield('content')
     </div>
+    <x-cms-confirm-modal />
 </body>
 
 </html>

@@ -152,9 +152,12 @@
                 @endcan
                 @can('delete', $post)
                     <form class="cms-danger-action" method="post" action="{{ route('cms.posts.destroy', $post) }}"
-                        onsubmit="return confirm('Pindahkan draft ini ke sampah?')">
+                        data-cms-confirm-form data-confirm-variant="danger"
+                        data-confirm-title="Hapus artikel?"
+                        data-confirm-message="Artikel “{{ $post->title }}” akan dipindahkan ke sampah."
+                        data-confirm-action="Pindahkan ke sampah">
                         @csrf @method('DELETE')
-                        <button class="btn btn-link text-danger px-0">Hapus artikel</button>
+                        <button class="btn btn-link text-danger px-0" type="submit">Hapus artikel</button>
                     </form>
                 @endcan
             </aside>

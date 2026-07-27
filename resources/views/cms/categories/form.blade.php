@@ -23,7 +23,7 @@
             <div class="cms-form-actions"><button class="btn btn-primary" type="submit">Simpan kategori</button><a class="btn btn-outline-secondary" href="{{ route('cms.categories.index') }}">Batal</a></div>
         </form>
         @if ($category->exists)
-            <form class="cms-danger-action" method="post" action="{{ route('cms.categories.destroy', $category) }}" onsubmit="return confirm('Hapus kategori ini?')">@csrf @method('DELETE')<button class="btn btn-link text-danger px-0">Hapus kategori</button></form>
+            <form class="cms-danger-action" method="post" action="{{ route('cms.categories.destroy', $category) }}" data-cms-confirm-form data-confirm-variant="danger" data-confirm-title="Hapus kategori?" data-confirm-message="Kategori “{{ $category->name }}” akan dihapus dari struktur katalog." data-confirm-action="Hapus kategori">@csrf @method('DELETE')<button class="btn btn-link text-danger px-0" type="submit">Hapus kategori</button></form>
         @endif
     </div>
 @endsection

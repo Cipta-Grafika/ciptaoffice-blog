@@ -1,3 +1,5 @@
+@use 'cms-confirm-modal';
+
 $primary: #173e36;
 $secondary: #a47e4f;
 $success: #2f6b54;
@@ -292,7 +294,12 @@ a { text-underline-offset: .2em; }
 .cms-body .form-text { color:#7a8480; font-size:.65rem; line-height:1.5; }
 .cms-body .form-check-label,.cms-body label.form-check { color:#46514d; font-size:.76rem; }
 .cms-form-actions { display:flex; flex-wrap:wrap; align-items:center; gap:.6rem; padding:1rem clamp(1.25rem,2.5vw,2rem); background:rgba(247,243,235,.55); border-top:1px solid rgba(23,32,30,.1); }
-.cms-form-actions .btn { min-height:2.55rem; padding-inline:1.1rem; font-size:.75rem; }
+.cms-form-actions .btn { display:inline-flex; min-height:2.65rem; align-items:center; justify-content:center; gap:.42rem; padding:.62rem 1.15rem; border-radius:.4rem; font-size:.73rem; font-weight:700; line-height:1.2; text-align:center; white-space:normal; transition:color .2s ease,background-color .2s ease,border-color .2s ease,box-shadow .2s ease,transform .2s ease; }
+.cms-form-actions .btn i { flex:0 0 auto; font-size:.78rem; line-height:1; }
+.cms-form-actions .btn-primary { box-shadow:0 8px 18px rgba(23,62,54,.12); }
+.cms-form-actions .btn-primary:hover { box-shadow:0 10px 22px rgba(23,62,54,.17); transform:translateY(-1px); }
+.cms-form-actions .btn-outline-secondary { color:#70583b; background:rgba(255,253,248,.4); border-color:rgba(164,126,79,.7); }
+.cms-form-actions .btn-outline-secondary:hover { color:#fff; background:var(--brass); border-color:var(--brass); }
 .cms-danger-action { display:flex; justify-content:flex-end; }
 .cms-back-link { display:inline-flex; align-items:center; gap:.4rem; color:var(--forest); font-size:.67rem; font-weight:700; letter-spacing:.08em; text-decoration:none; text-transform:uppercase; }
 .cms-back-link i { transition:transform .2s ease; }

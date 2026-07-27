@@ -29,7 +29,7 @@
             <div class="cms-form-actions"><button class="btn btn-primary" type="submit">Simpan pengguna</button><a class="btn btn-outline-secondary" href="{{ route('cms.users.index') }}">Batal</a></div>
         </form>
         @if ($user->exists && !$user->is(auth()->user()))
-            <form class="cms-danger-action" method="post" action="{{ route('cms.users.destroy', $user) }}" onsubmit="return confirm('Hapus akun ini?')">@csrf @method('DELETE')<button class="btn btn-link text-danger px-0">Hapus pengguna</button></form>
+            <form class="cms-danger-action" method="post" action="{{ route('cms.users.destroy', $user) }}" data-cms-confirm-form data-confirm-variant="danger" data-confirm-title="Hapus pengguna?" data-confirm-message="Akun “{{ $user->name }}” akan kehilangan akses ke CMS." data-confirm-action="Hapus pengguna">@csrf @method('DELETE')<button class="btn btn-link text-danger px-0" type="submit">Hapus pengguna</button></form>
         @endif
     </div>
 @endsection

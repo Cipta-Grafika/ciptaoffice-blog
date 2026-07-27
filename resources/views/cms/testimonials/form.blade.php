@@ -33,7 +33,7 @@
             <div class="cms-form-actions"><button class="btn btn-primary" type="submit">Simpan testimonial</button><a class="btn btn-outline-secondary" href="{{ route('cms.testimonials.index') }}">Batal</a></div>
         </form>
         @if ($testimonial->exists)
-            <form class="cms-danger-action" method="post" action="{{ route('cms.testimonials.destroy', $testimonial) }}" onsubmit="return confirm('Hapus testimonial ini?')">@csrf @method('DELETE')<button class="btn btn-link text-danger px-0">Hapus testimonial</button></form>
+            <form class="cms-danger-action" method="post" action="{{ route('cms.testimonials.destroy', $testimonial) }}" data-cms-confirm-form data-confirm-variant="danger" data-confirm-title="Hapus testimonial?" data-confirm-message="Testimonial “{{ $testimonial->name }}” akan dihapus dari CMS." data-confirm-action="Hapus testimonial">@csrf @method('DELETE')<button class="btn btn-link text-danger px-0" type="submit">Hapus testimonial</button></form>
         @endif
     </div>
 @endsection
