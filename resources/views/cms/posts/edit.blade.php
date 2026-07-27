@@ -94,6 +94,11 @@
                                 judul artikel.</div>
                         </div>
                     </div>
+                    <div class="form-text mt-3 mb-0">
+                        <i class="bi bi-info-circle me-1"></i>
+                        <strong>Rekomendasi resolusi:</strong> 1280 × 640 piksel (rasio 2:1) atau 1280 × 720 piksel (rasio
+                        16:9) dengan orientasi horizontal/landscape.
+                    </div>
                 </section>
                 <section class="cms-form-section">
                     <div class="cms-form-section-heading">
@@ -152,8 +157,7 @@
                 @endcan
                 @can('delete', $post)
                     <form class="cms-danger-action" method="post" action="{{ route('cms.posts.destroy', $post) }}"
-                        data-cms-confirm-form data-confirm-variant="danger"
-                        data-confirm-title="Hapus artikel?"
+                        data-cms-confirm-form data-confirm-variant="danger" data-confirm-title="Hapus artikel?"
                         data-confirm-message="Artikel “{{ $post->title }}” akan dipindahkan ke sampah."
                         data-confirm-action="Pindahkan ke sampah">
                         @csrf @method('DELETE')
