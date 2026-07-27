@@ -6,24 +6,33 @@
 
 @section('content')
     <div class="cms-page">
-        <a class="cms-back-link" href="{{ route('cms.posts.index') }}"><i class="bi bi-arrow-left"></i> Daftar artikel</a>
+        <a class="cms-back-link" href="{{ route('cms.posts.index') }}">
+            <i class="bi bi-arrow-left"></i> Daftar artikel
+        </a>
         <x-cms-page-header eyebrow="Editor artikel" :title="$post->title"
             description="Perbarui naskah, visual, dan status artikel sebelum dipublikasikan.">
             <x-slot:actions>
                 <a class="btn btn-outline-dark" href="{{ route('cms.posts.preview', $post) }}" target="_blank"
-                    rel="noopener noreferrer"><i class="bi bi-eye"></i><span
-                        class="cms-action-label--compact">Preview</span></a>
+                    rel="noopener noreferrer"><i class="bi bi-eye"></i>
+                    <span class="cms-action-label--compact">Preview</span>
+                </a>
                 @can('submit', $post)
-                    <form method="post" action="{{ route('cms.posts.submit', $post) }}">@csrf<button class="btn btn-warning"
-                            type="submit">Ajukan review</button></form>
+                    <form method="post" action="{{ route('cms.posts.submit', $post) }}">
+                        @csrf
+                        <button class="btn btn-warning" type="submit">Ajukan review</button>
+                    </form>
                 @endcan
                 @can('admin')
                     @if ($post->status !== \App\Enums\PostStatus::Published)
-                        <form method="post" action="{{ route('cms.posts.publish', $post) }}">@csrf<button
-                                class="btn btn-success" type="submit">Terbitkan</button></form>
+                        <form method="post" action="{{ route('cms.posts.publish', $post) }}">
+                            @csrf
+                            <button class="btn btn-success" type="submit">Terbitkan</button>
+                        </form>
                     @else
-                        <form method="post" action="{{ route('cms.posts.archive', $post) }}">@csrf<button
-                                class="btn btn-outline-dark" type="submit">Arsipkan</button></form>
+                        <form method="post" action="{{ route('cms.posts.archive', $post) }}">
+                            @csrf
+                            <button class="btn btn-outline-dark" type="submit">Arsipkan</button>
+                        </form>
                     @endif
                 @endcan
             </x-slot:actions>
@@ -95,8 +104,11 @@
                     <div data-quill data-input="#body_html" data-upload-url="{{ route('cms.posts.media.store', $post) }}">
                     </div>
                 </section>
-                <div class="cms-form-actions"><button class="btn btn-primary" type="submit"><i class="bi bi-check2"></i>
-                        Simpan perubahan</button></div>
+                <div class="cms-form-actions">
+                    <button class="btn btn-primary" type="submit"><i class="bi bi-check2"></i>
+                        Simpan perubahan
+                    </button>
+                </div>
             </form>
 
             <aside class="cms-editor-aside">
@@ -122,23 +134,28 @@
                 </section>
                 @can('admin')
                     @if ($post->status === \App\Enums\PostStatus::PendingReview)
-                        <form class="cms-form-surface" method="post" action="{{ route('cms.posts.return', $post) }}">@csrf
+                        <form class="cms-form-surface" method="post" action="{{ route('cms.posts.return', $post) }}">
+                            @csrf
                             <div class="cms-form-section">
                                 <div class="cms-form-section-heading">
                                     <h2>Kembalikan ke author</h2>
                                     <p>Sertakan alasan yang dapat ditindaklanjuti.</p>
-                                </div><label class="form-label" for="review_note">Catatan wajib</label>
+                                </div>
+                                <label class="form-label" for="review_note">Catatan wajib</label>
                                 <textarea class="form-control" id="review_note" name="review_note" rows="4" required></textarea>
                             </div>
-                            <div class="cms-form-actions"><button class="btn btn-outline-danger"
-                                    type="submit">Kembalikan</button></div>
+                            <div class="cms-form-actions">
+                                <button class="btn btn-outline-danger" type="submit">Kembalikan</button>
+                            </div>
                         </form>
                     @endif
                 @endcan
                 @can('delete', $post)
                     <form class="cms-danger-action" method="post" action="{{ route('cms.posts.destroy', $post) }}"
-                        onsubmit="return confirm('Pindahkan draft ini ke sampah?')">@csrf @method('DELETE')<button
-                            class="btn btn-link text-danger px-0">Hapus artikel</button></form>
+                        onsubmit="return confirm('Pindahkan draft ini ke sampah?')">
+                        @csrf @method('DELETE')
+                        <button class="btn btn-link text-danger px-0">Hapus artikel</button>
+                    </form>
                 @endcan
             </aside>
         </div>
