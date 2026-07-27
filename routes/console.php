@@ -6,6 +6,12 @@ use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\Schedule;
 use Illuminate\Support\Facades\Storage;
 
+/**
+ * Clean up orphaned post media files and prune empty directories.
+ *
+ * This command removes post media files that are no longer referenced in any post
+ * and prunes empty directories created during the upload process.
+ */
 Schedule::call(function (): void {
     /** @var FilesystemAdapter $disk */
     $disk = Storage::disk('public');
