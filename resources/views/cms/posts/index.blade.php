@@ -14,23 +14,25 @@
         </x-cms-page-header>
 
         <section class="cms-surface" aria-label="Daftar artikel">
-            <div class="cms-list-toolbar">
-                <form class="cms-filter-form" method="get">
-                    <select class="form-select" name="status" aria-label="Filter status artikel">
-                        <option value="">Semua status</option>
-                        @foreach ($statuses as $status)
-                            <option value="{{ $status->value }}" @selected(request('status') === $status->value)>{{ $status->label() }}
-                            </option>
-                        @endforeach
-                    </select>
-                    <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-funnel" aria-hidden="true"></i>
-                        Filter</button>
-                </form>
-                <p class="cms-record-count mb-0">{{ $posts->total() }} artikel ditemukan</p>
-            </div>
-            <x-cms-table :paginator="$posts" :column-count="auth()->user()->can('admin') ? 5 : 4" :empty="$posts->isEmpty()"
+            <x-cms-table kicker="Daftar artikel" record-label="artikel" :paginator="$posts"
+                :column-count="auth()->user()->can('admin') ? 5 : 4" :empty="$posts->isEmpty()"
                 empty-icon="file-earmark-text" empty-title="Belum ada artikel"
                 empty-description="Mulai alur editorial dengan membuat draft pertama.">
+                <x-slot:filters>
+                    <form class="cms-filter-form" method="get">
+                        <select class="form-select form-select-sm" name="status" aria-label="Filter status artikel">
+                            <option value="">Semua status</option>
+                            @foreach ($statuses as $status)
+                                <option value="{{ $status->value }}" @selected(request('status') === $status->value)>
+                                    {{ $status->label() }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <button class="btn btn-sm btn-outline-secondary" type="submit">
+                            <i class="bi bi-funnel" aria-hidden="true"></i> Filter
+                        </button>
+                    </form>
+                </x-slot:filters>
                 <x-slot:head>
                     <th>Artikel</th>
                     @can('admin')

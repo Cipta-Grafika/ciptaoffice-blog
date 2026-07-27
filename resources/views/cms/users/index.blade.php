@@ -9,8 +9,7 @@
             <x-slot:actions><a class="btn btn-primary" href="{{ route('cms.users.create') }}"><i class="bi bi-person-plus"></i><span class="cms-action-label--compact">Tambah pengguna</span></a></x-slot:actions>
         </x-cms-page-header>
         <section class="cms-surface" aria-label="Daftar pengguna">
-            <div class="cms-list-toolbar"><p class="cms-surface-kicker mb-0">Tim editorial</p><p class="cms-record-count mb-0">{{ $users->total() }} pengguna</p></div>
-            <x-cms-table :paginator="$users" :column-count="4" :empty="$users->isEmpty()" empty-icon="people"
+            <x-cms-table kicker="Tim editorial" record-label="pengguna" :paginator="$users" :column-count="4" :empty="$users->isEmpty()" empty-icon="people"
                 empty-title="Belum ada pengguna" empty-description="Tambahkan anggota tim untuk memberi akses CMS.">
                 <x-slot:head>
                     <th>Nama</th>

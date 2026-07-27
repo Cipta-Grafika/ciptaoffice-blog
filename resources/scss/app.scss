@@ -247,11 +247,12 @@ a { text-underline-offset: .2em; }
 .cms-surface-kicker { color:var(--brass); font-size:.61rem; font-weight:700; letter-spacing:.15em; text-transform:uppercase; }
 .cms-surface-title { color:var(--ink); font-family:'Cormorant Garamond',serif; font-size:1.45rem; font-weight:600; line-height:1; }
 .cms-surface-body { padding:clamp(1.25rem,2.5vw,2rem); }
-.cms-list-toolbar { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:.75rem; padding:1rem 1.15rem; background:rgba(255,253,248,.65); border-bottom:1px solid rgba(23,32,30,.1); }
+.cms-list-toolbar { display:flex; min-height:3.5rem; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:.65rem; padding:.625rem .9rem; background:rgba(255,253,248,.65); border-bottom:1px solid rgba(23,32,30,.1); }
+.cms-filter-tool { display:flex; align-items:center; justify-content:flex-end; margin-left:auto; }
 .cms-filter-form { display:flex; flex-wrap:wrap; gap:.5rem; }
 .cms-filter-form .form-select { width:auto; min-width:12rem; }
-.cms-filter-form .btn { min-height:2.4rem; font-size:.73rem; }
-.cms-record-count { color:var(--muted); font-size:.68rem; }
+.cms-filter-form .btn { min-height:0; }
+.cms-record-count { margin:0; color:var(--muted); font-size:.68rem; line-height:1.45; }
 .cms-table { --bs-table-bg:transparent; --bs-table-hover-bg:rgba(23,62,54,.025); color:#394440; }
 .cms-table thead th { padding:.8rem 1rem; color:#78817e; background:rgba(23,32,30,.025); border-bottom-color:rgba(23,32,30,.1); font-size:.61rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; white-space:nowrap; }
 .cms-table tbody td { padding:1rem; border-bottom-color:rgba(23,32,30,.08); font-size:.76rem; vertical-align:middle; }
@@ -274,7 +275,10 @@ a { text-underline-offset: .2em; }
 .cms-empty-state { display:grid; min-height:15rem; padding:2rem; place-items:center; align-content:center; color:var(--muted); text-align:center; }
 .cms-empty-state-icon { display:grid; width:3rem; height:3rem; margin-bottom:.85rem; place-items:center; color:var(--brass); background:rgba(164,126,79,.1); border:1px solid rgba(164,126,79,.2); border-radius:50%; }
 .cms-empty-state h2 { color:var(--ink); font-family:'Cormorant Garamond',serif; font-size:1.5rem; }
-.cms-pagination { display:flex; justify-content:flex-end; }
+.cms-table-footer { display:flex; min-height:3.5rem; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:.65rem 1.25rem; padding:.55rem .9rem; background:rgba(255,253,248,.65); border-top:1px solid rgba(23,32,30,.1); }
+.cms-pagination { display:flex; margin-left:auto; justify-content:flex-end; }
+.cms-pagination--sm .pagination { --bs-pagination-padding-x:.5rem; --bs-pagination-padding-y:.25rem; --bs-pagination-font-size:.875rem; --bs-pagination-border-radius:var(--bs-border-radius-sm); margin-bottom:0; }
+.cms-pagination--sm .page-link { min-width:2rem; text-align:center; }
 .cms-form-surface { overflow:hidden; background:rgba(255,255,255,.84); border:1px solid rgba(23,32,30,.1); border-top:3px solid var(--brass); box-shadow:0 14px 38px rgba(23,32,30,.05); }
 .cms-form-section { padding:clamp(1.25rem,2.5vw,2rem); }
 .cms-form-section + .cms-form-section { border-top:1px solid rgba(23,32,30,.1); }
@@ -282,6 +286,7 @@ a { text-underline-offset: .2em; }
 .cms-form-section-heading h2 { margin:0; color:var(--ink); font-family:'Cormorant Garamond',serif; font-size:1.45rem; font-weight:600; line-height:1; }
 .cms-form-section-heading p { max-width:29rem; margin:0; color:var(--muted); font-size:.68rem; line-height:1.55; text-align:right; }
 .cms-body .form-control,.cms-body .form-select { min-height:2.75rem; color:var(--ink); background:#faf9f5; border-color:rgba(23,32,30,.14); font-size:.8rem; }
+.cms-body .cms-filter-form .form-select { min-height:0; font-size:.875rem; }
 .cms-body textarea.form-control { min-height:auto; line-height:1.65; }
 .cms-body .form-control:focus,.cms-body .form-select:focus { background:#fff; }
 .cms-body .form-text { color:#7a8480; font-size:.65rem; line-height:1.5; }
@@ -423,10 +428,12 @@ a { text-underline-offset: .2em; }
     .cms-page-description { font-size:.72rem; }
     .cms-page-actions .btn { min-width:2.55rem; padding-inline:.75rem; justify-content:center; }
     .cms-page-actions .cms-action-label--compact { display:none; }
-    .cms-list-toolbar { align-items:stretch; padding:.8rem; }
+    .cms-list-toolbar { min-height:auto; align-items:center; padding:.55rem .7rem; }
+    .cms-filter-tool { flex:1 1 auto; }
     .cms-filter-form { flex:1 1 100%; }
     .cms-filter-form .form-select { flex:1 1 auto; width:1%; min-width:0; }
-    .cms-record-count { display:none; }
+    .cms-record-count { display:block; }
+    .cms-table-footer { min-height:auto; padding:.5rem .7rem; }
     .cms-table { min-width:42rem; }
     .cms-table thead th,.cms-table tbody td { padding:.8rem; }
     .cms-form-section-heading { display:block; }

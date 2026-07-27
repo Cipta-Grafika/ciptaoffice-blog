@@ -9,8 +9,7 @@
             <x-slot:actions><a class="btn btn-primary" href="{{ route('cms.products.create') }}"><i class="bi bi-plus-lg"></i><span class="cms-action-label--compact">Tambah produk</span></a></x-slot:actions>
         </x-cms-page-header>
         <section class="cms-surface" aria-label="Daftar produk">
-            <div class="cms-list-toolbar"><p class="cms-surface-kicker mb-0">Katalog produk</p><p class="cms-record-count mb-0">{{ $products->total() }} produk</p></div>
-            <x-cms-table :paginator="$products" :column-count="5" :empty="$products->isEmpty()" empty-icon="box-seam"
+            <x-cms-table kicker="Katalog produk" record-label="produk" :paginator="$products" :column-count="5" :empty="$products->isEmpty()" empty-icon="box-seam"
                 empty-title="Belum ada produk" empty-description="Tambahkan produk pertama ke katalog.">
                 <x-slot:head>
                     <th>Produk</th>

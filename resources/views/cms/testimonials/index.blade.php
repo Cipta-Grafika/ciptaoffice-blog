@@ -9,8 +9,7 @@
             <x-slot:actions><a class="btn btn-primary" href="{{ route('cms.testimonials.create') }}"><i class="bi bi-plus-lg"></i><span class="cms-action-label--compact">Tambah testimonial</span></a></x-slot:actions>
         </x-cms-page-header>
         <section class="cms-surface" aria-label="Daftar testimonial">
-            <div class="cms-list-toolbar"><p class="cms-surface-kicker mb-0">Kutipan pelanggan</p><p class="cms-record-count mb-0">{{ $testimonials->total() }} testimonial</p></div>
-            <x-cms-table :paginator="$testimonials" :column-count="5" :empty="$testimonials->isEmpty()" empty-icon="chat-quote"
+            <x-cms-table kicker="Kutipan pelanggan" record-label="testimonial" :paginator="$testimonials" :column-count="5" :empty="$testimonials->isEmpty()" empty-icon="chat-quote"
                 empty-title="Belum ada testimonial" empty-description="Tambahkan pengalaman pelanggan pertama.">
                 <x-slot:head>
                     <th>Nama</th>

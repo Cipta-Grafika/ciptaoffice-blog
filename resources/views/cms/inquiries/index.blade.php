@@ -7,8 +7,7 @@
         <x-cms-page-header eyebrow="Permintaan pelanggan" title="Inquiry"
             description="Pantau kebutuhan yang masuk dan pastikan setiap calon pelanggan mendapat tindak lanjut." />
         <section class="cms-surface" aria-label="Daftar inquiry">
-            <div class="cms-list-toolbar"><p class="cms-surface-kicker mb-0">Kotak masuk</p><p class="cms-record-count mb-0">{{ $inquiries->total() }} inquiry</p></div>
-            <x-cms-table :paginator="$inquiries" :column-count="5" :empty="$inquiries->isEmpty()" empty-icon="inbox"
+            <x-cms-table kicker="Kotak masuk" record-label="inquiry" :paginator="$inquiries" :column-count="5" :empty="$inquiries->isEmpty()" empty-icon="inbox"
                 empty-title="Belum ada inquiry" empty-description="Permintaan pelanggan baru akan muncul di sini.">
                 <x-slot:head>
                     <th>Kontak</th>
