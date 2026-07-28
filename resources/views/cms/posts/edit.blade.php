@@ -56,10 +56,15 @@
                         <h2>Informasi artikel</h2>
                         <p>Judul dan ringkasan tampil pada halaman daftar serta metadata artikel.</p>
                     </div>
-                    <div class="mb-3"><label class="form-label" for="title">Judul</label><input class="form-control"
-                            id="title" name="title" value="{{ old('title', $post->title) }}" required></div>
-                    <div><label class="form-label" for="excerpt">Ringkasan</label>
-                        <textarea class="form-control" id="excerpt" name="excerpt" rows="3" maxlength="500" required>{{ old('excerpt', $post->excerpt) }}</textarea>
+                    <div class="mb-3">
+                        <label class="form-label" for="title">Judul</label>
+                        <input class="form-control @error('title') is-invalid @enderror" id="title" name="title" value="{{ old('title', $post->title) }}" required>
+                        @error('title')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                    <div>
+                        <label class="form-label" for="excerpt">Ringkasan</label>
+                        <textarea class="form-control @error('excerpt') is-invalid @enderror" id="excerpt" name="excerpt" rows="3" maxlength="500" required>{{ old('excerpt', $post->excerpt) }}</textarea>
+                        @error('excerpt')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                 </section>
                 <section class="cms-form-section">
@@ -82,9 +87,10 @@
                             <p class="small text-muted mt-1 mb-3">
                                 {{ $post->cover_image_path ? 'Pilih file baru untuk mengganti cover.' : 'Pilih gambar cover untuk artikel ini.' }}
                             </p>
-                            <input class="visually-hidden" type="file" id="cover_image" name="cover_image"
+                            <input class="visually-hidden @error('cover_image') is-invalid @enderror" type="file" id="cover_image" name="cover_image"
                                 accept="image/jpeg,image/png,image/webp" data-cover-input
                                 aria-describedby="cover_image_name cover_image_help">
+                            @error('cover_image')<div class="invalid-feedback d-block mb-2">{{ $message }}</div>@enderror
                             <div class="d-flex flex-wrap align-items-center gap-2"><label
                                     class="btn btn-sm btn-outline-dark mb-0" for="cover_image"><i
                                         class="bi bi-upload me-1"></i>{{ $post->cover_image_path ? 'Ganti cover' : 'Pilih cover' }}</label><span
@@ -105,7 +111,8 @@
                         <h2>Isi artikel</h2>
                         <p>Alt text gambar inline dibuat otomatis; maksimum 4 MB per gambar.</p>
                     </div>
-                    <input type="hidden" id="body_html" name="body_html" value="{{ old('body_html', $post->body_html) }}">
+                    <input type="hidden" id="body_html" name="body_html" class="@error('body_html') is-invalid @enderror" value="{{ old('body_html', $post->body_html) }}">
+                    @error('body_html')<div class="invalid-feedback d-block mb-2">{{ $message }}</div>@enderror
                     <div data-quill data-input="#body_html" data-upload-url="{{ route('cms.posts.media.store', $post) }}">
                     </div>
                 </section>
@@ -147,7 +154,8 @@
                                     <p>Sertakan alasan yang dapat ditindaklanjuti.</p>
                                 </div>
                                 <label class="form-label" for="review_note">Catatan wajib</label>
-                                <textarea class="form-control" id="review_note" name="review_note" rows="4" required></textarea>
+                                <textarea class="form-control @error('review_note') is-invalid @enderror" id="review_note" name="review_note" rows="4" required></textarea>
+                                @error('review_note')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                             <div class="cms-form-actions">
                                 <button class="btn btn-outline-danger" type="submit">Kembalikan</button>
