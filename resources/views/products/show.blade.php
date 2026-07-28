@@ -10,10 +10,7 @@
                     <p class="section-kicker">{{ $product->category->name }}</p>
                     <h1 class="page-title">{{ $product->name }}</h1>
                     <p class="lead text-muted mt-4">{{ $product->summary }}</p>
-                    <div class="d-flex flex-wrap gap-2 mt-4"><a class="btn btn-primary btn-lg" href="{{ $whatsapp }}"
-                            target="_blank" rel="noopener noreferrer"><i class="bi bi-whatsapp me-2"></i>Tanyakan
-                            ketersediaan</a><a class="btn btn-outline-dark btn-lg"
-                            href="{{ route('contact.create', ['product' => $product->id]) }}">Kirim inquiry</a></div>
+                    <div class="d-flex flex-wrap gap-2 mt-4"><a class="btn btn-primary btn-lg" href="{{ $whatsapp }}" target="_blank" rel="noopener noreferrer"><i class="bi bi-whatsapp me-2"></i>Tanyakan ketersediaan</a><a class="btn btn-outline-dark btn-lg" href="{{ route('contact.create', ['product' => $product->id]) }}">Kirim inquiry</a></div>
                 </div>
                 <div class="col-lg-6">
                     <div class="card-visual" style="height:30rem">
