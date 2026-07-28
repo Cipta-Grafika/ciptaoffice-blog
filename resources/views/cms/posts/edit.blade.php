@@ -91,11 +91,16 @@
                                 accept="image/jpeg,image/png,image/webp" data-cover-input
                                 aria-describedby="cover_image_name cover_image_help">
                             @error('cover_image')<div class="invalid-feedback d-block mb-2">{{ $message }}</div>@enderror
-                            <div class="d-flex flex-wrap align-items-center gap-2"><label
-                                    class="btn btn-sm btn-outline-dark mb-0" for="cover_image"><i
-                                        class="bi bi-upload me-1"></i>{{ $post->cover_image_path ? 'Ganti cover' : 'Pilih cover' }}</label><span
-                                    class="small text-muted text-break" id="cover_image_name" data-cover-filename
-                                    aria-live="polite">Tidak ada file baru dipilih.</span></div>
+                            <input type="hidden" name="remove_cover_image" value="0" data-cover-remove-input>
+                            <div class="d-flex flex-wrap align-items-center gap-2">
+                                <label class="btn btn-sm btn-outline-dark mb-0" for="cover_image">
+                                    <i class="bi bi-upload me-1"></i>{{ $post->cover_image_path ? 'Ganti cover' : 'Pilih cover' }}
+                                </label>
+                                <button type="button" class="btn btn-sm btn-outline-danger mb-0 {{ $post->cover_image_path ? '' : 'd-none' }}" data-cover-remove aria-label="Hapus cover" title="Hapus cover">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                                <span class="small text-muted text-break" id="cover_image_name" data-cover-filename aria-live="polite">Tidak ada file baru dipilih.</span>
+                            </div>
                             <div class="form-text" id="cover_image_help">JPEG, PNG, atau WebP. Alt text dibuat otomatis dari
                                 judul artikel.</div>
                         </div>

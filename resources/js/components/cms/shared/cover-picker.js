@@ -5,8 +5,24 @@ export function initCoverPickers(root = document) {
         const placeholder = picker.querySelector('[data-cover-placeholder]');
         const filename = picker.querySelector('[data-cover-filename]');
         const status = picker.querySelector('[data-cover-status]');
+        const removeBtn = picker.querySelector('[data-cover-remove]');
+        const removeInput = picker.querySelector('[data-cover-remove-input]');
+        
         if (!input || !preview || !filename || !status) return;
         let previewUrl;
+
+        removeBtn?.addEventListener('click', () => {
+            input.value = '';
+            if (previewUrl) URL.revokeObjectURL(previewUrl);
+            previewUrl = undefined;
+            
+            preview.classList.add('d-none');
+            placeholder?.classList.remove('d-none');
+            filename.textContent = 'Tidak ada file dipilih.';
+            status.textContent = 'Cover akan dihapus saat disimpan.';
+            removeBtn.classList.add('d-none');
+            if (removeInput) removeInput.value = '1';
+        });
 
         input?.addEventListener('change', () => {
             const file = input.files?.[0];
@@ -15,10 +31,15 @@ export function initCoverPickers(root = document) {
             if (!file) {
                 previewUrl = undefined;
                 preview.src = preview.dataset.currentSrc || '';
-                preview.classList.toggle('d-none', !preview.dataset.currentSrc);
-                placeholder?.classList.toggle('d-none', Boolean(preview.dataset.currentSrc));
+                
+                const hasOriginalCover = Boolean(preview.dataset.currentSrc);
+                preview.classList.toggle('d-none', !hasOriginalCover);
+                placeholder?.classList.toggle('d-none', hasOriginalCover);
                 filename.textContent = 'Tidak ada file baru dipilih.';
                 status.textContent = status.dataset.currentStatus;
+                
+                removeBtn?.classList.toggle('d-none', !hasOriginalCover);
+                if (removeInput) removeInput.value = '0';
                 return;
             }
 
@@ -29,6 +50,9 @@ export function initCoverPickers(root = document) {
             placeholder?.classList.add('d-none');
             filename.textContent = file.name;
             status.textContent = 'Cover baru siap disimpan.';
+            
+            removeBtn?.classList.remove('d-none');
+            if (removeInput) removeInput.value = '0';
         });
     });
 }

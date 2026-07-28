@@ -64,15 +64,24 @@ class PostController extends Controller
 
     public function update(UpdatePostRequest $request, Post $post, HtmlSanitizer $sanitizer): RedirectResponse
     {
-        $data = $request->safe()->except('cover_image');
+        $data = $request->safe()->except(['cover_image', 'remove_cover_image']);
         $data['body_html'] = $sanitizer->clean($data['body_html']);
-        if ($request->hasFile('cover_image')) {
+        if ($request->boolean('remove_cover_image')) {
             if ($post->cover_image_path) {
                 Storage::disk('public')->delete($post->cover_image_path);
-            } $data['cover_image_path'] = $request->file('cover_image')->store('articles/covers', 'public');
-        }
-        if ($request->hasFile('cover_image') || $post->cover_image_path) {
-            $data['cover_image_alt'] = $data['title'];
+            }
+            $data['cover_image_path'] = null;
+            $data['cover_image_alt'] = null;
+        } else {
+            if ($request->hasFile('cover_image')) {
+                if ($post->cover_image_path) {
+                    Storage::disk('public')->delete($post->cover_image_path);
+                }
+                $data['cover_image_path'] = $request->file('cover_image')->store('articles/covers', 'public');
+            }
+            if ($request->hasFile('cover_image') || $post->cover_image_path) {
+                $data['cover_image_alt'] = $data['title'];
+            }
         }
         $post->update($data);
         $this->cleanUnusedMedia($post);
