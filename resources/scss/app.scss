@@ -291,6 +291,9 @@ a { text-underline-offset: .2em; }
 .cms-body .cms-filter-form .form-select { min-height:0; font-size:.875rem; }
 .cms-body textarea.form-control { min-height:auto; line-height:1.65; }
 .cms-body .form-control:focus,.cms-body .form-select:focus { background:#fff; }
+.cms-body input[type="file"].form-control { color:var(--muted); line-height:2; }
+.cms-body input[type="file"].form-control::file-selector-button { margin:-.375rem 1rem -.375rem -.75rem; padding:0 1.25rem; min-height:calc(2.75rem - 2px); color:var(--ink); background:rgba(23,32,30,.05); border:none; border-right:1px solid rgba(23,32,30,.14); font-family:'Manrope',sans-serif; font-weight:600; font-size:.75rem; cursor:pointer; transition:background-color .25s ease,color .25s ease,border-color .25s ease; }
+.cms-body input[type="file"].form-control:hover::file-selector-button { background-color:var(--forest); color:#fff; border-right-color:var(--forest); }
 .cms-body .form-text { color:#7a8480; font-size:.65rem; line-height:1.5; }
 .cms-body .form-check-label,.cms-body label.form-check { color:#46514d; font-size:.76rem; }
 .cms-form-actions { display:flex; flex-wrap:wrap; align-items:center; gap:.6rem; padding:1rem clamp(1.25rem,2.5vw,2rem); background:rgba(247,243,235,.55); border-top:1px solid rgba(23,32,30,.1); }
