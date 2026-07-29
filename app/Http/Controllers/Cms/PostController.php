@@ -26,7 +26,10 @@ class PostController extends Controller
             $query->where('status', $request->string('status'));
         }
 
-        return view('cms.posts.index', ['posts' => $query->paginate(15)->withQueryString(), 'statuses' => PostStatus::cases()]);
+        return view('cms.posts.index', [
+            'posts' => $query->paginate(15)->withQueryString(),
+            'statuses' => PostStatus::cases()
+        ]);
     }
 
     public function create(): View
@@ -106,13 +109,16 @@ class PostController extends Controller
             $slug = $base.'-'.$i++;
         }
 
-return $slug;
+        return $slug;
     }
 
     private function cleanUnusedMedia(Post $post): void
     {
         $post->media()->get()->each(function ($media) use ($post) {
-            if (! str_contains($post->body_html ?? '', Storage::disk('public')->url($media->path))) {
+            /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+            $disk = Storage::disk('public');
+
+            if (! str_contains($post->body_html ?? '', $disk->url($media->path))) {
                 $media->delete();
             }
         });

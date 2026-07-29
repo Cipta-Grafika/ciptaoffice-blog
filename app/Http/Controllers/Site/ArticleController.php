@@ -12,7 +12,12 @@ class ArticleController extends Controller
     public function index(Request $request): View
     {
         $q = trim((string) $request->query('q'));
-        $posts = Post::published()->with('author')->when($q, fn ($query) => $query->where(fn ($sub) => $sub->where('title', 'like', '%'.$q.'%')->orWhere('excerpt', 'like', '%'.$q.'%')))->latest('published_at')->paginate(9)->withQueryString();
+        $posts = Post::published()
+            ->with('author')
+            ->when($q, fn ($query) => $query->where(fn ($sub) => $sub->where('title', 'like', '%'.$q.'%')->orWhere('excerpt', 'like', '%'.$q.'%')))
+            ->latest('published_at')
+            ->paginate(9)
+            ->withQueryString();
 
         return view('articles.index', compact('posts', 'q'));
     }
