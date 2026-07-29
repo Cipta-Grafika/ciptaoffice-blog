@@ -46,7 +46,7 @@
         </header>
         @if ($post->cover_image_path)
             <div class="container mt-4"><img class="w-100" style="max-height:38rem;object-fit:cover"
-                    src="{{ Storage::disk('public')->url($post->cover_image_path) }}" alt="{{ $post->cover_image_alt }}">
+                    src="{{ asset('storage/' . $post->cover_image_path) }}" alt="{{ $post->cover_image_alt }}">
             </div>
         @endif
         <div class="section-space section-space--compact-top">
