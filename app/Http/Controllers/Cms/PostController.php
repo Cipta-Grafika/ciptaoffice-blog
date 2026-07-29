@@ -26,6 +26,13 @@ class PostController extends Controller
             $query->where('status', $request->string('status'));
         }
 
+        if ($request->ajax()) {
+            return view('cms.posts.partials.table', [
+                'posts' => $query->paginate(15)->withQueryString(),
+                'statuses' => PostStatus::cases()
+            ]);
+        }
+
         return view('cms.posts.index', [
             'posts' => $query->paginate(15)->withQueryString(),
             'statuses' => PostStatus::cases()
