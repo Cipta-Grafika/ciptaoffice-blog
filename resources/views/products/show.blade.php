@@ -15,7 +15,7 @@
                 <div class="col-lg-6">
                     <div class="card-visual" style="height:30rem">
                         @if ($product->cover_image_path)
-                            <img src="{{ Storage::disk('public')->url($product->cover_image_path) }}"
+                            <img src="{{ asset('storage/' . $product->cover_image_path) }}"
                             alt="{{ $product->cover_image_alt }}">@else<i class="bi bi-lamp display-1"></i>
                         @endif
                     </div>

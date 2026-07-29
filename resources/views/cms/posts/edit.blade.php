@@ -75,8 +75,8 @@
                     <div class="cms-cover-field" data-cover-picker>
                         <div class="cms-cover-preview"><img class="{{ $post->cover_image_path ? '' : 'd-none' }}"
                                 data-cover-preview
-                                src="{{ $post->cover_image_path ? Storage::disk('public')->url($post->cover_image_path) : '' }}"
-                                data-current-src="{{ $post->cover_image_path ? Storage::disk('public')->url($post->cover_image_path) : '' }}"
+                                src="{{ $post->cover_image_path ? asset('storage/' . $post->cover_image_path) : '' }}"
+                                data-current-src="{{ $post->cover_image_path ? asset('storage/' . $post->cover_image_path) : '' }}"
                                 alt="{{ $post->cover_image_alt ?: 'Preview cover artikel' }}">
                             <div class="cms-cover-placeholder {{ $post->cover_image_path ? 'd-none' : '' }}"
                                 data-cover-placeholder aria-hidden="true"><i class="bi bi-image"></i></div>

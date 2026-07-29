@@ -37,7 +37,7 @@
                             <article class="product-card">
                                 <div class="card-visual">
                                     @if ($product->cover_image_path)
-                                        <img src="{{ Storage::disk('public')->url($product->cover_image_path) }}"
+                                        <img src="{{ asset('storage/' . $product->cover_image_path) }}"
                                         alt="{{ $product->cover_image_alt }}">@else<i class="bi bi-lamp"
                                             aria-hidden="true"></i>
                                     @endif
