@@ -12,9 +12,18 @@ use Illuminate\View\View;
 
 class ProductCategoryController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
-        return view('cms.categories.index', ['categories' => ProductCategory::withCount('products')->orderBy('sort_order')->paginate(15)]);
+        $query = ProductCategory::withCount('products')->orderBy('sort_order');
+        if ($request->filled('status')) {
+            $query->where('is_active', $request->boolean('status'));
+        }
+
+        if ($request->ajax()) {
+            return view('cms.categories.partials.table', ['categories' => $query->paginate(15)->withQueryString()]);
+        }
+
+        return view('cms.categories.index', ['categories' => $query->paginate(15)->withQueryString()]);
     }
 
     public function create(): View

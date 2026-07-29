@@ -7,13 +7,23 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class UserController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
-        return view('cms.users.index', ['users' => User::orderBy('name')->paginate(15)]);
+        $query = User::orderBy('name');
+        if ($request->filled('status')) {
+            $query->where('is_active', $request->boolean('status'));
+        }
+
+        if ($request->ajax()) {
+            return view('cms.users.partials.table', ['users' => $query->paginate(15)->withQueryString()]);
+        }
+
+        return view('cms.users.index', ['users' => $query->paginate(15)->withQueryString()]);
     }
 
     public function create(): View

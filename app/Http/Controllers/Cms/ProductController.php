@@ -13,9 +13,18 @@ use Illuminate\View\View;
 
 class ProductController extends Controller
 {
-    public function index(): View
+    public function index(\Illuminate\Http\Request $request): View
     {
-        return view('cms.products.index', ['products' => Product::with('category')->orderBy('sort_order')->paginate(15)]);
+        $query = Product::with('category')->orderBy('sort_order');
+        if ($request->filled('status')) {
+            $query->where('is_active', $request->boolean('status'));
+        }
+
+        if ($request->ajax()) {
+            return view('cms.products.partials.table', ['products' => $query->paginate(15)->withQueryString()]);
+        }
+
+        return view('cms.products.index', ['products' => $query->paginate(15)->withQueryString()]);
     }
 
     public function create(): View
