@@ -21,7 +21,7 @@
                 <div class="col-lg-5 reveal">
                     <div class="material-board">
                         @if ($settings->hero_image_path)
-                            <img class="board-image" src="{{ Storage::disk('public')->url($settings->hero_image_path) }}"
+                            <img class="board-image" src="{{ asset('storage/' . $settings->hero_image_path) }}"
                                 alt="{{ $settings->hero_image_alt }}">
                         @else
                             <div class="board-image d-flex align-items-center justify-content-center bg-white">
@@ -110,7 +110,7 @@
                             <article class="article-card">
                                 <div class="card-visual">
                                     @if ($post->cover_image_path)
-                                        <img src="{{ Storage::disk('public')->url($post->cover_image_path) }}"
+                                        <img src="{{ asset('storage/' . $post->cover_image_path) }}"
                                         alt="{{ $post->cover_image_alt }}">@else<i class="bi bi-journal-richtext"
                                             aria-hidden="true"></i>
                                     @endif

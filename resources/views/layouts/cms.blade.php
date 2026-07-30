@@ -17,7 +17,7 @@
     @vite(['resources/scss/app.scss', 'resources/js/app.js'])
 </head>
 
-<body class="cms-body">
+<body class="cms-body" data-app-context="cms" data-cms-page="@yield('cms-page', 'default')">
     @php
         $cmsUser = auth()->user();
         $cmsUserInitials = collect(preg_split('/\s+/', trim($cmsUser->name)))
@@ -216,17 +216,10 @@
             <div class="alert alert-success alert-dismissible fade show">{{ session('success') }}<button
                     class="btn-close" data-bs-dismiss="alert"></button></div>
         @endif
-        @if ($errors->any())
-            <div class="alert alert-danger"><strong>Periksa kembali:</strong>
-                <ul class="mb-0">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+
         @yield('content')
     </div>
+    <x-cms-confirm-modal />
 </body>
 
 </html>

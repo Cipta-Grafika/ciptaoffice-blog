@@ -2,26 +2,37 @@
 
 @section('title', 'Edit ' . $post->title)
 
+@section('cms-page', 'posts-form')
+
 @section('content')
     <div class="cms-page">
-        <a class="cms-back-link" href="{{ route('cms.posts.index') }}"><i class="bi bi-arrow-left"></i> Daftar artikel</a>
+        <a class="cms-back-link" href="{{ route('cms.posts.index') }}">
+            <i class="bi bi-arrow-left"></i> Daftar artikel
+        </a>
         <x-cms-page-header eyebrow="Editor artikel" :title="$post->title"
             description="Perbarui naskah, visual, dan status artikel sebelum dipublikasikan.">
             <x-slot:actions>
                 <a class="btn btn-outline-dark" href="{{ route('cms.posts.preview', $post) }}" target="_blank"
-                    rel="noopener noreferrer"><i class="bi bi-eye"></i><span
-                        class="cms-action-label--compact">Preview</span></a>
+                    rel="noopener noreferrer"><i class="bi bi-eye"></i>
+                    <span class="cms-action-label--compact">Preview</span>
+                </a>
                 @can('submit', $post)
-                    <form method="post" action="{{ route('cms.posts.submit', $post) }}">@csrf<button class="btn btn-warning"
-                            type="submit">Ajukan review</button></form>
+                    <form method="post" action="{{ route('cms.posts.submit', $post) }}">
+                        @csrf
+                        <button class="btn btn-warning" type="submit">Ajukan review</button>
+                    </form>
                 @endcan
                 @can('admin')
                     @if ($post->status !== \App\Enums\PostStatus::Published)
-                        <form method="post" action="{{ route('cms.posts.publish', $post) }}">@csrf<button
-                                class="btn btn-success" type="submit">Terbitkan</button></form>
+                        <form method="post" action="{{ route('cms.posts.publish', $post) }}">
+                            @csrf
+                            <button class="btn btn-success" type="submit">Terbitkan</button>
+                        </form>
                     @else
-                        <form method="post" action="{{ route('cms.posts.archive', $post) }}">@csrf<button
-                                class="btn btn-outline-dark" type="submit">Arsipkan</button></form>
+                        <form method="post" action="{{ route('cms.posts.archive', $post) }}">
+                            @csrf
+                            <button class="btn btn-outline-dark" type="submit">Arsipkan</button>
+                        </form>
                     @endif
                 @endcan
             </x-slot:actions>
@@ -45,10 +56,15 @@
                         <h2>Informasi artikel</h2>
                         <p>Judul dan ringkasan tampil pada halaman daftar serta metadata artikel.</p>
                     </div>
-                    <div class="mb-3"><label class="form-label" for="title">Judul</label><input class="form-control"
-                            id="title" name="title" value="{{ old('title', $post->title) }}" required></div>
-                    <div><label class="form-label" for="excerpt">Ringkasan</label>
-                        <textarea class="form-control" id="excerpt" name="excerpt" rows="3" maxlength="500" required>{{ old('excerpt', $post->excerpt) }}</textarea>
+                    <div class="mb-3">
+                        <label class="form-label" for="title">Judul</label>
+                        <input class="form-control @error('title') is-invalid @enderror" id="title" name="title" value="{{ old('title', $post->title) }}" required>
+                        @error('title')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                    <div>
+                        <label class="form-label" for="excerpt">Ringkasan</label>
+                        <textarea class="form-control @error('excerpt') is-invalid @enderror" id="excerpt" name="excerpt" rows="3" maxlength="500" required>{{ old('excerpt', $post->excerpt) }}</textarea>
+                        @error('excerpt')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                 </section>
                 <section class="cms-form-section">
@@ -59,8 +75,8 @@
                     <div class="cms-cover-field" data-cover-picker>
                         <div class="cms-cover-preview"><img class="{{ $post->cover_image_path ? '' : 'd-none' }}"
                                 data-cover-preview
-                                src="{{ $post->cover_image_path ? Storage::disk('public')->url($post->cover_image_path) : '' }}"
-                                data-current-src="{{ $post->cover_image_path ? Storage::disk('public')->url($post->cover_image_path) : '' }}"
+                                src="{{ $post->cover_image_path ? asset('storage/' . $post->cover_image_path) : '' }}"
+                                data-current-src="{{ $post->cover_image_path ? asset('storage/' . $post->cover_image_path) : '' }}"
                                 alt="{{ $post->cover_image_alt ?: 'Preview cover artikel' }}">
                             <div class="cms-cover-placeholder {{ $post->cover_image_path ? 'd-none' : '' }}"
                                 data-cover-placeholder aria-hidden="true"><i class="bi bi-image"></i></div>
@@ -71,17 +87,28 @@
                             <p class="small text-muted mt-1 mb-3">
                                 {{ $post->cover_image_path ? 'Pilih file baru untuk mengganti cover.' : 'Pilih gambar cover untuk artikel ini.' }}
                             </p>
-                            <input class="visually-hidden" type="file" id="cover_image" name="cover_image"
+                            <input class="visually-hidden @error('cover_image') is-invalid @enderror" type="file" id="cover_image" name="cover_image"
                                 accept="image/jpeg,image/png,image/webp" data-cover-input
                                 aria-describedby="cover_image_name cover_image_help">
-                            <div class="d-flex flex-wrap align-items-center gap-2"><label
-                                    class="btn btn-sm btn-outline-dark mb-0" for="cover_image"><i
-                                        class="bi bi-upload me-1"></i>{{ $post->cover_image_path ? 'Ganti cover' : 'Pilih cover' }}</label><span
-                                    class="small text-muted text-break" id="cover_image_name" data-cover-filename
-                                    aria-live="polite">Tidak ada file baru dipilih.</span></div>
+                            @error('cover_image')<div class="invalid-feedback d-block mb-2">{{ $message }}</div>@enderror
+                            <input type="hidden" name="remove_cover_image" value="0" data-cover-remove-input>
+                            <div class="d-flex flex-wrap align-items-center gap-2">
+                                <label class="btn btn-sm btn-outline-dark mb-0" for="cover_image">
+                                    <i class="bi bi-upload me-1"></i>{{ $post->cover_image_path ? 'Ganti cover' : 'Pilih cover' }}
+                                </label>
+                                <button type="button" class="btn btn-sm btn-outline-danger mb-0 {{ $post->cover_image_path ? '' : 'd-none' }}" data-cover-remove aria-label="Hapus cover" title="Hapus cover">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                                <span class="small text-muted text-break" id="cover_image_name" data-cover-filename aria-live="polite">Tidak ada file baru dipilih.</span>
+                            </div>
                             <div class="form-text" id="cover_image_help">JPEG, PNG, atau WebP. Alt text dibuat otomatis dari
                                 judul artikel.</div>
                         </div>
+                    </div>
+                    <div class="form-text mt-3 mb-0">
+                        <i class="bi bi-info-circle me-1"></i>
+                        <strong>Rekomendasi resolusi:</strong> 1280 × 640 piksel (rasio 2:1) atau 1280 × 720 piksel (rasio
+                        16:9) dengan orientasi horizontal/landscape.
                     </div>
                 </section>
                 <section class="cms-form-section">
@@ -89,12 +116,16 @@
                         <h2>Isi artikel</h2>
                         <p>Alt text gambar inline dibuat otomatis; maksimum 4 MB per gambar.</p>
                     </div>
-                    <input type="hidden" id="body_html" name="body_html" value="{{ old('body_html', $post->body_html) }}">
+                    <input type="hidden" id="body_html" name="body_html" class="@error('body_html') is-invalid @enderror" value="{{ old('body_html', $post->body_html) }}">
+                    @error('body_html')<div class="invalid-feedback d-block mb-2">{{ $message }}</div>@enderror
                     <div data-quill data-input="#body_html" data-upload-url="{{ route('cms.posts.media.store', $post) }}">
                     </div>
                 </section>
-                <div class="cms-form-actions"><button class="btn btn-primary" type="submit"><i class="bi bi-check2"></i>
-                        Simpan perubahan</button></div>
+                <div class="cms-form-actions">
+                    <button class="btn btn-primary" type="submit"><i class="bi bi-check2"></i>
+                        Simpan perubahan
+                    </button>
+                </div>
             </form>
 
             <aside class="cms-editor-aside">
@@ -120,23 +151,31 @@
                 </section>
                 @can('admin')
                     @if ($post->status === \App\Enums\PostStatus::PendingReview)
-                        <form class="cms-form-surface" method="post" action="{{ route('cms.posts.return', $post) }}">@csrf
+                        <form class="cms-form-surface" method="post" action="{{ route('cms.posts.return', $post) }}">
+                            @csrf
                             <div class="cms-form-section">
                                 <div class="cms-form-section-heading">
                                     <h2>Kembalikan ke author</h2>
                                     <p>Sertakan alasan yang dapat ditindaklanjuti.</p>
-                                </div><label class="form-label" for="review_note">Catatan wajib</label>
-                                <textarea class="form-control" id="review_note" name="review_note" rows="4" required></textarea>
+                                </div>
+                                <label class="form-label" for="review_note">Catatan wajib</label>
+                                <textarea class="form-control @error('review_note') is-invalid @enderror" id="review_note" name="review_note" rows="4" required></textarea>
+                                @error('review_note')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
-                            <div class="cms-form-actions"><button class="btn btn-outline-danger"
-                                    type="submit">Kembalikan</button></div>
+                            <div class="cms-form-actions">
+                                <button class="btn btn-outline-danger" type="submit">Kembalikan</button>
+                            </div>
                         </form>
                     @endif
                 @endcan
                 @can('delete', $post)
                     <form class="cms-danger-action" method="post" action="{{ route('cms.posts.destroy', $post) }}"
-                        onsubmit="return confirm('Pindahkan draft ini ke sampah?')">@csrf @method('DELETE')<button
-                            class="btn btn-link text-danger px-0">Hapus artikel</button></form>
+                        data-cms-confirm-form data-confirm-variant="danger" data-confirm-title="Hapus artikel?"
+                        data-confirm-message="Artikel “{{ $post->title }}” akan dipindahkan ke sampah."
+                        data-confirm-action="Pindahkan ke sampah">
+                        @csrf @method('DELETE')
+                        <button class="btn btn-link text-danger px-0" type="submit">Hapus artikel</button>
+                    </form>
                 @endcan
             </aside>
         </div>

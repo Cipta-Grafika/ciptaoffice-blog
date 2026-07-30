@@ -19,8 +19,17 @@ class MediaUploadController extends Controller
         $filename = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
         $altText = Str::limit(Str::headline($filename), 180, '') ?: Str::limit($post->title, 180, '');
         $path = $image->store('articles/'.$post->id.'/inline', 'public');
-        $media = $post->media()->create(['uploaded_by' => $request->user()->id, 'path' => $path, 'alt_text' => $altText]);
+        $media = $post->media()->create([
+            'uploaded_by' => $request->user()->id, 
+            'path' => $path, 
+            'alt_text' => $altText
+        ]);
 
-        return response()->json(['url' => Storage::disk('public')->url($media->path), 'alt' => $media->alt_text]);
+        /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+        $disk = Storage::disk('public');
+        return response()->json([
+            'url' => $disk->url($media->path),
+            'alt' => $media->alt_text
+        ]);
     }
 }

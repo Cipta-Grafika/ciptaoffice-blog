@@ -2,6 +2,8 @@
 
 @section('title', 'Artikel baru')
 
+@section('cms-page', 'posts-form')
+
 @section('content')
     <div class="cms-page cms-page--narrow">
         <a class="cms-back-link" href="{{ route('cms.posts.index') }}"><i class="bi bi-arrow-left"></i> Daftar artikel</a>
@@ -15,8 +17,9 @@
                     <p>Judul masih dapat disunting sebelum artikel diterbitkan.</p>
                 </div>
                 <label class="form-label" for="title">Judul artikel</label>
-                <input class="form-control form-control-lg" id="title" name="title" value="{{ old('title') }}"
+                <input class="form-control form-control-lg @error('title') is-invalid @enderror" id="title" name="title" value="{{ old('title') }}"
                     maxlength="180" placeholder="Contoh: Merancang ruang kerja yang tetap relevan" required autofocus>
+                @error('title')<div class="invalid-feedback">{{ $message }}</div>@enderror
             </div>
             <div class="cms-form-actions">
                 <button class="btn btn-primary" type="submit"><i class="bi bi-arrow-right"></i> Buat draft &

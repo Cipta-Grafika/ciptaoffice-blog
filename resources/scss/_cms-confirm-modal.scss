@@ -1,0 +1,263 @@
+.cms-confirm-modal {
+    --cms-confirm-color: #9c413d;
+    --cms-confirm-color-hover: #813632;
+    width: min(35rem, calc(100vw - 2rem));
+    max-width: none;
+    max-height: calc(100dvh - 2rem);
+    padding: 0;
+    color: var(--ink);
+    background: transparent;
+    border: 0;
+    overflow: visible;
+
+    &[data-confirm-variant='warning'] {
+        --cms-confirm-color: var(--brass);
+        --cms-confirm-color-hover: #87643b;
+    }
+
+    &[open] {
+        animation: cms-confirm-modal-in .24s cubic-bezier(.2, .75, .25, 1) both;
+    }
+
+    &.is-closing {
+        animation: cms-confirm-modal-out .17s ease both;
+        pointer-events: none;
+    }
+
+    &::backdrop {
+        background: rgba(16, 27, 24, .58);
+        backdrop-filter: blur(4px) saturate(.75);
+        animation: cms-confirm-backdrop-in .24s ease both;
+    }
+
+    &.is-closing::backdrop {
+        animation: cms-confirm-backdrop-out .17s ease both;
+    }
+}
+
+.cms-confirm-modal__content {
+    position: relative;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 0 0, rgba(164, 126, 79, .1), transparent 11rem),
+        var(--paper);
+    border: 1px solid rgba(23, 32, 30, .14);
+    border-radius: .65rem;
+    box-shadow: 0 32px 90px rgba(9, 20, 17, .28);
+}
+
+.cms-confirm-modal__accent {
+    position: absolute;
+    z-index: 1;
+    height: 3px;
+    inset: 0 0 auto;
+    background: linear-gradient(90deg,
+        var(--cms-confirm-color) 0%,
+        color-mix(in srgb, var(--cms-confirm-color) 62%, var(--brass)) 52%,
+        rgba(164, 126, 79, .28) 100%);
+    border-radius: .6rem .6rem 0 0;
+    pointer-events: none;
+}
+
+.cms-confirm-modal__close {
+    display: grid;
+    position: absolute;
+    z-index: 2;
+    width: 2.25rem;
+    height: 2.25rem;
+    right: .8rem;
+    top: .7rem;
+    padding: 0;
+    place-items: center;
+    color: #69736f;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 50%;
+    transition: color .2s ease, background-color .2s ease, transform .2s ease;
+
+    &:hover {
+        color: var(--ink);
+        background: rgba(23, 32, 30, .06);
+        transform: rotate(4deg);
+    }
+
+    .cms-inline-icon {
+        width: 1.05rem;
+        height: 1.05rem;
+    }
+}
+
+.cms-confirm-modal__body {
+    display: grid;
+    grid-template-columns: 3.35rem minmax(0, 1fr);
+    gap: 1.15rem;
+    align-items: start;
+    padding: clamp(2rem, 5vw, 2.65rem) 3.5rem 1.5rem 2rem;
+}
+
+.cms-confirm-modal__icon {
+    display: grid;
+    width: 3.35rem;
+    height: 3.35rem;
+    place-items: center;
+    color: var(--cms-confirm-color);
+    background: color-mix(in srgb, var(--cms-confirm-color) 9%, white);
+    border: 1px solid color-mix(in srgb, var(--cms-confirm-color) 24%, white);
+    border-radius: 50% 50% 50% .45rem;
+
+    .cms-inline-icon {
+        width: 1.55rem;
+        height: 1.55rem;
+    }
+}
+
+.cms-confirm-modal__copy {
+    min-width: 0;
+}
+
+.cms-confirm-modal__eyebrow {
+    margin: 0 0 .45rem;
+    color: var(--cms-confirm-color);
+    font-size: .61rem;
+    font-weight: 700;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+}
+
+.cms-confirm-modal__copy h2 {
+    margin: 0;
+    color: var(--ink);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.55rem, 4vw, 1.85rem);
+    font-weight: 600;
+    line-height: 1.05;
+    overflow-wrap: anywhere;
+}
+
+.cms-confirm-modal__copy > p:last-child {
+    margin: .65rem 0 0;
+    color: var(--muted);
+    font-size: .76rem;
+    line-height: 1.65;
+    overflow-wrap: anywhere;
+}
+
+.cms-confirm-modal__actions {
+    display: flex;
+    min-height: 4.4rem;
+    align-items: center;
+    justify-content: flex-end;
+    gap: .6rem;
+    padding: .85rem 2rem;
+    background: rgba(247, 243, 235, .62);
+    border-top: 1px solid rgba(23, 32, 30, .1);
+
+    .btn {
+        min-width: 6.5rem;
+        min-height: 2.45rem;
+        font-size: .72rem;
+        font-weight: 700;
+    }
+}
+
+.cms-confirm-modal .cms-confirm-modal__submit {
+    color: #fff;
+    background: var(--cms-confirm-color);
+    border-color: var(--cms-confirm-color);
+
+    &:hover,
+    &:focus-visible {
+        color: #fff;
+        background: var(--cms-confirm-color-hover);
+        border-color: var(--cms-confirm-color-hover);
+    }
+
+    &:disabled {
+        color: #fff;
+        background: var(--cms-confirm-color);
+        border-color: var(--cms-confirm-color);
+        opacity: .65;
+    }
+}
+
+@keyframes cms-confirm-modal-in {
+    from {
+        opacity: 0;
+        transform: translateY(.75rem) scale(.975);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes cms-confirm-modal-out {
+    from {
+        opacity: 1;
+        transform: none;
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(.35rem) scale(.985);
+    }
+}
+
+@keyframes cms-confirm-backdrop-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes cms-confirm-backdrop-out {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cms-confirm-modal,
+    .cms-confirm-modal::backdrop,
+    .cms-confirm-modal.is-closing,
+    .cms-confirm-modal.is-closing::backdrop {
+        animation: none;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .cms-confirm-modal {
+        width: calc(100vw - 1rem);
+        max-height: calc(100dvh - 1rem);
+    }
+
+    .cms-confirm-modal__body {
+        grid-template-columns: 2.8rem minmax(0, 1fr);
+        gap: .85rem;
+        padding: 1.7rem 2.8rem 1.35rem 1.15rem;
+    }
+
+    .cms-confirm-modal__icon {
+        width: 2.8rem;
+        height: 2.8rem;
+
+        .cms-inline-icon {
+            width: 1.3rem;
+            height: 1.3rem;
+        }
+    }
+
+    .cms-confirm-modal__copy h2 {
+        font-size: 1.5rem;
+    }
+
+    .cms-confirm-modal__actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        padding: .8rem 1rem 1rem;
+
+        .btn {
+            width: 100%;
+            min-width: 0;
+            min-height: 2.65rem;
+        }
+    }
+}

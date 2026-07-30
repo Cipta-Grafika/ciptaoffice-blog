@@ -23,7 +23,7 @@
     $contactPhoneHref = preg_replace('/[^\d+]/', '', $contactPhone);
 @endphp
 
-<body>
+<body data-app-context="site">
     <header class="site-header" data-site-header>
         <div class="site-top-header">
             <div class="container d-flex align-items-center justify-content-between gap-3">

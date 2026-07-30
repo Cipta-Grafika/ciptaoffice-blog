@@ -10,9 +10,18 @@ use Illuminate\View\View;
 
 class InquiryController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
-        return view('cms.inquiries.index', ['inquiries' => Inquiry::with('product')->latest()->paginate(20)]);
+        $query = Inquiry::with('product')->latest();
+        if ($request->filled('status')) {
+            $query->where('status', $request->string('status'));
+        }
+
+        if ($request->ajax()) {
+            return view('cms.inquiries.partials.table', ['inquiries' => $query->paginate(20)->withQueryString()]);
+        }
+
+        return view('cms.inquiries.index', ['inquiries' => $query->paginate(20)->withQueryString()]);
     }
 
     public function show(Inquiry $inquiry): View

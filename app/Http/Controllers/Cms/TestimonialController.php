@@ -7,13 +7,23 @@ use App\Http\Requests\TestimonialRequest;
 use App\Models\Testimonial;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class TestimonialController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
-        return view('cms.testimonials.index', ['testimonials' => Testimonial::orderBy('sort_order')->paginate(15)]);
+        $query = Testimonial::orderBy('sort_order');
+        if ($request->filled('status')) {
+            $query->where('is_active', $request->boolean('status'));
+        }
+
+        if ($request->ajax()) {
+            return view('cms.testimonials.partials.table', ['testimonials' => $query->paginate(15)->withQueryString()]);
+        }
+
+        return view('cms.testimonials.index', ['testimonials' => $query->paginate(15)->withQueryString()]);
     }
 
     public function create(): View

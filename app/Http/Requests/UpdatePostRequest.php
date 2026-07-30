@@ -14,6 +14,6 @@ class UpdatePostRequest extends FormRequest
     public function rules(): array
     {
         return ['title' => ['required', 'string', 'max:180'], 'excerpt' => ['required', 'string', 'max:500'], 'body_html' => ['required', 'string', 'max:100000'],
-            'cover_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096']];
+            'cover_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'], 'remove_cover_image' => ['nullable', 'boolean']];
     }
 }

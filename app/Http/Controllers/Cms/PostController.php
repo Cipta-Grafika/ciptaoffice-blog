@@ -26,7 +26,17 @@ class PostController extends Controller
             $query->where('status', $request->string('status'));
         }
 
-        return view('cms.posts.index', ['posts' => $query->paginate(15)->withQueryString(), 'statuses' => PostStatus::cases()]);
+        if ($request->ajax()) {
+            return view('cms.posts.partials.table', [
+                'posts' => $query->paginate(15)->withQueryString(),
+                'statuses' => PostStatus::cases()
+            ]);
+        }
+
+        return view('cms.posts.index', [
+            'posts' => $query->paginate(15)->withQueryString(),
+            'statuses' => PostStatus::cases()
+        ]);
     }
 
     public function create(): View
@@ -64,15 +74,24 @@ class PostController extends Controller
 
     public function update(UpdatePostRequest $request, Post $post, HtmlSanitizer $sanitizer): RedirectResponse
     {
-        $data = $request->safe()->except('cover_image');
+        $data = $request->safe()->except(['cover_image', 'remove_cover_image']);
         $data['body_html'] = $sanitizer->clean($data['body_html']);
-        if ($request->hasFile('cover_image')) {
+        if ($request->boolean('remove_cover_image')) {
             if ($post->cover_image_path) {
                 Storage::disk('public')->delete($post->cover_image_path);
-            } $data['cover_image_path'] = $request->file('cover_image')->store('articles/covers', 'public');
-        }
-        if ($request->hasFile('cover_image') || $post->cover_image_path) {
-            $data['cover_image_alt'] = $data['title'];
+            }
+            $data['cover_image_path'] = null;
+            $data['cover_image_alt'] = null;
+        } else {
+            if ($request->hasFile('cover_image')) {
+                if ($post->cover_image_path) {
+                    Storage::disk('public')->delete($post->cover_image_path);
+                }
+                $data['cover_image_path'] = $request->file('cover_image')->store('articles/covers', 'public');
+            }
+            if ($request->hasFile('cover_image') || $post->cover_image_path) {
+                $data['cover_image_alt'] = $data['title'];
+            }
         }
         $post->update($data);
         $this->cleanUnusedMedia($post);
@@ -97,13 +116,16 @@ class PostController extends Controller
             $slug = $base.'-'.$i++;
         }
 
-return $slug;
+        return $slug;
     }
 
     private function cleanUnusedMedia(Post $post): void
     {
         $post->media()->get()->each(function ($media) use ($post) {
-            if (! str_contains($post->body_html ?? '', Storage::disk('public')->url($media->path))) {
+            /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+            $disk = Storage::disk('public');
+
+            if (! str_contains($post->body_html ?? '', $disk->url($media->path))) {
                 $media->delete();
             }
         });
