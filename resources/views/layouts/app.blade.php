@@ -82,22 +82,7 @@
         @endif
         @yield('content')
     </main>
-    <footer class="site-footer">
-        <div class="container">
-            <div class="row g-4 align-items-end">
-                <div class="col-lg-6">
-                    <div class="d-flex align-items-center gap-2 mb-3"><span
-                            class="brand-mark bg-light text-dark">CO</span><strong>CiptaOffice</strong></div>
-                    <p class="mb-0 text-white-50">Partner pengadaan kebutuhan kantor dan alternatif produk berkualitas
-                        setara.</p>
-                </div>
-                <div class="col-lg-6 text-lg-end">
-                    {{-- <p class="small text-uppercase letter-space text-white-50 mb-2">Informasi footer akan dilengkapi</p> --}}
-                    <p class="mb-0 small">&copy; {{ date('Y') }} CiptaOffice. Seluruh hak dilindungi.</p>
-                </div>
-            </div>
-        </div>
-    </footer>
+    @include('partials.site-footer')
     @stack('scripts')
 </body>
 
