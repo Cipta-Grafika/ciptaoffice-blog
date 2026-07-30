@@ -52,7 +52,7 @@ a { text-underline-offset: .2em; }
 
 .site-header { position:fixed; z-index:1030; inset:0 0 auto; }
 .site-top-header { min-height:3.1rem; display:flex; align-items:center; color:#fff; background:var(--forest); border-bottom:1px solid rgba(255,255,255,.12); }
-.top-header-logo { display:flex; flex:0 1 auto; min-width:0; padding:.5rem .7rem; background:var(--paper); border-radius:0 0 .3rem .3rem; box-shadow:0 7px 20px rgba(9,27,23,.16); }
+.top-header-logo { display:flex; flex:0 1 auto; min-width:0; padding:.5rem .7rem; background:var(--paper); border-radius:0 0 .3rem .3rem; box-shadow:0 5px 5px rgba(9,27,23,.16); }
 .top-header-logo-image { display:block; width:clamp(10.5rem,17vw,14rem); height:auto; }
 .site-contact-list { display:flex; align-items:center; gap:clamp(.5rem,2.5vw,1.75rem); }
 .site-contact-list a { display:flex; min-width:2.25rem; min-height:2.25rem; align-items:center; justify-content:center; gap:.45rem; color:rgba(255,255,255,.88); font-size:.75rem; font-weight:600; text-decoration:none; transition:color .2s ease,transform .2s ease; }

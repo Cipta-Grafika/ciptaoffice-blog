@@ -27,10 +27,11 @@
     <header class="site-header" data-site-header>
         <div class="site-top-header">
             <div class="container d-flex align-items-center justify-content-between gap-3">
-                <a class="top-header-logo" href="{{ route('home') }}" aria-label="CiptaOffice — Beranda">
-                    <img class="top-header-logo-image" src="{{ asset('images/logos/ciptaoffice-logo-brand.png') }}"
+                {{-- <a class="top-header-logo" href="{{ route('home') }}" aria-label="CiptaOffice — Beranda">
+                    <img class="top-header-logo-image" src="{{ asset('images/logos/ciptaoffice-logo.png') }}"
                         width="867" height="60" alt="CiptaOffice">
-                </a>
+                </a> --}}
+                <div></div>
                 <div class="site-contact-list" aria-label="Kontak CiptaOffice">
                     <a href="tel:{{ $contactPhoneHref }}">
                         <i class="bi bi-telephone-fill" aria-hidden="true"></i>
@@ -48,8 +49,12 @@
         <nav class="navbar navbar-expand-lg site-nav" aria-label="Navigasi utama">
             <div class="container py-2">
                 <div class="site-nav-context" aria-label="Bidang layanan CiptaOffice">
-                    <span class="site-nav-context-line" aria-hidden="true"></span>
-                    <span>Solusi kebutuhan kantor</span>
+                    {{-- <span class="site-nav-context-line" aria-hidden="true"></span>
+                    <span>Solusi kebutuhan kantor</span> --}}
+                    <a class="top-header-logo" href="{{ route('home') }}" aria-label="CiptaOffice — Beranda">
+                        <img class="top-header-logo-image" src="{{ asset('images/logos/ciptaoffice-brand.svg') }}"
+                            width="867" height="60" alt="CiptaOffice">
+                    </a>
                 </div>
                 <button class="navbar-toggler border-0 ms-auto" type="button" data-bs-toggle="collapse"
                     data-bs-target="#siteMenu" aria-controls="siteMenu" aria-expanded="false"
@@ -76,8 +81,9 @@
         @if (session('success'))
             <div class="container position-relative" style="z-index:1031">
                 <div class="alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-4 shadow"
-                    role="status">{{ session('success') }}<button type="button" class="btn-close"
-                        data-bs-dismiss="alert"></button></div>
+                    role="status">{{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
             </div>
         @endif
         @yield('content')
