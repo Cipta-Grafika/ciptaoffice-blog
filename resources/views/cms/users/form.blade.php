@@ -4,7 +4,6 @@
 
 @section('content')
     <div class="cms-page cms-page--narrow">
-        <a class="cms-back-link" href="{{ route('cms.users.index') }}"><i class="bi bi-arrow-left"></i> Daftar pengguna</a>
         <x-cms-page-header eyebrow="Akses CMS" :title="$user->exists ? 'Edit pengguna' : 'Tambah pengguna'"
             description="Kelola identitas, peran, dan status akses anggota tim editorial." />
         <form class="cms-form-surface" method="post" action="{{ $user->exists ? route('cms.users.update', $user) : route('cms.users.store') }}">

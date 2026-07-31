@@ -308,9 +308,6 @@ a { text-underline-offset: .2em; }
 .cms-form-actions .btn-outline-secondary { color:#70583b; background:rgba(255,253,248,.4); border-color:rgba(164,126,79,.7); }
 .cms-form-actions .btn-outline-secondary:hover { color:#fff; background:var(--brass); border-color:var(--brass); }
 .cms-danger-action { display:flex; justify-content:flex-end; }
-.cms-back-link { display:inline-flex; align-items:center; gap:.4rem; color:var(--forest); font-size:.67rem; font-weight:700; letter-spacing:.08em; text-decoration:none; text-transform:uppercase; }
-.cms-back-link i { transition:transform .2s ease; }
-.cms-back-link:hover i { transform:translateX(-.2rem); }
 .cms-detail-grid { display:grid; grid-template-columns:minmax(0,1.65fr) minmax(17rem,.7fr); gap:1.25rem; align-items:start; }
 .cms-detail-list { display:grid; grid-template-columns:minmax(7rem,.3fr) minmax(0,1fr); margin:0; }
 .cms-detail-list dt,.cms-detail-list dd { margin:0; padding:.85rem 0; border-bottom:1px solid rgba(23,32,30,.08); font-size:.75rem; }

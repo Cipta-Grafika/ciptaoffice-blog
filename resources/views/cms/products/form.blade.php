@@ -4,7 +4,6 @@
 
 @section('content')
     <div class="cms-page">
-        <a class="cms-back-link" href="{{ route('cms.products.index') }}"><i class="bi bi-arrow-left"></i> Daftar produk</a>
         <x-cms-page-header eyebrow="Katalog" :title="$product->exists ? 'Edit produk' : 'Tambah produk'"
             description="Kelola informasi produk, visual, spesifikasi, dan visibilitasnya pada katalog publik." />
         <form class="cms-form-surface" method="post" enctype="multipart/form-data"

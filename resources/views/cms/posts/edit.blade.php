@@ -6,9 +6,6 @@
 
 @section('content')
     <div class="cms-page">
-        <a class="cms-back-link" href="{{ route('cms.posts.index') }}">
-            <i class="bi bi-arrow-left"></i> Daftar artikel
-        </a>
         <x-cms-page-header eyebrow="Editor artikel" :title="$post->title"
             description="Perbarui naskah, visual, dan status artikel sebelum dipublikasikan.">
             <x-slot:actions>

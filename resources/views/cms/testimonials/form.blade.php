@@ -4,7 +4,6 @@
 
 @section('content')
     <div class="cms-page cms-page--narrow">
-        <a class="cms-back-link" href="{{ route('cms.testimonials.index') }}"><i class="bi bi-arrow-left"></i> Daftar testimonial</a>
         <x-cms-page-header eyebrow="Kepercayaan" :title="$testimonial->exists ? 'Edit testimonial' : 'Tambah testimonial'"
             description="Kelola identitas pelanggan dan kutipan yang akan ditampilkan pada homepage." />
         <form class="cms-form-surface" method="post" enctype="multipart/form-data"

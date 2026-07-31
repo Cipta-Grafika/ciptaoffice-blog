@@ -4,7 +4,6 @@
 
 @section('content')
     <div class="cms-page cms-page--narrow">
-        <a class="cms-back-link" href="{{ route('cms.categories.index') }}"><i class="bi bi-arrow-left"></i> Daftar kategori</a>
         <x-cms-page-header eyebrow="Struktur katalog" :title="$category->exists ? 'Edit kategori' : 'Tambah kategori'"
             description="Atur identitas, posisi, dan visibilitas kategori pada katalog produk." />
         <form class="cms-form-surface" method="post" action="{{ $category->exists ? route('cms.categories.update', $category) : route('cms.categories.store') }}">
