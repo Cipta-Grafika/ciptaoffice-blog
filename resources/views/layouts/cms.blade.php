@@ -173,33 +173,42 @@
                             </span>
                         </div>
                         <div class="cms-account-actions">
-                            <button class="cms-account-menu-item" type="button" disabled>
-                                <span class="cms-account-menu-icon"><i class="bi bi-person"
-                                        aria-hidden="true"></i></span>
-                                <span class="cms-account-menu-copy">
-                                    <strong>Profil</strong>
-                                    <small>Kelola informasi profil</small>
+                            <div class="cms-account-actions__content" aria-hidden="true" inert>
+                                <button class="cms-account-menu-item" type="button" disabled>
+                                    <span class="cms-account-menu-icon"><i class="bi bi-person"
+                                            aria-hidden="true"></i></span>
+                                    <span class="cms-account-menu-copy">
+                                        <strong>Profil</strong>
+                                        <small>Kelola informasi profil</small>
+                                    </span>
+                                    <i class="bi bi-chevron-right cms-account-menu-arrow" aria-hidden="true"></i>
+                                </button>
+                                <button class="cms-account-menu-item" type="button" disabled>
+                                    <span class="cms-account-menu-icon"><i class="bi bi-clock-history"
+                                            aria-hidden="true"></i></span>
+                                    <span class="cms-account-menu-copy">
+                                        <strong>Riwayat</strong>
+                                        <small>Lihat aktivitas editorial</small>
+                                    </span>
+                                    <i class="bi bi-chevron-right cms-account-menu-arrow" aria-hidden="true"></i>
+                                </button>
+                                <button class="cms-account-menu-item" type="button" disabled>
+                                    <span class="cms-account-menu-icon"><i class="bi bi-gear"
+                                            aria-hidden="true"></i></span>
+                                    <span class="cms-account-menu-copy">
+                                        <strong>Pengaturan</strong>
+                                        <small>Kelola preferensi akun</small>
+                                    </span>
+                                    <i class="bi bi-chevron-right cms-account-menu-arrow" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                            <div class="cms-account-actions__notice" role="status">
+                                <i class="bi bi-clock-history" aria-hidden="true"></i>
+                                <span>
+                                    <strong>Segera hadir</strong>
+                                    <small>Fitur akun akan ditambahkan nanti.</small>
                                 </span>
-                                <i class="bi bi-chevron-right cms-account-menu-arrow" aria-hidden="true"></i>
-                            </button>
-                            <button class="cms-account-menu-item" type="button" disabled>
-                                <span class="cms-account-menu-icon"><i class="bi bi-clock-history"
-                                        aria-hidden="true"></i></span>
-                                <span class="cms-account-menu-copy">
-                                    <strong>Riwayat</strong>
-                                    <small>Lihat aktivitas editorial</small>
-                                </span>
-                                <i class="bi bi-chevron-right cms-account-menu-arrow" aria-hidden="true"></i>
-                            </button>
-                            <button class="cms-account-menu-item" type="button" disabled>
-                                <span class="cms-account-menu-icon"><i class="bi bi-gear"
-                                        aria-hidden="true"></i></span>
-                                <span class="cms-account-menu-copy">
-                                    <strong>Pengaturan</strong>
-                                    <small>Kelola preferensi akun</small>
-                                </span>
-                                <i class="bi bi-chevron-right cms-account-menu-arrow" aria-hidden="true"></i>
-                            </button>
+                            </div>
                         </div>
                         <div class="cms-account-divider"></div>
                         <form method="post" action="{{ route('cms.logout') }}">
