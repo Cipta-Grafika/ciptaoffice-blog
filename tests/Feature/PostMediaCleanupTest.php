@@ -65,6 +65,63 @@ class PostMediaCleanupTest extends TestCase
         $this->assertFalse($disk->directoryExists($postDirectory));
     }
 
+    public function test_admin_can_permanently_delete_post_and_all_media(): void
+    {
+        Storage::fake('public');
+        /**  FilesystemAdapter $disk */
+        $disk = Storage::disk('public');
+        $admin = User::factory()->admin()->create();
+        $post = Post::create([
+            'author_id' => $admin->id,
+            'title' => 'Permanent Cleanup',
+            'slug' => 'permanent-cleanup',
+            'excerpt' => 'Ringkasan permanent cleanup',
+            'body_html' => '<p>Isi artikel.</p>',
+            'cover_image_path' => 'articles/covers/permanent-cleanup.png',
+            'status' => PostStatus::Draft,
+        ]);
+        $inlinePath = "articles/{$post->id}/inline/ruang-kerja.png";
+        $disk->put($post->cover_image_path, 'cover');
+        $disk->put($inlinePath, 'inline');
+        $media = PostMedia::create([
+            'post_id' => $post->id,
+            'uploaded_by' => $admin->id,
+            'path' => $inlinePath,
+            'alt_text' => 'Ruang kerja',
+        ]);
+
+        $this->actingAs($admin)->get(route('cms.posts.edit', $post))
+            ->assertOk()
+            ->assertSee('Trash')
+            ->assertSee('Delete');
+
+        $this->actingAs($admin)->delete(route('cms.posts.force-delete', $post))
+            ->assertRedirect(route('cms.posts.index'))
+            ->assertSessionHas('success', 'Artikel dihapus secara permanen.');
+
+        $this->assertDatabaseMissing('posts', ['id' => $post->id]);
+        $this->assertDatabaseMissing('post_media', ['id' => $media->id]);
+        $disk->assertMissing($post->cover_image_path);
+        $disk->assertMissing($inlinePath);
+        $this->assertFalse($disk->directoryExists("articles/{$post->id}"));
+    }
+
+    public function test_author_cannot_permanently_delete_post(): void
+    {
+        $author = User::factory()->create();
+        $post = Post::create([
+            'author_id' => $author->id,
+            'title' => 'Protected Post',
+            'slug' => 'protected-post',
+            'status' => PostStatus::Draft,
+        ]);
+
+        $this->actingAs($author)->delete(route('cms.posts.force-delete', $post))
+            ->assertForbidden();
+
+        $this->assertDatabaseHas('posts', ['id' => $post->id, 'deleted_at' => null]);
+    }
+
     public function test_pruner_removes_only_empty_numeric_article_directories(): void
     {
         Storage::fake('public');

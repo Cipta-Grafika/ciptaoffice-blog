@@ -168,15 +168,34 @@
                         </form>
                     @endif
                 @endcan
-                @can('delete', $post)
-                    <form class="cms-danger-action" method="post" action="{{ route('cms.posts.destroy', $post) }}"
-                        data-cms-confirm-form data-confirm-variant="danger" data-confirm-title="Hapus artikel?"
-                        data-confirm-message="Artikel “{{ $post->title }}” akan dipindahkan ke sampah."
-                        data-confirm-action="Pindahkan ke sampah">
-                        @csrf @method('DELETE')
-                        <button class="btn btn-link text-danger px-0" type="submit">Hapus artikel</button>
-                    </form>
-                @endcan
+                <div class="cms-danger-actions" aria-label="Tindakan penghapusan artikel">
+                    @can('delete', $post)
+                        <form method="post" action="{{ route('cms.posts.destroy', $post) }}"
+                            data-cms-confirm-form data-confirm-variant="warning"
+                            data-confirm-title="Pindahkan artikel ke trash?"
+                            data-confirm-message="Artikel “{{ $post->title }}” akan dipindahkan ke sampah."
+                            data-confirm-action="Pindahkan ke sampah">
+                            @csrf @method('DELETE')
+                            <button class="btn btn-sm btn-outline-danger" type="submit">
+                                <i class="bi bi-trash" aria-hidden="true"></i>
+                                Pindahkan ke Sampah
+                            </button>
+                        </form>
+                    @endcan
+                    @can('forceDelete', $post)
+                        <form method="post" action="{{ route('cms.posts.force-delete', $post) }}"
+                            data-cms-confirm-form data-confirm-variant="danger"
+                            data-confirm-title="Hapus artikel secara permanen?"
+                            data-confirm-message="Artikel “{{ $post->title }}”, cover, dan seluruh gambar inline akan dihapus permanen serta tidak dapat dipulihkan."
+                            data-confirm-action="Hapus permanen">
+                            @csrf @method('DELETE')
+                            <button class="btn btn-sm btn-danger" type="submit">
+                                <i class="bi bi-x-circle" aria-hidden="true"></i>
+                                Hapus Permanen
+                            </button>
+                        </form>
+                    @endcan
+                </div>
             </aside>
         </div>
     </div>

@@ -55,6 +55,7 @@ Route::prefix('cms')->name('cms.')->middleware(['auth', 'active'])->group(functi
         Route::post('/posts/{post}/publish', [PostWorkflowController::class, 'publish'])->name('posts.publish');
         Route::post('/posts/{post}/return', [PostWorkflowController::class, 'return'])->name('posts.return');
         Route::post('/posts/{post}/archive', [PostWorkflowController::class, 'archive'])->name('posts.archive');
+        Route::delete('/posts/{post}/force', [CmsPostController::class, 'forceDelete'])->name('posts.force-delete');
         Route::get('/homepage', [HomepageSettingController::class, 'edit'])->name('homepage.edit');
         Route::put('/homepage', [HomepageSettingController::class, 'update'])->name('homepage.update');
         Route::resources([
