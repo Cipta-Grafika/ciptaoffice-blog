@@ -265,16 +265,16 @@ a { text-underline-offset: .2em; }
 .cms-table tbody tr:last-child td { border-bottom:0; }
 .cms-table-primary { color:var(--ink); font-size:.8rem; font-weight:700; }
 .cms-table-secondary { display:block; max-width:34rem; margin-top:.2rem; color:var(--muted); font-size:.66rem; line-height:1.45; }
-.cms-status { display:inline-flex; align-items:center; gap:.38rem; padding:.35rem .55rem; color:#4f5a56; background:#f2f1ed; border:1px solid rgba(23,32,30,.1); border-radius:999px; font-size:.62rem; font-weight:700; white-space:nowrap; }
-.cms-status::before { width:.38rem; height:.38rem; background:#6a7571; border-radius:50%; content:''; }
+.cms-status { display:inline-flex; align-items:center; gap:.46rem; padding:clamp(.42rem,.38rem + .15vw,.5rem) clamp(.68rem,.62rem + .2vw,.82rem); color:#4f5a56; background:#f2f1ed; border:1px solid rgba(23,32,30,.12); border-radius:999px; box-shadow:0 2px 6px rgba(23,32,30,.035); font-size:clamp(.69rem,.66rem + .12vw,.74rem); font-weight:800; letter-spacing:.02em; line-height:1; white-space:nowrap; }
+.cms-status::before { width:.46rem; height:.46rem; flex:0 0 auto; background:#6a7571; border:2px solid rgba(255,255,255,.75); border-radius:50%; box-shadow:0 0 0 2px rgba(106,117,113,.12); content:''; }
 .cms-status--success { color:#1e644d; background:#edf6f1; border-color:rgba(40,116,90,.18); }
-.cms-status--success::before { background:#28745a; }
+.cms-status--success::before { background:#28745a; box-shadow:0 0 0 2px rgba(40,116,90,.14); }
 .cms-status--warning { color:#805c15; background:#fbf5e5; border-color:rgba(196,145,40,.22); }
-.cms-status--warning::before { background:#c49128; }
+.cms-status--warning::before { background:#c49128; box-shadow:0 0 0 2px rgba(196,145,40,.16); }
 .cms-status--danger { color:#833a36; background:#f9eeee; border-color:rgba(156,65,61,.18); }
-.cms-status--danger::before { background:#9c413d; }
+.cms-status--danger::before { background:#9c413d; box-shadow:0 0 0 2px rgba(156,65,61,.14); }
 .cms-status--primary { color:#245b4e; background:#edf3f1; border-color:rgba(23,62,54,.16); }
-.cms-status--primary::before { background:var(--forest); }
+.cms-status--primary::before { background:var(--forest); box-shadow:0 0 0 2px rgba(23,62,54,.14); }
 .cms-table-actions { display:flex; align-items:center; justify-content:flex-end; gap:.4rem; white-space:nowrap; }
 .cms-table-actions .btn { display:inline-flex; min-width:3.5rem; align-items:center; justify-content:center; gap:.35rem; font-size:.68rem; }
 .cms-table-actions .btn i { font-size:.72rem; line-height:1; }
