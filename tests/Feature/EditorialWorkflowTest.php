@@ -41,6 +41,29 @@ class EditorialWorkflowTest extends TestCase
         $this->actingAs($other)->get(route('cms.posts.edit', $post))->assertForbidden();
     }
 
+    public function test_published_article_cannot_be_submitted_for_review_again(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $post = Post::create([
+            'author_id' => $admin->id,
+            'title' => 'Artikel Terbit',
+            'slug' => 'artikel-terbit',
+            'excerpt' => 'Ringkasan artikel terbit',
+            'body_html' => '<p>Isi artikel terbit.</p>',
+            'status' => PostStatus::Published,
+            'published_at' => now(),
+        ]);
+
+        $this->actingAs($admin)->get(route('cms.posts.edit', $post))
+            ->assertOk()
+            ->assertDontSee('Ajukan review');
+
+        $this->actingAs($admin)->post(route('cms.posts.submit', $post))
+            ->assertUnprocessable();
+
+        $this->assertSame(PostStatus::Published, $post->fresh()->status);
+    }
+
     public function test_author_can_preview_own_draft_but_cannot_preview_another_authors_draft(): void
     {
         $author = User::factory()->create();

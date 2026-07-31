@@ -16,12 +16,14 @@
                     rel="noopener noreferrer"><i class="bi bi-eye"></i>
                     <span class="cms-action-label--compact">Preview</span>
                 </a>
-                @can('submit', $post)
-                    <form method="post" action="{{ route('cms.posts.submit', $post) }}">
-                        @csrf
-                        <button class="btn btn-warning" type="submit">Ajukan review</button>
-                    </form>
-                @endcan
+                @if ($post->status->canSubmitForReview())
+                    @can('submit', $post)
+                        <form method="post" action="{{ route('cms.posts.submit', $post) }}">
+                            @csrf
+                            <button class="btn btn-warning" type="submit">Ajukan review</button>
+                        </form>
+                    @endcan
+                @endif
                 @can('admin')
                     @if ($post->status !== \App\Enums\PostStatus::Published)
                         <form method="post" action="{{ route('cms.posts.publish', $post) }}">

@@ -14,6 +14,8 @@ class PostWorkflowController extends Controller
     public function submit(Request $request, Post $post): RedirectResponse
     {
         $this->authorize('submit', $post);
+        abort_unless($post->status->canSubmitForReview(), 422);
+
         if (blank($post->excerpt) || blank($post->body_html)) {
             throw ValidationException::withMessages(['article' => 'Ringkasan dan isi artikel wajib dilengkapi sebelum diajukan.']);
         }
@@ -47,6 +49,6 @@ class PostWorkflowController extends Controller
         abort_unless($post->status === PostStatus::Published, 422);
         $post->update(['status' => PostStatus::Archived]);
 
-        return back()->with('success','Artikel diarsipkan.');
+        return back()->with('success', 'Artikel diarsipkan.');
     }
 }
