@@ -64,6 +64,32 @@ class EditorialWorkflowTest extends TestCase
         $this->assertSame(PostStatus::Published, $post->fresh()->status);
     }
 
+    public function test_article_excerpt_accepts_1000_characters_and_rejects_longer_content(): void
+    {
+        $author = User::factory()->create();
+        $post = Post::create([
+            'author_id' => $author->id,
+            'title' => 'Batas Ringkasan',
+            'slug' => 'batas-ringkasan',
+            'status' => PostStatus::Draft,
+        ]);
+        $validExcerpt = str_repeat('a', 1000);
+
+        $this->actingAs($author)->put(route('cms.posts.update', $post), [
+            'title' => 'Batas Ringkasan',
+            'excerpt' => $validExcerpt,
+            'body_html' => '<p>Isi artikel.</p>',
+        ])->assertSessionHasNoErrors();
+
+        $this->assertSame($validExcerpt, $post->fresh()->excerpt);
+
+        $this->actingAs($author)->put(route('cms.posts.update', $post), [
+            'title' => 'Batas Ringkasan',
+            'excerpt' => str_repeat('a', 1001),
+            'body_html' => '<p>Isi artikel.</p>',
+        ])->assertSessionHasErrors('excerpt');
+    }
+
     public function test_author_can_preview_own_draft_but_cannot_preview_another_authors_draft(): void
     {
         $author = User::factory()->create();

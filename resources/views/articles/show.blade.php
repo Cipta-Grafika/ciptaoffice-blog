@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @php($isPreview = $isPreview ?? false)
 @section('title', ($isPreview ? 'Preview — ' : '') . $post->title . ' — CiptaOffice')
-@section('meta_description', $post->excerpt)
+@section('meta_description', \Illuminate\Support\Str::limit($post->excerpt, 160))
 @section('canonical', route('articles.show', $post))
 @section('og_title', $post->title)
 @section('og_type', 'article')

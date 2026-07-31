@@ -7,6 +7,7 @@ use App\Models\Post;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class PublicContentTest extends TestCase
@@ -15,10 +16,12 @@ class PublicContentTest extends TestCase
 
     public function test_only_published_articles_are_public_and_searchable(): void
     {
-        $published = Post::create(['title' => 'Ergonomi kantor', 'slug' => 'ergonomi-kantor', 'excerpt' => 'Panduan kursi', 'body_html' => '<h2>Posisi duduk</h2><p>Aman</p>', 'status' => PostStatus::Published, 'published_at' => now()]);
+        $excerpt = str_repeat('Ringkasan ', 25);
+        $published = Post::create(['title' => 'Ergonomi kantor', 'slug' => 'ergonomi-kantor', 'excerpt' => $excerpt, 'body_html' => '<h2>Posisi duduk</h2><p>Aman</p>', 'status' => PostStatus::Published, 'published_at' => now()]);
         $draft = Post::create(['title' => 'Draft', 'slug' => 'draft', 'status' => PostStatus::Draft]);
         $this->get(route('articles.show', $published))
             ->assertOk()
+            ->assertSee('<meta name="description" content="'.Str::limit($excerpt, 160).'">', false)
             ->assertSee('data-article-toc', false)
             ->assertSee('Daftar isi');
         $this->get(route('articles.show', $draft))->assertNotFound();
