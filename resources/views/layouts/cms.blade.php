@@ -41,32 +41,33 @@
                 data-bs-target="#cmsSidebar" aria-label="Tutup navigasi CMS"></button>
         </div>
         <p class="cms-nav-section small text-uppercase text-white-50 letter-space mb-2">Editorial</p>
-        <nav class="nav flex-column gap-1"><a class="nav-link {{ request()->routeIs('cms.dashboard') ? 'active' : '' }}"
-                href="{{ route('cms.dashboard') }}" title="Dashboard"><i class="bi bi-grid me-2"></i><span
-                    class="cms-nav-label">Dashboard</span></a><a
-                class="nav-link {{ request()->routeIs('cms.posts.*') ? 'active' : '' }}"
-                href="{{ route('cms.posts.index') }}" title="Artikel"><i
-                    class="bi bi-file-earmark-text me-2"></i><span class="cms-nav-label">Artikel</span></a>
+        <nav class="nav flex-column gap-1">
+            <a class="nav-link {{ request()->routeIs('cms.dashboard') ? 'active' : '' }}" href="{{ route('cms.dashboard') }}" title="Dashboard">
+                <i class="bi bi-grid me-2"></i><span class="cms-nav-label">Dashboard</span>
+            </a>
+            <a class="nav-link {{ request()->routeIs('cms.posts.*') ? 'active' : '' }}" href="{{ route('cms.posts.index') }}" title="Artikel">
+                <i class="bi bi-file-earmark-text me-2"></i><span class="cms-nav-label">Artikel</span>
+            </a>
             @can('admin')
-                <a class="nav-link {{ request()->routeIs('cms.homepage.*') ? 'active' : '' }}"
-                    href="{{ route('cms.homepage.edit') }}" title="Homepage"><i
-                        class="bi bi-window me-2"></i><span class="cms-nav-label">Homepage</span></a><a
-                    class="nav-link {{ request()->routeIs('cms.testimonials.*') ? 'active' : '' }}"
-                    href="{{ route('cms.testimonials.index') }}" title="Testimonial"><i
-                        class="bi bi-chat-quote me-2"></i><span class="cms-nav-label">Testimonial</span></a>
-                <p class="cms-nav-section small text-uppercase text-white-50 letter-space mt-4 mb-2">Katalog & layanan</p><a
-                    class="nav-link {{ request()->routeIs('cms.products.*') ? 'active' : '' }}"
-                    href="{{ route('cms.products.index') }}" title="Produk"><i class="bi bi-box-seam me-2"></i><span
-                        class="cms-nav-label">Produk</span></a><a
-                    class="nav-link {{ request()->routeIs('cms.categories.*') ? 'active' : '' }}"
-                    href="{{ route('cms.categories.index') }}" title="Kategori"><i class="bi bi-tags me-2"></i><span
-                        class="cms-nav-label">Kategori</span></a><a
-                    class="nav-link {{ request()->routeIs('cms.inquiries.*') ? 'active' : '' }}"
-                    href="{{ route('cms.inquiries.index') }}" title="Inquiry"><i class="bi bi-inbox me-2"></i><span
-                        class="cms-nav-label">Inquiry</span></a><a
-                    class="nav-link {{ request()->routeIs('cms.users.*') ? 'active' : '' }}"
-                    href="{{ route('cms.users.index') }}" title="Pengguna"><i class="bi bi-people me-2"></i><span
-                        class="cms-nav-label">Pengguna</span></a>
+                <a class="nav-link {{ request()->routeIs('cms.homepage.*') ? 'active' : '' }}" href="{{ route('cms.homepage.edit') }}" title="Homepage">
+                    <i class="bi bi-window me-2"></i><span class="cms-nav-label">Homepage</span>
+                </a>
+                <a class="nav-link {{ request()->routeIs('cms.testimonials.*') ? 'active' : '' }}" href="{{ route('cms.testimonials.index') }}" title="Testimonial">
+                    <i class="bi bi-chat-quote me-2"></i><span class="cms-nav-label">Testimonial</span>
+                </a>
+                <p class="cms-nav-section small text-uppercase text-white-50 letter-space mt-4 mb-2">Katalog & layanan</p>
+                <a class="nav-link {{ request()->routeIs('cms.products.*') ? 'active' : '' }}" href="{{ route('cms.products.index') }}" title="Produk">
+                    <i class="bi bi-box-seam me-2"></i><span class="cms-nav-label">Produk</span>
+                </a>
+                <a class="nav-link {{ request()->routeIs('cms.categories.*') ? 'active' : '' }}" href="{{ route('cms.categories.index') }}" title="Kategori">
+                    <i class="bi bi-tags me-2"></i><span class="cms-nav-label">Kategori</span>
+                </a>
+                <a class="nav-link {{ request()->routeIs('cms.inquiries.*') ? 'active' : '' }}" href="{{ route('cms.inquiries.index') }}" title="Inquiry">
+                    <i class="bi bi-inbox me-2"></i><span class="cms-nav-label">Inquiry</span>
+                </a>
+                <a class="nav-link {{ request()->routeIs('cms.users.*') ? 'active' : '' }}" href="{{ route('cms.users.index') }}" title="Pengguna">
+                    <i class="bi bi-people me-2"></i><span class="cms-nav-label">Pengguna</span>
+                </a>
             @endcan
         </nav>
     </aside>
