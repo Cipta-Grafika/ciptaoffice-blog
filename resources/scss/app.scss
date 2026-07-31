@@ -128,7 +128,10 @@ a { text-underline-offset: .2em; }
 .page-hero--preview { padding-top:4rem; }
 .page-title { color:var(--ink); font-size:clamp(3.5rem,7vw,6.5rem); line-height:.88; }
 .prose { max-width:48rem; margin-inline:auto; font-size:1.05rem; line-height:1.85; }
-.prose h2,.prose h3 { margin-top:1.75em; color:var(--ink); scroll-margin-top:calc(var(--site-nav-height) + 1.5rem); }.prose > :first-child{margin-top:0}.prose img{max-width:100%;height:auto}.prose blockquote{padding-left:1.3rem;border-left:3px solid var(--brass);color:var(--muted)}
+.prose h1,.prose h2,.prose h3 { margin-top:1.75em; color:var(--ink); scroll-margin-top:calc(var(--site-nav-height) + 1.5rem); }.prose > :first-child{margin-top:0}.prose img{max-width:100%;height:auto}.prose blockquote{padding-left:1.3rem;border-left:3px solid var(--brass);color:var(--muted)}
+.prose .ql-align-center { text-align:center; }
+.prose .ql-align-right { text-align:right; }
+.prose .ql-align-justify { text-align:justify; }
 @for $level from 1 through 8 {
     .prose .ql-indent-#{$level} { margin-left:min(#{$level * 2}rem,45%); }
 }
@@ -372,6 +375,50 @@ a { text-underline-offset: .2em; }
 .form-label { color:#394440; font-size:.78rem; font-weight:700; letter-spacing:.05em; text-transform:uppercase; }
 .ql-editor { min-height:22rem; background:#fff; font-family:'Manrope',sans-serif; font-size:1rem; }
 .ql-toolbar.ql-snow,.ql-container.ql-snow { border-color:#ced4da!important; }
+.ql-toolbar.ql-snow {
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:.35rem;
+    padding:.55rem .65rem;
+    background:#fff;
+}
+.ql-toolbar.ql-snow .ql-formats {
+    display:inline-flex;
+    position:relative;
+    align-items:center;
+    gap:.08rem;
+    margin:0!important;
+    padding-right:.55rem;
+}
+.ql-toolbar.ql-snow .ql-formats:not(:last-child)::after {
+    position:absolute;
+    width:1px;
+    height:1.45rem;
+    right:0;
+    top:50%;
+    background:rgba(23,32,30,.16);
+    content:"";
+    transform:translateY(-50%);
+}
+.ql-toolbar.ql-snow button {
+    display:grid;
+    width:2rem;
+    height:2rem;
+    padding:.35rem;
+    place-items:center;
+    border-radius:.25rem;
+    transition:color .18s ease,background-color .18s ease;
+}
+.ql-toolbar.ql-snow button:hover,
+.ql-toolbar.ql-snow button:focus-visible {
+    color:var(--forest);
+    background:rgba(23,62,54,.08);
+}
+.ql-toolbar.ql-snow button.ql-active {
+    color:var(--forest);
+    background:rgba(164,126,79,.13);
+}
 
 .reveal { opacity:0; transform:translateY(18px); transition:opacity .65s ease,transform .65s ease; }.reveal.is-visible{opacity:1;transform:none}
 @media (prefers-reduced-motion: reduce) { html{scroll-behavior:auto}*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}.reveal{opacity:1;transform:none} }
