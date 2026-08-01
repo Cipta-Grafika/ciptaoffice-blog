@@ -19,7 +19,7 @@
                         <label class="form-label">Kategori</label>
                         <select class="form-select @error('product_category_id') is-invalid @enderror" name="product_category_id" required>
                             @foreach ($categories as $category)
-                                <option value="{{ $category->id }}" @selected(old('product_category_id', $product->product_category_id) === $category->id)>{{ $category->name }}</option>
+                                <option value="{{ $category->id }}" @selected((string) old('product_category_id', $product->product_category_id) === (string) $category->id)>{{ $category->name }}</option>
                             @endforeach
                         </select>
                         @error('product_category_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
