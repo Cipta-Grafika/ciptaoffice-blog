@@ -2,6 +2,10 @@
 @section('title', $product->name . ' — CiptaOffice')
 @section('meta_description', $product->summary)
 @section('canonical', route('products.show', $product))
+@if ($product->cover_image_path)
+    @section('og_image', asset('storage/' . $product->cover_image_path))
+    @section('og_image_alt', $product->cover_image_alt ?: $product->name)
+@endif
 @section('content')
     <section class="page-hero">
         <div class="container">
