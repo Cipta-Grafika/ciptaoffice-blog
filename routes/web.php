@@ -64,6 +64,10 @@ Route::prefix('cms')->name('cms.')->middleware(['auth', 'active'])->group(functi
             'categories' => ProductCategoryController::class,
             'products' => CmsProductController::class,
         ], ['except' => ['show']]);
+        Route::delete('/products/{product}/thumbnail', [CmsProductController::class, 'destroyThumbnail'])
+            ->name('products.thumbnail.destroy');
+        Route::delete('/products/{product}/images/{image}', [CmsProductController::class, 'destroyImage'])
+            ->name('products.images.destroy');
         Route::get('/inquiries', [CmsInquiryController::class, 'index'])->name('inquiries.index');
         Route::get('/inquiries/{inquiry}', [CmsInquiryController::class, 'show'])->name('inquiries.show');
         Route::put('/inquiries/{inquiry}', [CmsInquiryController::class, 'update'])->name('inquiries.update');
