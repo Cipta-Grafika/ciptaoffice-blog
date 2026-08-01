@@ -89,12 +89,13 @@
             </div>
             <div class="cms-topbar-tools">
                 <div class="dropdown">
-                    <button class="cms-topbar-icon-button" id="cmsSearchMenuButton" type="button"
+                    {{-- Feature coming soon --}}
+                    {{-- <button class="cms-topbar-icon-button" id="cmsSearchMenuButton" type="button"
                         data-bs-toggle="dropdown" data-bs-auto-close="outside" data-bs-offset="0,8"
                         data-bs-boundary="viewport" aria-expanded="false"
                         aria-label="Cari menu CMS" title="Cari menu">
                         <x-cms-icon name="search" />
-                    </button>
+                    </button> --}}
                     <div class="dropdown-menu dropdown-menu-end cms-topbar-popover cms-search-menu"
                         aria-labelledby="cmsSearchMenuButton">
                         <label class="form-label mb-2" for="cmsNavigationSearch">Cari menu CMS</label>
