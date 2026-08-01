@@ -1,10 +1,14 @@
 @extends('layouts.app')
 @php($isPreview = $isPreview ?? false)
 @section('title', ($isPreview ? 'Preview — ' : '') . $post->title . ' — CiptaOffice')
-@section('meta_description', $post->excerpt)
+@section('meta_description', \Illuminate\Support\Str::limit($post->excerpt, 160))
 @section('canonical', route('articles.show', $post))
 @section('og_title', $post->title)
 @section('og_type', 'article')
+@if ($post->cover_image_path)
+    @section('og_image', asset('storage/' . $post->cover_image_path))
+    @section('og_image_alt', $post->cover_image_alt ?: $post->title)
+@endif
 @if ($isPreview)
     @push('head')
         <meta name="robots" content="noindex,nofollow">

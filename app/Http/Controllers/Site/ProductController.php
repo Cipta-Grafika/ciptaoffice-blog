@@ -22,7 +22,7 @@ class ProductController extends Controller
     public function show(Product $product): View
     {
         abort_unless($product->is_active, 404);
-        $product->load('category');
+        $product->load('category', 'images');
         $message = urlencode('Halo CiptaOffice, saya ingin menanyakan ketersediaan '.$product->name.'. Jika produk ini tidak tersedia, mohon rekomendasikan alternatif berkualitas setara.');
         $whatsapp = 'https://wa.me/'.preg_replace('/\D/', '', config('ciptaoffice.whatsapp_number')).'?text='.$message;
 

@@ -13,6 +13,10 @@
     <meta property="og:description" content="@yield('meta_description', 'Furnitur dan perlengkapan kantor dengan rekomendasi alternatif berkualitas setara.')">
     <meta property="og:url" content="@yield('canonical', url()->current())">
     <meta property="og:type" content="@yield('og_type', 'website')">
+    @hasSection('og_image')
+        <meta property="og:image" content="@yield('og_image')">
+        <meta property="og:image:alt" content="@yield('og_image_alt')">
+    @endif
     @vite(['resources/scss/app.scss', 'resources/js/app.js'])
     @stack('head')
 </head>
@@ -27,10 +31,11 @@
     <header class="site-header" data-site-header>
         <div class="site-top-header">
             <div class="container d-flex align-items-center justify-content-between gap-3">
-                <a class="top-header-logo" href="{{ route('home') }}" aria-label="CiptaOffice — Beranda">
-                    <img class="top-header-logo-image" src="{{ asset('images/logos/ciptaoffice-logo-brand.png') }}"
+                {{-- <a class="top-header-logo" href="{{ route('home') }}" aria-label="CiptaOffice — Beranda">
+                    <img class="top-header-logo-image" src="{{ asset('images/logos/ciptaoffice-logo.png') }}"
                         width="867" height="60" alt="CiptaOffice">
-                </a>
+                </a> --}}
+                <div></div>
                 <div class="site-contact-list" aria-label="Kontak CiptaOffice">
                     <a href="tel:{{ $contactPhoneHref }}">
                         <i class="bi bi-telephone-fill" aria-hidden="true"></i>
@@ -48,8 +53,12 @@
         <nav class="navbar navbar-expand-lg site-nav" aria-label="Navigasi utama">
             <div class="container py-2">
                 <div class="site-nav-context" aria-label="Bidang layanan CiptaOffice">
-                    <span class="site-nav-context-line" aria-hidden="true"></span>
-                    <span>Solusi kebutuhan kantor</span>
+                    {{-- <span class="site-nav-context-line" aria-hidden="true"></span>
+                    <span>Solusi kebutuhan kantor</span> --}}
+                    <a class="top-header-logo" href="{{ route('home') }}" aria-label="CiptaOffice — Beranda">
+                        <img class="top-header-logo-image" src="{{ asset('images/logos/ciptaoffice-brand.svg') }}"
+                            width="867" height="60" alt="CiptaOffice">
+                    </a>
                 </div>
                 <button class="navbar-toggler border-0 ms-auto" type="button" data-bs-toggle="collapse"
                     data-bs-target="#siteMenu" aria-controls="siteMenu" aria-expanded="false"
@@ -76,28 +85,14 @@
         @if (session('success'))
             <div class="container position-relative" style="z-index:1031">
                 <div class="alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-4 shadow"
-                    role="status">{{ session('success') }}<button type="button" class="btn-close"
-                        data-bs-dismiss="alert"></button></div>
+                    role="status">{{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
             </div>
         @endif
         @yield('content')
     </main>
-    <footer class="site-footer">
-        <div class="container">
-            <div class="row g-4 align-items-end">
-                <div class="col-lg-6">
-                    <div class="d-flex align-items-center gap-2 mb-3"><span
-                            class="brand-mark bg-light text-dark">CO</span><strong>CiptaOffice</strong></div>
-                    <p class="mb-0 text-white-50">Partner pengadaan kebutuhan kantor dan alternatif produk berkualitas
-                        setara.</p>
-                </div>
-                <div class="col-lg-6 text-lg-end">
-                    {{-- <p class="small text-uppercase letter-space text-white-50 mb-2">Informasi footer akan dilengkapi</p> --}}
-                    <p class="mb-0 small">&copy; {{ date('Y') }} CiptaOffice. Seluruh hak dilindungi.</p>
-                </div>
-            </div>
-        </div>
-    </footer>
+    @include('partials.site-footer')
     @stack('scripts')
 </body>
 

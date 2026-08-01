@@ -4,7 +4,6 @@
 
 @section('content')
     <div class="cms-page">
-        <a class="cms-back-link" href="{{ route('cms.inquiries.index') }}"><i class="bi bi-arrow-left"></i> Daftar inquiry</a>
         <x-cms-page-header eyebrow="Pesan pelanggan" :title="$inquiry->name"
             description="Tinjau kebutuhan pelanggan dan perbarui progres tindak lanjutnya." />
         <div class="cms-detail-grid">

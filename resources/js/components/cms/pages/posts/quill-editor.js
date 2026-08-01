@@ -11,13 +11,19 @@ export function initQuillEditors(root = document) {
             modules: {
                 toolbar: {
                     container: [
-                        [{ header: [2, 3, false] }],
+                        [{ header: 1 }, { header: 2 }, { header: 3 }],
                         ['bold', 'italic', 'underline', 'strike'],
                         [
-                            { list: 'ordered' },
                             { list: 'bullet' },
+                            { list: 'ordered' },
                             { indent: '-1' },
                             { indent: '+1' },
+                        ],
+                        [
+                            { align: '' },
+                            { align: 'center' },
+                            { align: 'right' },
+                            { align: 'justify' },
                         ],
                         ['blockquote', 'link', 'image'],
                         ['clean'],

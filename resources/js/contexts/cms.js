@@ -14,6 +14,7 @@ const globalInitializers = [
 
 const pageLoaders = {
     'posts-form': () => import('../components/cms/pages/posts/form'),
+    'products-form': () => import('../components/cms/pages/products/form'),
 };
 
 export async function init() {

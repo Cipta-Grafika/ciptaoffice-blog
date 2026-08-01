@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
 use App\Services\HtmlSanitizer;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -29,13 +30,13 @@ class PostController extends Controller
         if ($request->ajax()) {
             return view('cms.posts.partials.table', [
                 'posts' => $query->paginate(15)->withQueryString(),
-                'statuses' => PostStatus::cases()
+                'statuses' => PostStatus::cases(),
             ]);
         }
 
         return view('cms.posts.index', [
             'posts' => $query->paginate(15)->withQueryString(),
-            'statuses' => PostStatus::cases()
+            'statuses' => PostStatus::cases(),
         ]);
     }
 
@@ -107,6 +108,14 @@ class PostController extends Controller
         return redirect()->route('cms.posts.index')->with('success', 'Artikel dipindahkan ke sampah.');
     }
 
+    public function forceDelete(Post $post): RedirectResponse
+    {
+        $this->authorize('forceDelete', $post);
+        $post->forceDelete();
+
+        return redirect()->route('cms.posts.index')->with('success', 'Artikel dihapus secara permanen.');
+    }
+
     private function uniqueSlug(string $title): string
     {
         $base = Str::slug($title) ?: Str::random(8);
@@ -122,7 +131,7 @@ class PostController extends Controller
     private function cleanUnusedMedia(Post $post): void
     {
         $post->media()->get()->each(function ($media) use ($post) {
-            /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+            /** @var FilesystemAdapter $disk */
             $disk = Storage::disk('public');
 
             if (! str_contains($post->body_html ?? '', $disk->url($media->path))) {

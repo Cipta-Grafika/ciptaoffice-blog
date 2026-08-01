@@ -48,10 +48,12 @@ class Post extends Model
 
     protected static function booted(): void
     {
-        static::forceDeleted(function (Post $post): void {
+        static::forceDeleting(function (Post $post): void {
             if ($post->cover_image_path) {
                 Storage::disk('public')->delete($post->cover_image_path);
-            } $post->media()->each(fn (PostMedia $media) => $media->delete());
+            }
+
+            $post->media()->each(fn (PostMedia $media) => $media->delete());
         });
     }
 }

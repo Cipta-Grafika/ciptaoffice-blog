@@ -38,6 +38,11 @@ class PostPolicy
         return $this->update($user, $post);
     }
 
+    public function forceDelete(User $user, Post $post): bool
+    {
+        return $user->isAdmin();
+    }
+
     public function submit(User $user, Post $post): bool
     {
         return $this->update($user, $post);

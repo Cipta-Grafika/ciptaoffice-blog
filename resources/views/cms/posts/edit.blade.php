@@ -6,9 +6,6 @@
 
 @section('content')
     <div class="cms-page">
-        <a class="cms-back-link" href="{{ route('cms.posts.index') }}">
-            <i class="bi bi-arrow-left"></i> Daftar artikel
-        </a>
         <x-cms-page-header eyebrow="Editor artikel" :title="$post->title"
             description="Perbarui naskah, visual, dan status artikel sebelum dipublikasikan.">
             <x-slot:actions>
@@ -16,12 +13,14 @@
                     rel="noopener noreferrer"><i class="bi bi-eye"></i>
                     <span class="cms-action-label--compact">Preview</span>
                 </a>
-                @can('submit', $post)
-                    <form method="post" action="{{ route('cms.posts.submit', $post) }}">
-                        @csrf
-                        <button class="btn btn-warning" type="submit">Ajukan review</button>
-                    </form>
-                @endcan
+                @if ($post->status->canSubmitForReview())
+                    @can('submit', $post)
+                        <form method="post" action="{{ route('cms.posts.submit', $post) }}">
+                            @csrf
+                            <button class="btn btn-warning" type="submit">Ajukan review</button>
+                        </form>
+                    @endcan
+                @endif
                 @can('admin')
                     @if ($post->status !== \App\Enums\PostStatus::Published)
                         <form method="post" action="{{ route('cms.posts.publish', $post) }}">
@@ -63,8 +62,9 @@
                     </div>
                     <div>
                         <label class="form-label" for="excerpt">Ringkasan</label>
-                        <textarea class="form-control @error('excerpt') is-invalid @enderror" id="excerpt" name="excerpt" rows="3" maxlength="500" required>{{ old('excerpt', $post->excerpt) }}</textarea>
+                        <textarea class="form-control @error('excerpt') is-invalid @enderror" id="excerpt" name="excerpt" rows="5" maxlength="1000" aria-describedby="excerpt_help" required>{{ old('excerpt', $post->excerpt) }}</textarea>
                         @error('excerpt')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        <div class="form-text" id="excerpt_help">Maksimum 1.000 karakter.</div>
                     </div>
                 </section>
                 <section class="cms-form-section">
@@ -168,15 +168,34 @@
                         </form>
                     @endif
                 @endcan
-                @can('delete', $post)
-                    <form class="cms-danger-action" method="post" action="{{ route('cms.posts.destroy', $post) }}"
-                        data-cms-confirm-form data-confirm-variant="danger" data-confirm-title="Hapus artikel?"
-                        data-confirm-message="Artikel “{{ $post->title }}” akan dipindahkan ke sampah."
-                        data-confirm-action="Pindahkan ke sampah">
-                        @csrf @method('DELETE')
-                        <button class="btn btn-link text-danger px-0" type="submit">Hapus artikel</button>
-                    </form>
-                @endcan
+                <div class="cms-danger-actions" aria-label="Tindakan penghapusan artikel">
+                    @can('delete', $post)
+                        <form method="post" action="{{ route('cms.posts.destroy', $post) }}"
+                            data-cms-confirm-form data-confirm-variant="warning"
+                            data-confirm-title="Pindahkan artikel ke trash?"
+                            data-confirm-message="Artikel “{{ $post->title }}” akan dipindahkan ke sampah."
+                            data-confirm-action="Pindahkan ke sampah">
+                            @csrf @method('DELETE')
+                            <button class="btn btn-sm btn-outline-danger" type="submit">
+                                <i class="bi bi-trash" aria-hidden="true"></i>
+                                Pindahkan ke Sampah
+                            </button>
+                        </form>
+                    @endcan
+                    @can('forceDelete', $post)
+                        <form method="post" action="{{ route('cms.posts.force-delete', $post) }}"
+                            data-cms-confirm-form data-confirm-variant="danger"
+                            data-confirm-title="Hapus artikel secara permanen?"
+                            data-confirm-message="Artikel “{{ $post->title }}”, cover, dan seluruh gambar inline akan dihapus permanen serta tidak dapat dipulihkan."
+                            data-confirm-action="Hapus permanen">
+                            @csrf @method('DELETE')
+                            <button class="btn btn-sm btn-danger" type="submit">
+                                <i class="bi bi-x-circle" aria-hidden="true"></i>
+                                Hapus Permanen
+                            </button>
+                        </form>
+                    @endcan
+                </div>
             </aside>
         </div>
     </div>

@@ -41,32 +41,33 @@
                 data-bs-target="#cmsSidebar" aria-label="Tutup navigasi CMS"></button>
         </div>
         <p class="cms-nav-section small text-uppercase text-white-50 letter-space mb-2">Editorial</p>
-        <nav class="nav flex-column gap-1"><a class="nav-link {{ request()->routeIs('cms.dashboard') ? 'active' : '' }}"
-                href="{{ route('cms.dashboard') }}" title="Dashboard"><i class="bi bi-grid me-2"></i><span
-                    class="cms-nav-label">Dashboard</span></a><a
-                class="nav-link {{ request()->routeIs('cms.posts.*') ? 'active' : '' }}"
-                href="{{ route('cms.posts.index') }}" title="Artikel"><i
-                    class="bi bi-file-earmark-text me-2"></i><span class="cms-nav-label">Artikel</span></a>
+        <nav class="nav flex-column gap-1">
+            <a class="nav-link {{ request()->routeIs('cms.dashboard') ? 'active' : '' }}" href="{{ route('cms.dashboard') }}" title="Dashboard">
+                <i class="bi bi-grid me-2"></i><span class="cms-nav-label">Dashboard</span>
+            </a>
+            <a class="nav-link {{ request()->routeIs('cms.posts.*') ? 'active' : '' }}" href="{{ route('cms.posts.index') }}" title="Artikel">
+                <i class="bi bi-file-earmark-text me-2"></i><span class="cms-nav-label">Artikel</span>
+            </a>
             @can('admin')
-                <a class="nav-link {{ request()->routeIs('cms.homepage.*') ? 'active' : '' }}"
-                    href="{{ route('cms.homepage.edit') }}" title="Homepage"><i
-                        class="bi bi-window me-2"></i><span class="cms-nav-label">Homepage</span></a><a
-                    class="nav-link {{ request()->routeIs('cms.testimonials.*') ? 'active' : '' }}"
-                    href="{{ route('cms.testimonials.index') }}" title="Testimonial"><i
-                        class="bi bi-chat-quote me-2"></i><span class="cms-nav-label">Testimonial</span></a>
-                <p class="cms-nav-section small text-uppercase text-white-50 letter-space mt-4 mb-2">Katalog & layanan</p><a
-                    class="nav-link {{ request()->routeIs('cms.products.*') ? 'active' : '' }}"
-                    href="{{ route('cms.products.index') }}" title="Produk"><i class="bi bi-box-seam me-2"></i><span
-                        class="cms-nav-label">Produk</span></a><a
-                    class="nav-link {{ request()->routeIs('cms.categories.*') ? 'active' : '' }}"
-                    href="{{ route('cms.categories.index') }}" title="Kategori"><i class="bi bi-tags me-2"></i><span
-                        class="cms-nav-label">Kategori</span></a><a
-                    class="nav-link {{ request()->routeIs('cms.inquiries.*') ? 'active' : '' }}"
-                    href="{{ route('cms.inquiries.index') }}" title="Inquiry"><i class="bi bi-inbox me-2"></i><span
-                        class="cms-nav-label">Inquiry</span></a><a
-                    class="nav-link {{ request()->routeIs('cms.users.*') ? 'active' : '' }}"
-                    href="{{ route('cms.users.index') }}" title="Pengguna"><i class="bi bi-people me-2"></i><span
-                        class="cms-nav-label">Pengguna</span></a>
+                <a class="nav-link {{ request()->routeIs('cms.homepage.*') ? 'active' : '' }}" href="{{ route('cms.homepage.edit') }}" title="Homepage">
+                    <i class="bi bi-window me-2"></i><span class="cms-nav-label">Homepage</span>
+                </a>
+                <a class="nav-link {{ request()->routeIs('cms.testimonials.*') ? 'active' : '' }}" href="{{ route('cms.testimonials.index') }}" title="Testimonial">
+                    <i class="bi bi-chat-quote me-2"></i><span class="cms-nav-label">Testimonial</span>
+                </a>
+                <p class="cms-nav-section small text-uppercase text-white-50 letter-space mt-4 mb-2">Katalog & layanan</p>
+                <a class="nav-link {{ request()->routeIs('cms.products.*') ? 'active' : '' }}" href="{{ route('cms.products.index') }}" title="Produk">
+                    <i class="bi bi-box-seam me-2"></i><span class="cms-nav-label">Produk</span>
+                </a>
+                <a class="nav-link {{ request()->routeIs('cms.categories.*') ? 'active' : '' }}" href="{{ route('cms.categories.index') }}" title="Kategori">
+                    <i class="bi bi-tags me-2"></i><span class="cms-nav-label">Kategori</span>
+                </a>
+                <a class="nav-link {{ request()->routeIs('cms.inquiries.*') ? 'active' : '' }}" href="{{ route('cms.inquiries.index') }}" title="Inquiry">
+                    <i class="bi bi-inbox me-2"></i><span class="cms-nav-label">Inquiry</span>
+                </a>
+                <a class="nav-link {{ request()->routeIs('cms.users.*') ? 'active' : '' }}" href="{{ route('cms.users.index') }}" title="Pengguna">
+                    <i class="bi bi-people me-2"></i><span class="cms-nav-label">Pengguna</span>
+                </a>
             @endcan
         </nav>
     </aside>
@@ -88,12 +89,13 @@
             </div>
             <div class="cms-topbar-tools">
                 <div class="dropdown">
-                    <button class="cms-topbar-icon-button" id="cmsSearchMenuButton" type="button"
+                    {{-- Feature coming soon --}}
+                    {{-- <button class="cms-topbar-icon-button" id="cmsSearchMenuButton" type="button"
                         data-bs-toggle="dropdown" data-bs-auto-close="outside" data-bs-offset="0,8"
                         data-bs-boundary="viewport" aria-expanded="false"
                         aria-label="Cari menu CMS" title="Cari menu">
                         <x-cms-icon name="search" />
-                    </button>
+                    </button> --}}
                     <div class="dropdown-menu dropdown-menu-end cms-topbar-popover cms-search-menu"
                         aria-labelledby="cmsSearchMenuButton">
                         <label class="form-label mb-2" for="cmsNavigationSearch">Cari menu CMS</label>
@@ -172,33 +174,42 @@
                             </span>
                         </div>
                         <div class="cms-account-actions">
-                            <button class="cms-account-menu-item" type="button" disabled>
-                                <span class="cms-account-menu-icon"><i class="bi bi-person"
-                                        aria-hidden="true"></i></span>
-                                <span class="cms-account-menu-copy">
-                                    <strong>Profil</strong>
-                                    <small>Kelola informasi profil</small>
+                            <div class="cms-account-actions__content" aria-hidden="true" inert>
+                                <button class="cms-account-menu-item" type="button" disabled>
+                                    <span class="cms-account-menu-icon"><i class="bi bi-person"
+                                            aria-hidden="true"></i></span>
+                                    <span class="cms-account-menu-copy">
+                                        <strong>Profil</strong>
+                                        <small>Kelola informasi profil</small>
+                                    </span>
+                                    <i class="bi bi-chevron-right cms-account-menu-arrow" aria-hidden="true"></i>
+                                </button>
+                                <button class="cms-account-menu-item" type="button" disabled>
+                                    <span class="cms-account-menu-icon"><i class="bi bi-clock-history"
+                                            aria-hidden="true"></i></span>
+                                    <span class="cms-account-menu-copy">
+                                        <strong>Riwayat</strong>
+                                        <small>Lihat aktivitas editorial</small>
+                                    </span>
+                                    <i class="bi bi-chevron-right cms-account-menu-arrow" aria-hidden="true"></i>
+                                </button>
+                                <button class="cms-account-menu-item" type="button" disabled>
+                                    <span class="cms-account-menu-icon"><i class="bi bi-gear"
+                                            aria-hidden="true"></i></span>
+                                    <span class="cms-account-menu-copy">
+                                        <strong>Pengaturan</strong>
+                                        <small>Kelola preferensi akun</small>
+                                    </span>
+                                    <i class="bi bi-chevron-right cms-account-menu-arrow" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                            <div class="cms-account-actions__notice" role="status">
+                                <i class="bi bi-clock-history" aria-hidden="true"></i>
+                                <span>
+                                    <strong>Segera hadir</strong>
+                                    <small>Fitur akun akan ditambahkan nanti.</small>
                                 </span>
-                                <i class="bi bi-chevron-right cms-account-menu-arrow" aria-hidden="true"></i>
-                            </button>
-                            <button class="cms-account-menu-item" type="button" disabled>
-                                <span class="cms-account-menu-icon"><i class="bi bi-clock-history"
-                                        aria-hidden="true"></i></span>
-                                <span class="cms-account-menu-copy">
-                                    <strong>Riwayat</strong>
-                                    <small>Lihat aktivitas editorial</small>
-                                </span>
-                                <i class="bi bi-chevron-right cms-account-menu-arrow" aria-hidden="true"></i>
-                            </button>
-                            <button class="cms-account-menu-item" type="button" disabled>
-                                <span class="cms-account-menu-icon"><i class="bi bi-gear"
-                                        aria-hidden="true"></i></span>
-                                <span class="cms-account-menu-copy">
-                                    <strong>Pengaturan</strong>
-                                    <small>Kelola preferensi akun</small>
-                                </span>
-                                <i class="bi bi-chevron-right cms-account-menu-arrow" aria-hidden="true"></i>
-                            </button>
+                            </div>
                         </div>
                         <div class="cms-account-divider"></div>
                         <form method="post" action="{{ route('cms.logout') }}">

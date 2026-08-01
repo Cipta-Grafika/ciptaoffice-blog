@@ -6,7 +6,6 @@
 
 @section('content')
     <div class="cms-page cms-page--narrow">
-        <a class="cms-back-link" href="{{ route('cms.posts.index') }}"><i class="bi bi-arrow-left"></i> Daftar artikel</a>
         <x-cms-page-header eyebrow="Langkah pertama" title="Buat artikel baru"
             description="Mulai dengan judul yang jelas. Sistem akan menyiapkan draft dan slug unik untuk dilengkapi pada editor berikutnya." />
         <form class="cms-form-surface" method="post" action="{{ route('cms.posts.store') }}">

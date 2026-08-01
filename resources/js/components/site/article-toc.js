@@ -8,7 +8,7 @@ export function initArticleToc(root = document) {
 
         if (!content || !toc || !list || !panel || !toggle) return;
 
-        const headings = [...content.querySelectorAll('h2, h3')];
+        const headings = [...content.querySelectorAll('h1, h2, h3')];
         if (headings.length === 0) {
             toc.remove();
             return;

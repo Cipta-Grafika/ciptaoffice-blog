@@ -31,4 +31,9 @@ enum PostStatus: string
             self::Archived => 'dark',
         };
     }
+
+    public function canSubmitForReview(): bool
+    {
+        return in_array($this, [self::Draft, self::Returned], true);
+    }
 }
