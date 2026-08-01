@@ -13,10 +13,54 @@
                     <div class="d-flex flex-wrap gap-2 mt-4"><a class="btn btn-primary btn-lg" href="{{ $whatsapp }}" target="_blank" rel="noopener noreferrer"><i class="bi bi-whatsapp me-2"></i>Tanyakan ketersediaan</a><a class="btn btn-outline-dark btn-lg" href="{{ route('contact.create', ['product' => $product->id]) }}">Kirim inquiry</a></div>
                 </div>
                 <div class="col-lg-6">
-                    <div class="card-visual" style="height:30rem">
-                        @if ($product->cover_image_path)
-                            <img src="{{ asset('storage/' . $product->cover_image_path) }}"
-                            alt="{{ $product->cover_image_alt }}">@else<i class="bi bi-lamp display-1"></i>
+                    @php($galleryCount = ($product->cover_image_path ? 1 : 0) + $product->images->count())
+                    <div id="productGallery{{ $product->id }}" class="carousel slide product-gallery"
+                        data-bs-touch="true" aria-label="Galeri {{ $product->name }}">
+                        <div class="carousel-inner card-visual product-gallery-stage">
+                            @if ($product->cover_image_path)
+                                <div class="carousel-item active">
+                                    <img src="{{ asset('storage/' . $product->cover_image_path) }}"
+                                        alt="{{ $product->cover_image_alt }}">
+                                    @if ($galleryCount > 1)
+                                        <span class="product-gallery-index">01 / {{ str_pad($galleryCount, 2, '0', STR_PAD_LEFT) }}</span>
+                                    @endif
+                                </div>
+                                @foreach ($product->images as $image)
+                                    <div class="carousel-item">
+                                        <img src="{{ asset('storage/' . $image->path) }}"
+                                            alt="{{ $image->alt_text }}" loading="lazy">
+                                        <span class="product-gallery-index">{{ str_pad($loop->iteration + 1, 2, '0', STR_PAD_LEFT) }} / {{ str_pad($galleryCount, 2, '0', STR_PAD_LEFT) }}</span>
+                                    </div>
+                                @endforeach
+                            @else
+                                <div class="carousel-item active">
+                                    <div class="product-gallery-placeholder">
+                                        <i class="bi bi-lamp display-1" aria-hidden="true"></i>
+                                        <span>Visual produk segera tersedia</span>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+
+                        @if ($galleryCount > 1)
+                            <div class="carousel-indicators product-gallery-indicators">
+                                @for ($index = 0; $index < $galleryCount; $index++)
+                                    <button type="button" data-bs-target="#productGallery{{ $product->id }}"
+                                        data-bs-slide-to="{{ $index }}" @class(['active' => $index === 0])
+                                        @if ($index === 0) aria-current="true" @endif
+                                        aria-label="Tampilkan gambar {{ $index + 1 }}"></button>
+                                @endfor
+                            </div>
+                            <button class="carousel-control-prev product-gallery-control" type="button"
+                                data-bs-target="#productGallery{{ $product->id }}" data-bs-slide="prev">
+                                <i class="bi bi-arrow-left" aria-hidden="true"></i>
+                                <span class="visually-hidden">Gambar sebelumnya</span>
+                            </button>
+                            <button class="carousel-control-next product-gallery-control" type="button"
+                                data-bs-target="#productGallery{{ $product->id }}" data-bs-slide="next">
+                                <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                                <span class="visually-hidden">Gambar berikutnya</span>
+                            </button>
                         @endif
                     </div>
                 </div>
