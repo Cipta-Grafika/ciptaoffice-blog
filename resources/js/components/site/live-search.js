@@ -1,16 +1,16 @@
-export function initProductSearch(root = document) {
-    root.querySelectorAll('[data-product-search-form]').forEach((form) => {
-        const input = form.querySelector('[data-product-search-input]');
-        const clearButton = form.querySelector('[data-product-search-clear]');
-        const categoryInput = form.querySelector('[data-product-search-category]');
-        const catalog = form.parentElement.querySelector('[data-product-catalog]');
-        const status = form.parentElement.querySelector('[data-product-search-status]');
+export function initLiveSearch(root = document) {
+    root.querySelectorAll('[data-live-search-form]').forEach((form) => {
+        const input = form.querySelector('[data-live-search-input]');
+        const clearButton = form.querySelector('[data-live-search-clear]');
+        const parameterInputs = [...form.querySelectorAll('[data-live-search-param]')];
+        const catalog = form.parentElement.querySelector('[data-live-search-results]');
+        const status = form.parentElement.querySelector('[data-live-search-status]');
 
-        if (!input || !clearButton || !categoryInput || !catalog || !status) {
+        if (!input || !clearButton || !catalog || !status) {
             return;
         }
 
-        const delay = Number(form.dataset.productSearchDelay) || 500;
+        const delay = Number(form.dataset.liveSearchDelay) || 500;
         let timeoutId;
         let composing = false;
         let activeController;
@@ -31,26 +31,27 @@ export function initProductSearch(root = document) {
 
         const syncForm = (url) => {
             const query = url.searchParams.get('q') || '';
-            const category = url.searchParams.get('category') || '';
 
             input.value = query;
             input.defaultValue = query;
-            categoryInput.value = category;
-            categoryInput.disabled = !category;
+            parameterInputs.forEach((parameterInput) => {
+                const value = url.searchParams.get(parameterInput.name) || '';
+                parameterInput.value = value;
+                parameterInput.disabled = !value;
+            });
             updateClearButton();
         };
 
         const buildSearchUrl = () => {
             const url = new URL(form.action, window.location.href);
-            const query = input.value.trim();
-            const category = categoryInput.disabled ? '' : categoryInput.value;
+            const formData = new FormData(form);
 
-            if (query) {
-                url.searchParams.set('q', query);
-            }
-            if (category) {
-                url.searchParams.set('category', category);
-            }
+            formData.forEach((value, key) => {
+                const normalizedValue = String(value).trim();
+                if (normalizedValue) {
+                    url.searchParams.set(key, normalizedValue);
+                }
+            });
 
             return url;
         };
@@ -60,7 +61,7 @@ export function initProductSearch(root = document) {
             const controller = new AbortController();
             activeController = controller;
             setLoading(true);
-            setStatus('Memperbarui hasil produk...');
+            setStatus('Memperbarui hasil...');
 
             try {
                 const response = await fetch(url, {
@@ -72,7 +73,7 @@ export function initProductSearch(root = document) {
                 });
 
                 if (!response.ok) {
-                    throw new Error(`Pencarian produk gagal dengan status ${response.status}.`);
+                    throw new Error(`Pencarian gagal dengan status ${response.status}.`);
                 }
 
                 const html = await response.text();
@@ -87,11 +88,11 @@ export function initProductSearch(root = document) {
                 } else if (historyMode === 'replace') {
                     window.history.replaceState({}, '', url);
                 }
-                setStatus('Hasil produk berhasil diperbarui.');
+                setStatus('Hasil berhasil diperbarui.');
             } catch (error) {
                 if (error.name !== 'AbortError') {
-                    console.error('Gagal memperbarui katalog produk.', error);
-                    setStatus('Hasil produk gagal diperbarui. Silakan coba lagi.');
+                    console.error('Gagal memperbarui hasil.', error);
+                    setStatus('Hasil gagal diperbarui. Silakan coba lagi.');
                 }
             } finally {
                 if (controller === activeController) {
@@ -100,6 +101,7 @@ export function initProductSearch(root = document) {
                 }
             }
         };
+
         const submitSearch = () => {
             timeoutId = undefined;
             fetchCatalog(buildSearchUrl());
@@ -148,7 +150,7 @@ export function initProductSearch(root = document) {
         });
 
         catalog.addEventListener('click', (event) => {
-            const link = event.target.closest('[data-product-category-link], .pagination a');
+            const link = event.target.closest('[data-live-search-link], .pagination a');
             if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
                 return;
             }

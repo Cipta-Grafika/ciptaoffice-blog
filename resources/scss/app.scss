@@ -49,15 +49,15 @@ a { text-underline-offset: .2em; }
 .section-space--compact-top { padding-top: clamp(2.5rem, 4vw, 4rem); }
 .section-kicker { color: var(--brass); font-size: .72rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; }
 .section-title { color: var(--ink); font-size: clamp(2.5rem, 5vw, 4.75rem); line-height: .98; }
-.product-search { max-width:55rem; }
-.product-search-field { position:relative; }
-.product-search-field .form-control { padding-right:3.6rem; }
-.product-search-field input::-webkit-search-cancel-button { appearance:none; }
-.product-search-clear { position:absolute; z-index:2; top:50%; right:.65rem; display:grid; width:2.35rem; height:2.35rem; padding:0; place-items:center; color:var(--muted); background:transparent; border:0; border-radius:50%; transform:translateY(-50%); transition:color .2s ease,background-color .2s ease; }
-.product-search-clear[hidden] { display:none; }
-.product-search-clear:hover { color:var(--forest); background:rgba(38,87,73,.1); }
-.product-catalog { transition:opacity .18s ease; }
-.product-catalog.is-loading { opacity:.5; pointer-events:none; }
+.live-search { max-width:55rem; }
+.live-search-field { position:relative; }
+.live-search-field .form-control { padding-right:3.6rem; }
+.live-search-field input::-webkit-search-cancel-button { appearance:none; }
+.live-search-clear { position:absolute; z-index:2; top:50%; right:.65rem; display:grid; width:2.35rem; height:2.35rem; padding:0; place-items:center; color:var(--muted); background:transparent; border:0; border-radius:50%; transform:translateY(-50%); transition:color .2s ease,background-color .2s ease; }
+.live-search-clear[hidden] { display:none; }
+.live-search-clear:hover { color:var(--forest); background:rgba(38,87,73,.1); }
+.live-search-results { transition:opacity .18s ease; }
+.live-search-results.is-loading { opacity:.5; pointer-events:none; }
 
 .site-header { position:fixed; z-index:1030; inset:0 0 auto; }
 .site-top-header { min-height:3.1rem; display:flex; align-items:center; color:#fff; background:var(--forest); border-bottom:1px solid rgba(255,255,255,.12); }

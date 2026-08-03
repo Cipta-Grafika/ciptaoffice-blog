@@ -25,7 +25,21 @@ class PublicContentTest extends TestCase
             ->assertSee('data-article-toc', false)
             ->assertSee('Daftar isi');
         $this->get(route('articles.show', $draft))->assertNotFound();
-        $this->get(route('articles.index', ['q' => 'Ergonomi']))->assertSee('Ergonomi kantor');
+        $this->get(route('articles.index', ['q' => 'Ergonomi']))
+            ->assertOk()
+            ->assertSee('Ergonomi kantor')
+            ->assertSee('data-live-search-form', false)
+            ->assertSee('data-live-search-delay="500"', false)
+            ->assertSee('data-live-search-clear', false)
+            ->assertSee('data-live-search-results', false)
+            ->assertSee('data-live-search-status', false)
+            ->assertSee('aria-label="Hapus pencarian"', false);
+
+        $this->get(route('articles.index', ['q' => 'Ergonomi']), ['X-Requested-With' => 'XMLHttpRequest'])
+            ->assertOk()
+            ->assertSee('Ergonomi kantor')
+            ->assertDontSee('data-live-search-form', false)
+            ->assertDontSee('<!doctype html>', false);
         $this->get(route('articles.index', ['q' => 'tidak-ada']))->assertDontSee('Ergonomi kantor');
     }
 
@@ -80,19 +94,19 @@ class PublicContentTest extends TestCase
             ->assertDontSee('Kursi Ergo Lama')
             ->assertSee('value="Ergo"', false)
             ->assertSee('name="category" value="kursi"', false)
-            ->assertSee('data-product-search-form', false)
-            ->assertSee('data-product-search-delay="500"', false)
-            ->assertSee('data-product-search-clear', false)
-            ->assertSee('data-product-search-category', false)
-            ->assertSee('data-product-catalog', false)
-            ->assertSee('data-product-search-status', false)
+            ->assertSee('data-live-search-form', false)
+            ->assertSee('data-live-search-delay="500"', false)
+            ->assertSee('data-live-search-clear', false)
+            ->assertSee('data-live-search-param', false)
+            ->assertSee('data-live-search-results', false)
+            ->assertSee('data-live-search-status', false)
             ->assertSee('aria-label="Hapus pencarian"', false);
 
         $this->get(route('products.index', ['category' => 'kursi', 'q' => 'Ergo']), ['X-Requested-With' => 'XMLHttpRequest'])
             ->assertOk()
             ->assertSee('Kursi Ergo')
-            ->assertSee('data-product-category-link', false)
-            ->assertDontSee('data-product-search-form', false)
+            ->assertSee('data-live-search-link', false)
+            ->assertDontSee('data-live-search-form', false)
             ->assertDontSee('<!doctype html>', false);
 
         $this->get(route('products.index', ['q' => 'lumbar']))

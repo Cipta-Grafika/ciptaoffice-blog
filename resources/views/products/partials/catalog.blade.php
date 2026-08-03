@@ -1,7 +1,7 @@
 <nav class="d-flex flex-wrap gap-2 mb-5" aria-label="Filter kategori">
-    <a class="btn {{ !$category ? 'btn-primary' : 'btn-outline-secondary' }}" href="{{ route('products.index', array_filter(['q' => $q])) }}" data-product-category-link>Semua</a>
+    <a class="btn {{ !$category ? 'btn-primary' : 'btn-outline-secondary' }}" href="{{ route('products.index', array_filter(['q' => $q])) }}" data-live-search-link>Semua</a>
     @foreach ($categories as $item)
-        <a class="btn {{ $category === $item->slug ? 'btn-primary' : 'btn-outline-secondary' }}" href="{{ route('products.index', array_filter(['category' => $item->slug, 'q' => $q])) }}" data-product-category-link>{{ $item->name }}</a>
+        <a class="btn {{ $category === $item->slug ? 'btn-primary' : 'btn-outline-secondary' }}" href="{{ route('products.index', array_filter(['category' => $item->slug, 'q' => $q])) }}" data-live-search-link>{{ $item->name }}</a>
     @endforeach
 </nav>
 @if ($products->isEmpty())

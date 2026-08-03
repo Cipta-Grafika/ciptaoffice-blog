@@ -1,6 +1,6 @@
 import { initArticleToc } from '../components/site/article-toc';
 import { initMetricStrip } from '../components/site/metric-strip';
-import { initProductSearch } from '../components/site/product-search';
+import { initLiveSearch } from '../components/site/live-search';
 import { initRevealElements } from '../components/site/reveal';
 import { initSiteHeader } from '../components/site/site-header';
 
@@ -9,7 +9,7 @@ const initializers = [
     initMetricStrip,
     initRevealElements,
     initArticleToc,
-    initProductSearch,
+    initLiveSearch,
 ];
 
 export function init() {
