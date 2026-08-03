@@ -121,11 +121,6 @@
                     <div data-quill data-input="#body_html" data-upload-url="{{ route('cms.posts.media.store', $post) }}">
                     </div>
                 </section>
-                <div class="cms-form-actions">
-                    <button class="btn btn-primary" type="submit"><i class="bi bi-check2"></i>
-                        Simpan perubahan
-                    </button>
-                </div>
             </form>
 
             <aside class="cms-editor-aside">
@@ -135,6 +130,9 @@
                             <p class="cms-surface-kicker mb-1">Metadata</p>
                             <h2 class="cms-surface-title mb-0">Informasi artikel</h2>
                         </div>
+                        <button class="btn btn-primary cms-surface-save" type="submit" form="post-form">
+                            <i class="bi bi-check" aria-hidden="true"></i><span>Simpan</span>
+                        </button>
                     </div>
                     <div class="cms-surface-body">
                         <dl class="cms-detail-list cms-detail-list--stacked">

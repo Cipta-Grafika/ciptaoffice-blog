@@ -56,6 +56,11 @@ class EditorialWorkflowTest extends TestCase
 
         $this->actingAs($admin)->get(route('cms.posts.edit', $post))
             ->assertOk()
+            ->assertSee('form="post-form"', false)
+            ->assertSee('cms-surface-save', false)
+            ->assertSee('bi bi-floppy', false)
+            ->assertSee('Simpan')
+            ->assertDontSee('Simpan perubahan')
             ->assertDontSee('Ajukan review');
 
         $this->actingAs($admin)->post(route('cms.posts.submit', $post))

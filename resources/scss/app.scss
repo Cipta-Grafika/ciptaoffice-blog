@@ -286,6 +286,10 @@ a { text-underline-offset: .2em; }
 .cms-surface { overflow:hidden; background:rgba(255,255,255,.82); border:1px solid rgba(23,32,30,.1); border-top:3px solid var(--brass); box-shadow:0 12px 34px rgba(23,32,30,.045); }
 .cms-surface-header { display:flex; min-height:4.75rem; align-items:center; justify-content:space-between; gap:1rem; padding:1rem 1.25rem; border-bottom:1px solid rgba(23,32,30,.1); }
 .cms-surface-kicker { color:var(--brass); font-size:.61rem; font-weight:700; letter-spacing:.15em; text-transform:uppercase; }
+.cms-surface-save { display:inline-flex; flex:0 0 auto; min-height:2.5rem; align-items:center; justify-content:center; gap:.45rem; padding:.65rem .95rem; border-radius:.4rem; box-shadow:0 8px 18px rgba(23,62,54,.18); font-size:.72rem; font-weight:700; line-height:1; transition:background-color .2s ease,border-color .2s ease,box-shadow .2s ease,transform .2s ease; }
+.cms-surface-save i { font-size:.86rem; line-height:1; }
+.cms-surface-save:hover { box-shadow:0 11px 24px rgba(23,62,54,.24); transform:translateY(-1px); }
+.cms-surface-save:active { box-shadow:0 5px 12px rgba(23,62,54,.16); transform:translateY(0); }
 .cms-surface-title { color:var(--ink); font-family:'Cormorant Garamond',serif; font-size:1.45rem; font-weight:600; line-height:1; }
 .cms-surface-body { padding:clamp(1.25rem,2.5vw,2rem); }
 .cms-list-toolbar { display:flex; min-height:3.5rem; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:.65rem; padding:.625rem .9rem; background:rgba(255,253,248,.65); border-bottom:1px solid rgba(23,32,30,.1); }
