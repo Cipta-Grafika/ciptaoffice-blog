@@ -8,7 +8,7 @@
         @foreach ($posts as $post)
             <div class="col-md-6 col-lg-4">
                 <article class="article-card">
-                    <div class="card-visual"><i class="bi bi-journal-richtext"></i></div>
+                    @include('articles.partials.card-visual', ['post' => $post])
                     <div class="p-4">
                         <p class="article-meta">{{ $post->published_at->translatedFormat('d M Y') }}</p>
                         <h2 class="card-title card-text-clamp">

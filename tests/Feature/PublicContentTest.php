@@ -43,7 +43,7 @@ class PublicContentTest extends TestCase
         $this->get(route('articles.index', ['q' => 'tidak-ada']))->assertDontSee('Ergonomi kantor');
     }
 
-    public function test_article_cover_is_used_as_open_graph_image(): void
+    public function test_article_cover_is_used_in_metadata_and_catalog_thumbnails(): void
     {
         $post = Post::create([
             'title' => 'Ruang Kerja Modern',
@@ -60,6 +60,17 @@ class PublicContentTest extends TestCase
             ->assertOk()
             ->assertSee('<meta property="og:image" content="'.asset('storage/'.$post->cover_image_path).'">', false)
             ->assertSee('<meta property="og:image:alt" content="'.$post->cover_image_alt.'">', false);
+
+        $this->get(route('articles.index', ['q' => 'Ruang Kerja']))
+            ->assertOk()
+            ->assertSee('src="'.asset('storage/'.$post->cover_image_path).'"', false)
+            ->assertSee('alt="'.$post->cover_image_alt.'"', false);
+
+        $this->get(route('articles.index', ['q' => 'Ruang Kerja']), ['X-Requested-With' => 'XMLHttpRequest'])
+            ->assertOk()
+            ->assertSee('src="'.asset('storage/'.$post->cover_image_path).'"', false)
+            ->assertSee('alt="'.$post->cover_image_alt.'"', false)
+            ->assertDontSee('<!doctype html>', false);
     }
 
     public function test_active_product_is_public_with_contextual_whatsapp_link(): void
