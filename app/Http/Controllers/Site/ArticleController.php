@@ -19,6 +19,10 @@ class ArticleController extends Controller
             ->paginate(9)
             ->withQueryString();
 
+        if ($request->ajax()) {
+            return view('articles.partials.catalog', compact('posts', 'q'));
+        }
+
         return view('articles.index', compact('posts', 'q'));
     }
 
