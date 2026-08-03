@@ -61,4 +61,42 @@ class PublicContentTest extends TestCase
         $product->update(['is_active' => false]);
         $this->get(route('products.show', $product))->assertNotFound();
     }
+
+    public function test_active_products_are_searchable_within_the_selected_category(): void
+    {
+        $chairs = ProductCategory::create(['name' => 'Kursi', 'slug' => 'kursi', 'is_active' => true]);
+        $desks = ProductCategory::create(['name' => 'Meja', 'slug' => 'meja', 'is_active' => true]);
+
+        Product::create(['product_category_id' => $chairs->id, 'name' => 'Kursi Ergo', 'slug' => 'kursi-ergo', 'summary' => 'Dukungan lumbar', 'is_active' => true]);
+        Product::create(['product_category_id' => $chairs->id, 'name' => 'Kursi Direktur', 'slug' => 'kursi-direktur', 'summary' => 'Sandaran premium', 'is_active' => true]);
+        Product::create(['product_category_id' => $desks->id, 'name' => 'Meja Ergo', 'slug' => 'meja-ergo', 'summary' => 'Permukaan luas', 'is_active' => true]);
+        Product::create(['product_category_id' => $chairs->id, 'name' => 'Kursi Ergo Lama', 'slug' => 'kursi-ergo-lama', 'summary' => 'Tidak ditampilkan', 'is_active' => false]);
+
+        $this->get(route('products.index', ['category' => 'kursi', 'q' => 'Ergo']))
+            ->assertOk()
+            ->assertSee('Kursi Ergo')
+            ->assertDontSee('Kursi Direktur')
+            ->assertDontSee('Meja Ergo')
+            ->assertDontSee('Kursi Ergo Lama')
+            ->assertSee('value="Ergo"', false)
+            ->assertSee('name="category" value="kursi"', false)
+            ->assertSee('data-product-search-form', false)
+            ->assertSee('data-product-search-delay="500"', false)
+            ->assertSee('data-product-search-clear', false)
+            ->assertSee('data-product-search-category', false)
+            ->assertSee('data-product-catalog', false)
+            ->assertSee('data-product-search-status', false)
+            ->assertSee('aria-label="Hapus pencarian"', false);
+
+        $this->get(route('products.index', ['category' => 'kursi', 'q' => 'Ergo']), ['X-Requested-With' => 'XMLHttpRequest'])
+            ->assertOk()
+            ->assertSee('Kursi Ergo')
+            ->assertSee('data-product-category-link', false)
+            ->assertDontSee('data-product-search-form', false)
+            ->assertDontSee('<!doctype html>', false);
+
+        $this->get(route('products.index', ['q' => 'lumbar']))
+            ->assertOk()
+            ->assertSee('Kursi Ergo');
+    }
 }

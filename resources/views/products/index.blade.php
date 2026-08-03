@@ -16,44 +16,23 @@
             </div>
         </div>
     </header>
-    <section class="section-space">
+    <section class="section-space section-space--compact-top">
         <div class="container">
-            <nav class="d-flex flex-wrap gap-2 mb-5" aria-label="Filter kategori"><a
-                    class="btn {{ !$category ? 'btn-primary' : 'btn-outline-secondary' }}"
-                    href="{{ route('products.index') }}">Semua</a>
-                @foreach ($categories as $item)
-                    <a class="btn {{ $category === $item->slug ? 'btn-primary' : 'btn-outline-secondary' }}"
-                        href="{{ route('products.index', ['category' => $item->slug]) }}">{{ $item->name }}</a>
-                @endforeach
-            </nav>
-            @if ($products->isEmpty())
-                <div class="empty-state">
-                    <h2>Produk belum tersedia</h2>
-                    <p class="text-muted">Hubungi kami untuk mendiskusikan kebutuhan spesifik Anda.</p><a
-                        class="btn btn-primary" href="{{ route('contact.create') }}">Hubungi CiptaOffice</a>
-            </div>@else<div class="row g-4">
-                    @foreach ($products as $product)
-                        <div class="col-md-6 col-lg-4">
-                            <article class="product-card">
-                                <div class="card-visual">
-                                    @if ($product->cover_image_path)
-                                        <img src="{{ asset('storage/' . $product->cover_image_path) }}"
-                                        alt="{{ $product->cover_image_alt }}">@else<i class="bi bi-lamp"
-                                            aria-hidden="true"></i>
-                                    @endif
-                                </div>
-                                <div class="p-4">
-                                    <p class="article-meta">{{ $product->category->name }}</p>
-                                    <h2 class="card-title card-text-clamp"><a class="stretched-link text-dark text-decoration-none"
-                                            href="{{ route('products.show', $product) }}">{{ $product->name }}</a></h2>
-                                    <p class="card-text-clamp text-muted mt-1 mb-0">{{ $product->summary }}</p>
-                                </div>
-                            </article>
-                        </div>
-                    @endforeach
-                </div>
-                <div class="mt-5">{{ $products->links() }}</div>
-            @endif
+            <form class="product-search mb-4" method="get" action="{{ route('products.index') }}"
+                data-product-search-form data-product-search-delay="500">
+                <input type="hidden" name="category" value="{{ $category }}" data-product-search-category
+                    @disabled(!$category)>
+                <div class="product-search-field"><label class="visually-hidden" for="q">Cari produk</label><input
+                        class="form-control form-control-lg" id="q" name="q" type="search" value="{{ $q }}"
+                        placeholder="Cari nama atau ringkasan produk..." autocomplete="off" data-product-search-input><button
+                        class="product-search-clear" type="button" aria-label="Hapus pencarian" title="Hapus pencarian"
+                        data-product-search-clear @if (!$q) hidden @endif><i class="bi bi-x-lg" aria-hidden="true"></i></button></div>
+                <noscript><button class="btn btn-primary mt-2" type="submit">Cari</button></noscript>
+            </form>
+            <div class="product-catalog" data-product-catalog aria-busy="false">
+                @include('products.partials.catalog')
+            </div>
+            <p class="visually-hidden" role="status" aria-live="polite" data-product-search-status></p>
         </div>
     </section>
 @endsection
