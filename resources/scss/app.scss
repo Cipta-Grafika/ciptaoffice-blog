@@ -161,6 +161,13 @@ a { text-underline-offset: .2em; }
 .prose .ql-align-center { text-align:center; }
 .prose .ql-align-right { text-align:right; }
 .prose .ql-align-justify { text-align:justify; }
+.prose .ql-table-wrapper { width:100%; margin:2rem 0; overflow-x:auto; border:1px solid var(--line); border-radius:.3rem; scrollbar-width:thin; }
+.prose .ql-table-wrapper table { width:100%; min-width:32rem; margin:0; border-collapse:collapse; font-size:.94rem; line-height:1.6; }
+.prose .ql-table-wrapper caption { padding:.7rem .85rem; color:var(--muted); font-size:.82rem; text-align:left; caption-side:bottom; }
+.prose .ql-table-wrapper th,.prose .ql-table-wrapper td { min-width:7rem; padding:.75rem .85rem; border:1px solid var(--line); vertical-align:top; }
+.prose .ql-table-wrapper th { color:var(--ink); background:rgba(164,126,79,.11); font-weight:700; }
+.prose .ql-table-wrapper td { background:#fff; }
+.prose .ql-table-wrapper p { margin:0; }
 @for $level from 1 through 8 {
     .prose .ql-indent-#{$level} { margin-left:min(#{$level * 2}rem,45%); }
 }
@@ -439,6 +446,7 @@ a { text-underline-offset: .2em; }
 .table > :not(caption) > * > * { padding:.9rem .75rem; }
 .form-label { color:#394440; font-size:.78rem; font-weight:700; letter-spacing:.05em; text-transform:uppercase; }
 .ql-editor { min-height:22rem; background:#fff; font-family:'Manrope',sans-serif; font-size:1rem; }
+.ql-editor .ql-table-wrapper { scrollbar-width:auto; }
 .ql-toolbar.ql-snow,.ql-container.ql-snow { border-color:#ced4da!important; }
 .ql-toolbar.ql-snow {
     display:flex;
@@ -484,6 +492,10 @@ a { text-underline-offset: .2em; }
     color:var(--forest);
     background:rgba(164,126,79,.13);
 }
+.ql-toolbar.ql-snow .ql-picker.ql-table-up { width:2rem; }
+.ql-toolbar.ql-snow .ql-picker.ql-table-up .ql-picker-label { display:grid; height:2rem; padding:.35rem; place-items:center; border:0; border-radius:.25rem; }
+.ql-toolbar.ql-snow .ql-picker.ql-table-up .ql-picker-label:hover,.ql-toolbar.ql-snow .ql-picker.ql-table-up .ql-picker-label:focus-visible { color:var(--forest); background:rgba(23,62,54,.08); }
+.table-up-menu__item .table-menu-symbol { display:grid; min-width:1.25rem; min-height:1.25rem; place-items:center; color:var(--forest); font-size:.7rem; font-style:normal; font-weight:800; line-height:1; }
 
 .reveal { opacity:0; transform:translateY(18px); transition:opacity .65s ease,transform .65s ease; }.reveal.is-visible{opacity:1;transform:none}
 @media (prefers-reduced-motion: reduce) { html{scroll-behavior:auto}*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}.reveal{opacity:1;transform:none} }

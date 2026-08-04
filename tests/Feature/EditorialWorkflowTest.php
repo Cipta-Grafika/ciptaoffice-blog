@@ -167,6 +167,75 @@ class EditorialWorkflowTest extends TestCase
         $this->assertStringNotContainsString('class-tidak-diizinkan', $body);
     }
 
+    public function test_editor_artifacts_are_normalized_without_removing_intentional_alignment(): void
+    {
+        $author = User::factory()->create();
+        $post = Post::create([
+            'author_id' => $author->id,
+            'title' => 'Normalisasi Editor',
+            'slug' => 'normalisasi-editor',
+            'status' => PostStatus::Draft,
+        ]);
+
+        $nbsp = "\u{00A0}";
+        $this->actingAs($author)->put(route('cms.posts.update', $post), [
+            'title' => 'Normalisasi Editor',
+            'excerpt' => 'Normalisasi artefak editor',
+            'body_html' => '<h2 class="ql-align-justify">Judul'.$nbsp.'artikel</h2><p class="ql-align-justify">Isi'.$nbsp.'artikel yang harus tetap membungkus.</p><p class="ql-align-justify"></p>',
+        ])->assertSessionHasNoErrors();
+
+        $body = $post->fresh()->body_html;
+        $this->assertStringContainsString('Judul artikel', $body);
+        $this->assertStringContainsString('Isi artikel yang harus tetap membungkus.', $body);
+        $this->assertStringNotContainsString($nbsp, $body);
+        $this->assertStringNotContainsString('ql-align-justify', $body);
+
+        $this->actingAs($author)->put(route('cms.posts.update', $post), [
+            'title' => 'Normalisasi Editor',
+            'excerpt' => 'Normalisasi artefak editor',
+            'body_html' => '<h2>Judul normal</h2><p class="ql-align-justify">Paragraf ini memang sengaja dibuat justify.</p>',
+        ])->assertSessionHasNoErrors();
+
+        $this->assertStringContainsString(
+            'class="ql-align-justify"',
+            $post->fresh()->body_html,
+        );
+    }
+
+    public function test_article_table_structure_is_preserved_without_editor_only_attributes(): void
+    {
+        $author = User::factory()->create();
+        $post = Post::create([
+            'author_id' => $author->id,
+            'title' => 'Perbandingan Produk',
+            'slug' => 'perbandingan-produk',
+            'status' => PostStatus::Draft,
+        ]);
+
+        $table = '<div class="ql-table-wrapper" contenteditable="false" data-table-id="table-1"><table class="ql-table" data-full="true" style="width: 100%"><colgroup><col width="50%"><col width="50%"></colgroup><thead><tr data-row-id="row-1"><th rowspan="1" colspan="1"><div class="ql-table-cell-inner" data-col-id="col-1"><p>Produk</p></div></th><th rowspan="1" colspan="1"><div class="ql-table-cell-inner"><p>Ukuran</p></div></th></tr></thead><tbody><tr><td rowspan="1" colspan="1"><div class="ql-table-cell-inner"><p>Meja Point</p></div></td><td rowspan="1" colspan="1"><div class="ql-table-cell-inner"><p>120 cm</p></div></td></tr></tbody></table></div>';
+
+        $this->actingAs($author)->put(route('cms.posts.update', $post), [
+            'title' => 'Perbandingan Produk',
+            'excerpt' => 'Tabel perbandingan produk kantor',
+            'body_html' => $table,
+        ])->assertSessionHasNoErrors();
+
+        $body = $post->fresh()->body_html;
+        $this->assertStringContainsString('class="ql-table-wrapper"', $body);
+        $this->assertStringContainsString('<table>', $body);
+        $this->assertStringContainsString('<col width="50%" />', $body);
+        $this->assertStringContainsString('<thead>', $body);
+        $this->assertStringContainsString('<tbody>', $body);
+        $this->assertStringContainsString('<th rowspan="1" colspan="1">', $body);
+        $this->assertStringContainsString('<td rowspan="1" colspan="1">', $body);
+        $this->assertStringContainsString('Meja Point', $body);
+        $this->assertStringNotContainsString('contenteditable', $body);
+        $this->assertStringNotContainsString('data-table-id', $body);
+        $this->assertStringNotContainsString('data-col-id', $body);
+        $this->assertStringNotContainsString('style=', $body);
+        $this->assertStringNotContainsString('ql-table-cell-inner', $body);
+    }
+
     public function test_author_cannot_access_admin_modules(): void
     {
         $this->actingAs(User::factory()->create())->get(route('cms.users.index'))->assertForbidden();
