@@ -495,6 +495,7 @@ a { text-underline-offset: .2em; }
 .ql-toolbar.ql-snow .ql-picker.ql-table-up { width:2rem; }
 .ql-toolbar.ql-snow .ql-picker.ql-table-up .ql-picker-label { display:grid; height:2rem; padding:.35rem; place-items:center; border:0; border-radius:.25rem; }
 .ql-toolbar.ql-snow .ql-picker.ql-table-up .ql-picker-label:hover,.ql-toolbar.ql-snow .ql-picker.ql-table-up .ql-picker-label:focus-visible { color:var(--forest); background:rgba(23,62,54,.08); }
+.ql-container .table-up-selection__line { box-shadow:inset 0 0 0 2px rgba(164,126,79,.68); }
 .table-up-menu__item .table-menu-symbol { display:grid; min-width:1.25rem; min-height:1.25rem; place-items:center; color:var(--forest); font-size:.7rem; font-style:normal; font-weight:800; line-height:1; }
 
 .reveal { opacity:0; transform:translateY(18px); transition:opacity .65s ease,transform .65s ease; }.reveal.is-visible{opacity:1;transform:none}

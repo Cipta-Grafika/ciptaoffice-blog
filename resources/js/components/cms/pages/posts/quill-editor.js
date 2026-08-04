@@ -218,7 +218,7 @@ export function initQuillEditors(root = document) {
                     texts: tableTexts,
                     selection: TableSelection,
                     selectionOptions: {
-                        selectColor: '#a47e4f',
+                        selectColor: 'rgba(164, 126, 79, .14)',
                         tableMenu: TableMenuContextmenu,
                         tableMenuOptions: {
                             tools: tableMenuItems,
