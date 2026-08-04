@@ -14,7 +14,7 @@ class HtmlSanitizer
     {
         $config = HTMLPurifier_Config::createDefault();
         $config->set('Cache.SerializerPath', storage_path('framework/cache'));
-        $config->set('HTML.Allowed', 'p[class],br,h1[class],h2[class],h3[class],strong,em,u,s,ul,ol,li[class],blockquote[class],a[href|title|target|rel],img[src|alt|title],pre[class],code,div[class],table,caption,colgroup,col[width],thead,tbody,tfoot,tr,th[colspan|rowspan|scope],td[colspan|rowspan]');
+        $config->set('HTML.Allowed', 'p[class],br,h1[class],h2[class],h3[class],strong,em,u,s,ul,ol,li[class],blockquote[class],a[href|title|target|rel],img[src|alt|title],pre[class],code,div[class],table[data-full],caption,colgroup[data-full],col[width|data-full],thead,tbody,tfoot,tr,th[colspan|rowspan|scope],td[colspan|rowspan]');
         $config->set('Attr.AllowedClasses', [
             'ql-indent-1',
             'ql-indent-2',
@@ -32,6 +32,11 @@ class HtmlSanitizer
         $config->set('URI.AllowedSchemes', ['http' => true, 'https' => true]);
         $config->set('HTML.TargetBlank', true);
         $config->set('Attr.AllowedFrameTargets', ['_blank']);
+
+        $definition = $config->getHTMLDefinition(true);
+        foreach (['table', 'colgroup', 'col'] as $element) {
+            $definition->addAttribute($element, 'data-full', 'Enum#true');
+        }
 
         $cleanHtml = (new HTMLPurifier($config))->purify($html ?? '');
 

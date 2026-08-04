@@ -212,7 +212,7 @@ class EditorialWorkflowTest extends TestCase
             'status' => PostStatus::Draft,
         ]);
 
-        $table = '<div class="ql-table-wrapper" contenteditable="false" data-table-id="table-1"><table class="ql-table" data-full="true" style="width: 100%"><colgroup><col width="50%"><col width="50%"></colgroup><thead><tr data-row-id="row-1"><th rowspan="1" colspan="1"><div class="ql-table-cell-inner" data-col-id="col-1"><p>Produk</p></div></th><th rowspan="1" colspan="1"><div class="ql-table-cell-inner"><p>Ukuran</p></div></th></tr></thead><tbody><tr><td rowspan="1" colspan="1"><div class="ql-table-cell-inner"><p>Meja Point</p></div></td><td rowspan="1" colspan="1"><div class="ql-table-cell-inner"><p>120 cm</p></div></td></tr></tbody></table></div>';
+        $table = '<div class="ql-table-wrapper" contenteditable="false" data-table-id="table-1"><table class="ql-table" data-full="true" style="width: 100%"><colgroup data-full="true"><col width="50%" data-full="true"><col width="50%" data-full="true"></colgroup><thead><tr data-row-id="row-1"><th rowspan="1" colspan="1"><div class="ql-table-cell-inner" data-col-id="col-1"><p>Produk</p></div></th><th rowspan="1" colspan="1"><div class="ql-table-cell-inner"><p>Ukuran</p></div></th></tr></thead><tbody><tr><td rowspan="1" colspan="1"><div class="ql-table-cell-inner"><p>Meja Point</p></div></td><td rowspan="1" colspan="1"><div class="ql-table-cell-inner"><p>120 cm</p></div></td></tr></tbody></table></div>';
 
         $this->actingAs($author)->put(route('cms.posts.update', $post), [
             'title' => 'Perbandingan Produk',
@@ -222,8 +222,9 @@ class EditorialWorkflowTest extends TestCase
 
         $body = $post->fresh()->body_html;
         $this->assertStringContainsString('class="ql-table-wrapper"', $body);
-        $this->assertStringContainsString('<table>', $body);
-        $this->assertStringContainsString('<col width="50%" />', $body);
+        $this->assertStringContainsString('<table data-full="true">', $body);
+        $this->assertStringContainsString('<colgroup data-full="true">', $body);
+        $this->assertSame(2, substr_count($body, '<col width="50%" data-full="true" />'));
         $this->assertStringContainsString('<thead>', $body);
         $this->assertStringContainsString('<tbody>', $body);
         $this->assertStringContainsString('<th rowspan="1" colspan="1">', $body);

@@ -157,6 +157,27 @@ export function normalizeEditorHtml(html) {
     return document.body.innerHTML;
 }
 
+export function prepareEditorHtml(html) {
+    const document = new DOMParser().parseFromString(html || '', 'text/html');
+
+    document.body.querySelectorAll('.ql-table-wrapper table').forEach((table) => {
+        const colgroup = table.querySelector('colgroup');
+        const columns = Array.from(colgroup?.querySelectorAll('col') || []);
+        const hasPercentageWidths = columns.length > 0
+            && columns.every((column) => /^\d+(?:\.\d+)?%$/.test(column.getAttribute('width')?.trim() || ''));
+
+        if (!hasPercentageWidths) return;
+
+        table.dataset.full = 'true';
+        colgroup.dataset.full = 'true';
+        columns.forEach((column) => {
+            column.dataset.full = 'true';
+        });
+    });
+
+    return document.body.innerHTML;
+}
+
 export function initQuillEditors(root = document) {
     root.querySelectorAll('[data-quill]').forEach((element) => {
         const input = root.querySelector(element.dataset.input);
@@ -207,7 +228,7 @@ export function initQuillEditors(root = document) {
                 },
             },
         });
-        const initialContent = quill.clipboard.convert({ html: input.value || '' });
+        const initialContent = quill.clipboard.convert({ html: prepareEditorHtml(input.value) });
         quill.setContents(initialContent, Quill.sources.SILENT);
         const syncInput = () => {
             input.value = normalizeEditorHtml(quill.getSemanticHTML());
