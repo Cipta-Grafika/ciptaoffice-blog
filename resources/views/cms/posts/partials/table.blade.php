@@ -36,8 +36,10 @@
     </x-slot:head>
     @foreach ($posts as $post)
         <tr>
-            <td><span class="cms-table-primary">{{ $post->title }}</span><span
-                    class="cms-table-secondary">/{{ $post->slug }}</span></td>
+            <td class="cms-table-col-title">
+                <span class="cms-table-primary d-block text-truncate" data-bs-tooltip>{{ $post->title }}</span>
+                <span class="cms-table-secondary text-truncate">/{{ $post->slug }}</span>
+            </td>
             @can('admin')
                 <td>{{ $post->author?->name ?? 'Konten impor' }}</td>
             @endcan
