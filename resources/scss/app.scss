@@ -417,20 +417,39 @@ a { text-underline-offset: .2em; }
 .cms-dashboard-total { color:var(--muted); font-size:.7rem; }
 .cms-dashboard-total strong { color:var(--forest); font-size:.82rem; }
 .cms-dashboard-metrics { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); }
-.cms-dashboard-metric { --cms-status-color:#66716d; position:relative; min-width:0; min-height:13.75rem; padding:1.3rem; background:rgba(255,255,255,.66); transition:background-color .22s ease,transform .22s ease; }
+.cms-dashboard-metric { 
+    --cms-status-color:#66716d; 
+    position:relative; 
+    min-width:0; 
+    min-height:13.75rem; 
+    padding:1.3rem; 
+    background:rgba(255,255,255,.66); 
+    display:block;
+    text-decoration:none;
+    color:inherit;
+    transition:background-color .4s cubic-bezier(.16,1,.3,1), transform .4s cubic-bezier(.16,1,.3,1), box-shadow .4s cubic-bezier(.16,1,.3,1), border-radius .4s cubic-bezier(.16,1,.3,1); 
+}
 .cms-dashboard-metric + .cms-dashboard-metric { border-left:1px solid rgba(23,32,30,.1); }
-.cms-dashboard-metric::after { position:absolute; height:2px; inset:auto 1.3rem 0; background:var(--cms-status-color); content:''; opacity:.7; transform:scaleX(.22); transform-origin:left; transition:transform .25s cubic-bezier(.2,.75,.25,1); }
-.cms-dashboard-metric:hover { z-index:1; background:#fff; }
-.cms-dashboard-metric:hover::after { transform:scaleX(1); }
+.cms-dashboard-metric::after { position:absolute; height:2px; inset:auto 1.3rem 0; background:var(--cms-status-color); content:''; opacity:.7; transform:scaleX(.22); transform-origin:left; transition:transform .4s cubic-bezier(.16,1,.3,1), opacity .4s ease; }
+.cms-dashboard-metric:hover { 
+    z-index:10; 
+    background:#fff; 
+    transform:translateY(-6px);
+    box-shadow:0 12px 24px -8px color-mix(in srgb,var(--cms-status-color) 35%,transparent), 0 4px 8px -4px color-mix(in srgb,var(--cms-status-color) 15%,transparent);
+    border-radius:12px;
+}
+.cms-dashboard-metric:hover::after { transform:scaleX(1); opacity:1; }
 .cms-dashboard-metric--draft { --cms-status-color:#9b7445; }
 .cms-dashboard-metric--review { --cms-status-color:#c49128; }
 .cms-dashboard-metric--returned { --cms-status-color:#9c413d; }
 .cms-dashboard-metric--published { --cms-status-color:#28745a; }
 .cms-dashboard-metric--archived { --cms-status-color:#53605c; }
 .cms-dashboard-metric-topline { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.3rem; }
-.cms-dashboard-metric-icon { display:grid; width:2.35rem; height:2.35rem; place-items:center; color:var(--cms-status-color); background:color-mix(in srgb,var(--cms-status-color) 10%,white); border:1px solid color-mix(in srgb,var(--cms-status-color) 18%,white); border-radius:50%; }
+.cms-dashboard-metric-icon { display:grid; width:2.35rem; height:2.35rem; place-items:center; color:var(--cms-status-color); background:color-mix(in srgb,var(--cms-status-color) 10%,white); border:1px solid color-mix(in srgb,var(--cms-status-color) 18%,white); border-radius:50%; transition:transform .4s cubic-bezier(.16,1,.3,1), background-color .4s ease; }
 .cms-dashboard-metric-icon i { font-size:.9rem; }
-.cms-dashboard-status-dot { width:.42rem; height:.42rem; background:var(--cms-status-color); border-radius:50%; box-shadow:0 0 0 4px color-mix(in srgb,var(--cms-status-color) 10%,transparent); }
+.cms-dashboard-metric:hover .cms-dashboard-metric-icon { transform:scale(1.1) rotate(6deg); background:color-mix(in srgb,var(--cms-status-color) 15%,white); }
+.cms-dashboard-status-dot { width:.42rem; height:.42rem; background:var(--cms-status-color); border-radius:50%; box-shadow:0 0 0 4px color-mix(in srgb,var(--cms-status-color) 10%,transparent); transition:transform .4s cubic-bezier(.16,1,.3,1), box-shadow .4s ease; }
+.cms-dashboard-metric:hover .cms-dashboard-status-dot { transform:scale(1.4); box-shadow:0 0 0 6px color-mix(in srgb,var(--cms-status-color) 15%,transparent); }
 .cms-dashboard-metric-label { min-height:2.1em; color:#4d5955; font-size:.69rem; font-weight:700; letter-spacing:.055em; line-height:1.35; text-transform:uppercase; }
 .cms-dashboard-metric-value { margin-top:.2rem; color:var(--forest); font-family:'Cormorant Garamond',serif; font-size:3.35rem; font-weight:700; line-height:.95; }
 .cms-dashboard-metric-description { margin-top:.6rem!important; color:var(--muted); font-size:.67rem; line-height:1.5; }
