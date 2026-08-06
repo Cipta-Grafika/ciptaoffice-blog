@@ -108,13 +108,7 @@
                     @foreach ($posts as $post)
                         <div class="col-lg-4 reveal">
                             <article class="article-card">
-                                <div class="card-visual">
-                                    @if ($post->cover_image_path)
-                                        <img src="{{ asset('storage/' . $post->cover_image_path) }}"
-                                        alt="{{ $post->cover_image_alt }}">@else<i class="bi bi-journal-richtext"
-                                            aria-hidden="true"></i>
-                                    @endif
-                                </div>
+                                @include('articles.partials.card-visual', ['post' => $post])
                                 <div class="p-4">
                                     <p class="article-meta mb-3">{{ $post->published_at->translatedFormat('d M Y') }} ·
                                         {{ $post->author?->name ?? 'Tim CiptaOffice' }}</p>

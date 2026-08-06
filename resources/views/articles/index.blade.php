@@ -17,43 +17,19 @@
     </header>
     <section class="section-space section-space--compact-top">
         <div class="container">
-            <form class="row g-2 mb-5" method="get">
-                <div class="col-md-8"><label class="visually-hidden" for="q">Cari artikel</label><input
-                        class="form-control form-control-lg" id="q" name="q" value="{{ $q }}"
-                        placeholder="Cari judul atau ringkasan..."></div>
-                <div class="col-md-2 d-grid"><button class="btn btn-primary">Cari</button></div>
-                @if ($q)
-                    <div class="col-md-2 d-grid"><a class="btn btn-outline-secondary"
-                            href="{{ route('articles.index') }}">Reset</a></div>
-                @endif
+            <form class="live-search mb-5" method="get" action="{{ route('articles.index') }}"
+                data-live-search-form data-live-search-delay="500">
+                <div class="live-search-field"><label class="visually-hidden" for="q">Cari artikel</label><input
+                        class="form-control form-control-lg" id="q" name="q" type="search" value="{{ $q }}"
+                        placeholder="Cari judul atau ringkasan..." autocomplete="off" data-live-search-input><button
+                        class="live-search-clear" type="button" aria-label="Hapus pencarian" title="Hapus pencarian"
+                        data-live-search-clear @if (!$q) hidden @endif><i class="bi bi-x-lg" aria-hidden="true"></i></button></div>
+                <noscript><button class="btn btn-primary mt-2" type="submit">Cari</button></noscript>
             </form>
-            @if ($posts->isEmpty())
-                <div class="empty-state">
-                    <h2>Tidak ada artikel ditemukan</h2>
-                    <p class="text-muted mb-0">Coba kata kunci lain atau lihat kembali seluruh artikel.</p>
-                </div>
-            @else
-                <div class="row g-4">
-                    @foreach ($posts as $post)
-                        <div class="col-md-6 col-lg-4">
-                            <article class="article-card">
-                                <div class="card-visual"><i class="bi bi-journal-richtext"></i></div>
-                                <div class="p-4">
-                                    <p class="article-meta">{{ $post->published_at->translatedFormat('d M Y') }}</p>
-                                    <h2 class="card-title card-text-clamp">
-                                        <a class="stretched-link text-dark text-decoration-none"
-                                            href="{{ route('articles.show', $post) }}">
-                                            {{ $post->title }}
-                                        </a>
-                                    </h2>
-                                    <p class="card-text-clamp text-muted mt-1">{{ $post->excerpt }}</p>
-                                </div>
-                            </article>
-                        </div>
-                    @endforeach
-                </div>
-                <div class="mt-5">{{ $posts->links() }}</div>
-            @endif
+            <div class="live-search-results" data-live-search-results aria-busy="false">
+                @include('articles.partials.catalog')
+            </div>
+            <p class="visually-hidden" role="status" aria-live="polite" data-live-search-status></p>
         </div>
     </section>
 @endsection

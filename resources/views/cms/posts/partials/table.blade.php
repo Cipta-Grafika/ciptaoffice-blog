@@ -3,19 +3,27 @@
     empty-icon="file-earmark-text" empty-title="Belum ada artikel"
     empty-description="Mulai alur editorial dengan membuat draft pertama.">
     <x-slot:filters>
-        <form class="cms-filter-form" method="get">
-            <select class="form-select form-select-sm" name="status" aria-label="Filter status artikel">
-                <option value="">Semua status</option>
-                @foreach ($statuses as $status)
-                    <option value="{{ $status->value }}" @selected(request('status') === $status->value)>
-                        {{ $status->label() }}
-                    </option>
-                @endforeach
-            </select>
-            <button class="btn btn-sm btn-outline-secondary" type="submit">
-                <i class="bi bi-funnel" aria-hidden="true"></i> Filter
-            </button>
-        </form>
+        <div class="d-flex align-items-center gap-2">
+            <form class="cms-filter-form mb-0" method="get">
+                <select class="form-select form-select-sm" name="status" aria-label="Filter status artikel">
+                    <option value="">Semua status</option>
+                    @foreach ($statuses as $status)
+                        <option value="{{ $status->value }}" @selected(request('status') === $status->value)>
+                            {{ $status->label() }}
+                        </option>
+                    @endforeach
+                </select>
+                <button class="btn btn-sm btn-outline-secondary" type="submit">
+                    <i class="bi bi-funnel" aria-hidden="true"></i> Filter
+                </button>
+            </form>
+            <a class="btn btn-sm btn-outline-secondary" href="#">
+                <i class="bi bi-upload" aria-hidden="true"></i><span class="cms-action-label--compact ms-1">Import</span>
+            </a>
+            <a class="btn btn-sm btn-primary" href="{{ route('cms.posts.create') }}">
+                <i class="bi bi-plus-lg" aria-hidden="true"></i><span class="cms-action-label--compact ms-1">Create</span>
+            </a>
+        </div>
     </x-slot:filters>
     <x-slot:head>
         <th>Artikel</th>
@@ -28,8 +36,10 @@
     </x-slot:head>
     @foreach ($posts as $post)
         <tr>
-            <td><span class="cms-table-primary">{{ $post->title }}</span><span
-                    class="cms-table-secondary">/{{ $post->slug }}</span></td>
+            <td class="cms-table-col-title">
+                <span class="cms-table-primary d-block text-truncate" data-bs-tooltip>{{ $post->title }}</span>
+                <span class="cms-table-secondary text-truncate">/{{ $post->slug }}</span>
+            </td>
             @can('admin')
                 <td>{{ $post->author?->name ?? 'Konten impor' }}</td>
             @endcan

@@ -13,10 +13,21 @@ class ProductController extends Controller
     public function index(Request $request): View
     {
         $category = $request->query('category');
-        $products = Product::active()->with('category')->when($category, fn ($q) => $q->whereHas('category', fn ($c) => $c->where('slug', $category)))->orderBy('sort_order')->paginate(12)->withQueryString();
+        $q = trim((string) $request->query('q'));
+        $products = Product::active()
+            ->with('category')
+            ->when($category, fn ($query) => $query->whereHas('category', fn ($categoryQuery) => $categoryQuery->where('slug', $category)))
+            ->when($q, fn ($query) => $query->where(fn ($sub) => $sub->where('name', 'like', '%'.$q.'%')->orWhere('summary', 'like', '%'.$q.'%')))
+            ->orderBy('sort_order')
+            ->paginate(12)
+            ->withQueryString();
         $categories = ProductCategory::where('is_active', true)->orderBy('sort_order')->get();
 
-        return view('products.index', compact('products', 'categories', 'category'));
+        if ($request->ajax()) {
+            return view('products.partials.catalog', compact('products', 'categories', 'category', 'q'));
+        }
+
+        return view('products.index', compact('products', 'categories', 'category', 'q'));
     }
 
     public function show(Product $product): View

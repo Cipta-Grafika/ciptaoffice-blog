@@ -17,6 +17,8 @@
                 </div>
                 <div class="cms-surface-body">
                     <dl class="cms-detail-list">
+                        <dt>Nama</dt>
+                        <dd>{{ $inquiry->name }}</dd>
                         <dt>Telepon</dt>
                         <dd>{{ $inquiry->phone }}</dd>
                         <dt>Email</dt>

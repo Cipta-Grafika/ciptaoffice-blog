@@ -1,5 +1,182 @@
 import Quill from 'quill';
+import TableUp, {
+    defaultCustomSelect,
+    TableMenuContextmenu,
+    TableSelection,
+} from 'quill-table-up';
 import 'quill/dist/quill.snow.css';
+import 'quill-table-up/index.css';
+import 'quill-table-up/table-creator.css';
+
+Quill.register({ [`modules/${TableUp.moduleName}`]: TableUp }, true);
+
+const tableTexts = {
+    fullCheckboxText: 'Gunakan lebar penuh',
+    customBtnText: 'Ukuran lain',
+    confirmText: 'Buat tabel',
+    cancelText: 'Batal',
+    rowText: 'Baris',
+    colText: 'Kolom',
+    notPositiveNumberError: 'Masukkan bilangan bulat positif',
+    custom: 'Ukuran lain',
+    clear: 'Hapus warna',
+    transparent: 'Transparan',
+    perWidthInsufficient: 'Lebar persentase tidak mencukupi. Ubah tabel menjadi lebar tetap?',
+    InsertTop: 'Tambah baris di atas',
+    InsertRight: 'Tambah kolom di kanan',
+    InsertBottom: 'Tambah baris di bawah',
+    InsertLeft: 'Tambah kolom di kiri',
+    MergeCell: 'Gabungkan sel',
+    SplitCell: 'Pisahkan sel',
+    DeleteRow: 'Hapus baris',
+    DeleteColumn: 'Hapus kolom',
+    DeleteTable: 'Hapus tabel',
+};
+
+const tableMenuIcon = (label) => () => {
+    const icon = document.createElement('span');
+    icon.className = 'table-menu-symbol';
+    icon.textContent = label;
+    icon.setAttribute('aria-hidden', 'true');
+    return icon;
+};
+
+const tableMenuItems = [
+    {
+        name: 'InsertTop',
+        icon: tableMenuIcon('↑+'),
+        tip: 'Insert row above',
+        handle: (table, cells) => {
+            table.appendRow(cells, false);
+            table.hideTableTools();
+        },
+    },
+    {
+        name: 'InsertRight',
+        icon: tableMenuIcon('+→'),
+        tip: 'Insert column right',
+        handle: (table, cells) => {
+            table.appendCol(cells, true);
+            table.hideTableTools();
+        },
+    },
+    {
+        name: 'InsertBottom',
+        icon: tableMenuIcon('↓+'),
+        tip: 'Insert row below',
+        handle: (table, cells) => {
+            table.appendRow(cells, true);
+            table.hideTableTools();
+        },
+    },
+    {
+        name: 'InsertLeft',
+        icon: tableMenuIcon('+←'),
+        tip: 'Insert column left',
+        handle: (table, cells) => {
+            table.appendCol(cells, false);
+            table.hideTableTools();
+        },
+    },
+    { name: 'break' },
+    {
+        name: 'MergeCell',
+        icon: tableMenuIcon('↔'),
+        tip: 'Merge cells',
+        handle: (table, cells) => {
+            table.mergeCells(cells);
+            table.hideTableTools();
+        },
+    },
+    {
+        name: 'SplitCell',
+        icon: tableMenuIcon('↤↦'),
+        tip: 'Split cell',
+        handle: (table, cells) => {
+            table.splitCell(cells);
+            table.hideTableTools();
+        },
+    },
+    { name: 'break' },
+    {
+        name: 'DeleteRow',
+        icon: tableMenuIcon('−R'),
+        tip: 'Delete row',
+        handle: (table, cells) => {
+            table.removeRow(cells);
+            table.hideTableTools();
+        },
+    },
+    {
+        name: 'DeleteColumn',
+        icon: tableMenuIcon('−C'),
+        tip: 'Delete column',
+        handle: (table, cells) => {
+            table.removeCol(cells);
+            table.hideTableTools();
+        },
+    },
+    {
+        name: 'DeleteTable',
+        icon: tableMenuIcon('×'),
+        tip: 'Delete table',
+        handle: (table, cells) => table.deleteTable(cells),
+    },
+];
+
+const alignableBlockSelector = [
+    'h1',
+    'h2',
+    'h3',
+    'p',
+    'blockquote',
+    'li',
+].join(',');
+
+export function normalizeEditorHtml(html) {
+    const document = new DOMParser().parseFromString(html || '', 'text/html');
+    const textWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+
+    while (textWalker.nextNode()) {
+        textWalker.currentNode.nodeValue = textWalker.currentNode.nodeValue.replaceAll('\u00a0', ' ');
+    }
+
+    const blocks = Array.from(document.body.querySelectorAll(alignableBlockSelector))
+        .filter((block) => !block.closest('.ql-table-wrapper'));
+    const contentBlocks = blocks.filter((block) => block.textContent.trim() !== '');
+    const hasGlobalJustifyArtifact = contentBlocks.length > 1
+        && contentBlocks.every((block) => block.classList.contains('ql-align-justify'));
+
+    if (hasGlobalJustifyArtifact) {
+        blocks.forEach((block) => {
+            block.classList.remove('ql-align-justify');
+            if (block.classList.length === 0) block.removeAttribute('class');
+        });
+    }
+
+    return document.body.innerHTML;
+}
+
+export function prepareEditorHtml(html) {
+    const document = new DOMParser().parseFromString(html || '', 'text/html');
+
+    document.body.querySelectorAll('.ql-table-wrapper table').forEach((table) => {
+        const colgroup = table.querySelector('colgroup');
+        const columns = Array.from(colgroup?.querySelectorAll('col') || []);
+        const hasPercentageWidths = columns.length > 0
+            && columns.every((column) => /^\d+(?:\.\d+)?%$/.test(column.getAttribute('width')?.trim() || ''));
+
+        if (!hasPercentageWidths) return;
+
+        table.dataset.full = 'true';
+        colgroup.dataset.full = 'true';
+        columns.forEach((column) => {
+            column.dataset.full = 'true';
+        });
+    });
+
+    return document.body.innerHTML;
+}
 
 export function initQuillEditors(root = document) {
     root.querySelectorAll('[data-quill]').forEach((element) => {
@@ -25,7 +202,7 @@ export function initQuillEditors(root = document) {
                             { align: 'right' },
                             { align: 'justify' },
                         ],
-                        ['blockquote', 'link', 'image'],
+                        ['blockquote', 'link', 'image', { [TableUp.toolName]: [] }],
                         ['clean'],
                     ],
                     handlers: {
@@ -33,12 +210,28 @@ export function initQuillEditors(root = document) {
                         list: listHandler,
                     },
                 },
+                [TableUp.moduleName]: {
+                    customSelect: defaultCustomSelect,
+                    customBtn: true,
+                    full: true,
+                    fullSwitch: false,
+                    texts: tableTexts,
+                    selection: TableSelection,
+                    selectionOptions: {
+                        selectColor: 'rgba(164, 126, 79, .14)',
+                        tableMenu: TableMenuContextmenu,
+                        tableMenuOptions: {
+                            tools: tableMenuItems,
+                            tipText: true,
+                        },
+                    },
+                },
             },
         });
-        const initialContent = quill.clipboard.convert({ html: input.value || '' });
+        const initialContent = quill.clipboard.convert({ html: prepareEditorHtml(input.value) });
         quill.setContents(initialContent, Quill.sources.SILENT);
         const syncInput = () => {
-            input.value = quill.getSemanticHTML();
+            input.value = normalizeEditorHtml(quill.getSemanticHTML());
         };
         quill.on('text-change', syncInput);
 
