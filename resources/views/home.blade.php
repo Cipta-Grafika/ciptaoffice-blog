@@ -79,12 +79,28 @@
                     <p class="text-muted mb-0">Tim kami sedang menyusun pilihan kebutuhan kantor terbaik.</p>
             </div>@else<div class="row g-3">
                     @foreach ($categories as $category)
-                        <div class="col-md-4 reveal"><a class="category-tile d-flex flex-column justify-content-end"
-                                href="{{ route('products.index', ['category' => $category->slug]) }}"><span
-                                    class="section-kicker text-white-50">0{{ $loop->iteration }}</span>
-                                <h3 class="font-display display-6 mb-2">{{ $category->name }}</h3>
-                                <p class="small mb-0 text-white-50">{{ $category->description }}</p>
-                            </a></div>
+                        @php
+                            $icon = match($category->slug) {
+                                'meja-kantor' => 'desk.svg',
+                                'kursi-kantor' => 'chair-outline.svg',
+                                'brankas' => 'safe-outline.svg',
+                                default => 'desk.svg',
+                            };
+                            $iconPath = public_path('images/icons/' . $icon);
+                        @endphp
+                        <div class="col-md-4 reveal">
+                            <a class="category-tile d-flex flex-column justify-content-end"
+                                href="{{ route('products.index', ['category' => $category->slug]) }}">
+                                @if(file_exists($iconPath))
+                                    <div class="category-icon-wrapper" aria-hidden="true">
+                                        {!! file_get_contents($iconPath) !!}
+                                    </div>
+                                @endif
+                                <span class="section-kicker text-white-50 position-relative z-2">0{{ $loop->iteration }}</span>
+                                <h3 class="font-display display-6 mb-2 position-relative z-2">{{ $category->name }}</h3>
+                                <p class="small mb-0 text-white-50 position-relative z-2">{{ $category->description }}</p>
+                            </a>
+                        </div>
                     @endforeach
                 </div>
             @endif

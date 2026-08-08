@@ -60,7 +60,7 @@
             <div class="cms-dashboard-metrics">
                 @foreach ($statuses as $status)
                     @php($presentation = $statusPresentation[$status->value])
-                    <article class="cms-dashboard-metric cms-dashboard-metric--{{ $presentation['tone'] }}">
+                    <a href="{{ route('cms.posts.index', ['status' => $status->value]) }}" class="cms-dashboard-metric cms-dashboard-metric--{{ $presentation['tone'] }}">
                         <div class="cms-dashboard-metric-topline">
                             <span class="cms-dashboard-metric-icon" aria-hidden="true">
                                 <i class="bi {{ $presentation['icon'] }}"></i>
@@ -70,7 +70,7 @@
                         <p class="cms-dashboard-metric-label mb-0">{{ $status->label() }}</p>
                         <p class="cms-dashboard-metric-value mb-0">{{ $counts[$status->value] ?? 0 }}</p>
                         <p class="cms-dashboard-metric-description mb-0">{{ $presentation['description'] }}</p>
-                    </article>
+                    </a>
                 @endforeach
             </div>
         </section>
