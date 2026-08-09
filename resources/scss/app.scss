@@ -45,7 +45,7 @@ a { text-underline-offset: .2em; }
 .font-display { font-family: 'Cormorant Garamond', serif; }
 .letter-space { letter-spacing: .16em; }
 .text-muted-custom { color: var(--muted); }
-.section-space { padding-block: clamp(4.5rem, 9vw, 8rem); }
+.section-space { padding-block: clamp(4.5rem, 9vw, 8rem); scroll-margin-top: calc(var(--site-nav-height, 5rem) + 3.5rem); }
 .section-space--compact-top { padding-top: clamp(2.5rem, 4vw, 4rem); }
 .section-kicker { color: var(--brass); font-size: .72rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; }
 .section-title { color: var(--ink); font-size: clamp(2.5rem, 5vw, 4.75rem); line-height: .98; }
