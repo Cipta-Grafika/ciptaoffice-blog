@@ -31,7 +31,7 @@ export function initMetricStrip(root = document) {
         const docked = window.scrollY >= dockThreshold;
         setDocked(docked);
 
-        const activationLine = navHeight + (docked ? metricStrip.offsetHeight : 0) + 32;
+        const activationLine = navHeight + (docked ? metricStrip.offsetHeight : 0) + window.innerHeight * 0.25;
         let activeSection = null;
         sections.forEach((section) => {
             if (section && section.getBoundingClientRect().top <= activationLine) activeSection = section.id;
@@ -43,6 +43,28 @@ export function initMetricStrip(root = document) {
             else link.removeAttribute('aria-current');
         });
     };
+
+    links.forEach((link) => {
+        link.addEventListener('click', (e) => {
+            const target = root.querySelector(link.hash);
+            if (!target) return;
+            e.preventDefault();
+            
+            const navHeight = siteHeader?.offsetHeight ?? nav.offsetHeight;
+            const dockedHeight = 52; // 3.25rem * 16px (approx docked height)
+            const isDocked = metricStrip.classList.contains('is-docked');
+            const shrinkage = isDocked ? 0 : (metricStrip.offsetHeight - dockedHeight);
+            
+            // Calculate absolute target position minus nav height, docked height, and layout shrinkage
+            const targetY = target.getBoundingClientRect().top + window.scrollY - navHeight - dockedHeight - shrinkage;
+            
+            window.scrollTo({ top: targetY, behavior: 'smooth' });
+            
+            // Focus the target for accessibility
+            target.setAttribute('tabindex', '-1');
+            target.focus({ preventScroll: true });
+        });
+    });
 
     const queueScrollUpdate = () => {
         if (ticking) return;
