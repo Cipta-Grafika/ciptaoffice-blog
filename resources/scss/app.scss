@@ -652,3 +652,20 @@ a { text-underline-offset: .2em; }
     .cms-topbar-tools { gap:0; }
     .cms-topbar-icon-button { width:2.2rem; height:2.2rem; }
 }
+
+.product-combobox { position:relative; }
+.product-combobox.is-enhanced .product-combobox-native { position:absolute; width:1px; height:1px; padding:0; clip:rect(0,0,0,0); white-space:nowrap; border:0; overflow:hidden; }
+.product-combobox-control { position:relative; isolation:isolate; }
+.product-combobox-control > .bi-search { position:absolute; z-index:2; left:1rem; top:50%; color:var(--brass); font-size:.85rem; pointer-events:none; transform:translateY(-50%); }
+.product-combobox-control .form-control { padding-inline:2.65rem 3rem; cursor:text; }
+.product-combobox-control .form-control::-webkit-search-cancel-button { appearance:none; }
+.product-combobox-clear { position:absolute; z-index:2; top:50%; right:.45rem; display:grid; width:2.15rem; height:2.15rem; padding:0; place-items:center; color:var(--muted); background:transparent; border:0; border-radius:50%; transform:translateY(-50%); transition:color .2s ease,background-color .2s ease; }
+.product-combobox-clear[hidden] { display:none; }
+.product-combobox-clear:hover { color:var(--forest); background:rgba(23,62,54,.08); }
+.product-combobox-menu { position:absolute; z-index:1040; width:100%; max-height:16rem; top:calc(100% + .45rem); left:0; padding:.4rem; overflow-y:auto; overscroll-behavior:contain; background:rgba(255,253,248,.98); border:1px solid rgba(23,62,54,.18); border-top:3px solid var(--brass); border-radius:.45rem; box-shadow:0 18px 42px rgba(23,32,30,.16); backdrop-filter:blur(14px); }
+.product-combobox-option { display:flex; width:100%; min-height:2.65rem; padding:.55rem .7rem; align-items:center; justify-content:space-between; gap:1rem; color:#44504c; background:transparent; border:0; border-radius:.3rem; font-size:.82rem; text-align:left; transition:color .15s ease,background-color .15s ease; }
+.product-combobox-option:hover,.product-combobox-option.is-active { color:var(--forest); background:rgba(23,62,54,.08); }
+.product-combobox-option .bi { color:var(--brass); opacity:0; }
+.product-combobox-option[aria-selected='true'] { font-weight:700; }
+.product-combobox-option[aria-selected='true'] .bi { opacity:1; }
+.product-combobox-empty { margin:0; padding:1rem .8rem; color:var(--muted); font-size:.78rem; line-height:1.55; text-align:center; }

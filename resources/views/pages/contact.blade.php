@@ -46,34 +46,66 @@
                         <div class="row g-4">
                             <div class="col-md-6">
                                 <label class="form-label" for="name">Nama</label>
-                                <input class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}" required>
+                                <input class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}" placeholder="Nama Anda..." required>
                                 @error('name')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label" for="phone">Telepon/WhatsApp</label>
-                                <input class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone" value="{{ old('phone') }}" required>
+                                <input class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone" value="{{ old('phone') }}" placeholder="Nomor WhatsApp Anda..." required>
                                 @error('phone')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label" for="email">Email (opsional)</label>
-                                <input class="form-control" type="email" id="email" name="email" value="{{ old('email') }}">
+                                <input class="form-control" type="email" id="email" name="email" value="{{ old('email') }}" placeholder="Email Anda...">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label" for="product_id">Produk terkait</label>
-                                <select class="form-select" id="product_id" name="product_id">
-                                    <option value="">Kebutuhan umum</option>
-                                    @foreach ($products as $product)
-                                        <option value="{{ $product->id }}" @selected(old('product_id', request('product')) == $product->id)>
-                                            {{ $product->name }}</option>
-                                    @endforeach
-                                </select>
+                                <div class="product-combobox" data-product-combobox>
+                                    <label class="form-label" for="product_id" data-product-combobox-label>Produk terkait</label>
+                                    <select class="form-select product-combobox-native @error('product_id') is-invalid @enderror"
+                                        id="product_id" name="product_id" data-product-combobox-select
+                                        @error('product_id') aria-describedby="product_id_error" @enderror>
+                                        <option value="">Kebutuhan umum</option>
+                                        @foreach ($products as $product)
+                                            <option value="{{ $product->id }}" @selected(old('product_id', request('product')) == $product->id)>
+                                                {{ $product->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <div data-product-combobox-enhanced hidden>
+                                        <div class="product-combobox-control">
+                                            <i class="bi bi-search" aria-hidden="true"></i>
+                                            <input class="form-control" id="product_search" type="search"
+                                                placeholder="Cari produk terkait..." autocomplete="off" role="combobox"
+                                                aria-autocomplete="list" aria-expanded="false"
+                                                aria-controls="product_id_options" data-product-combobox-input
+                                                @error('product_id') aria-describedby="product_id_error" @enderror>
+                                            <button class="product-combobox-clear" type="button"
+                                                aria-label="Hapus produk terpilih" title="Hapus produk terpilih"
+                                                data-product-combobox-clear hidden>
+                                                <i class="bi bi-x-lg" aria-hidden="true"></i>
+                                            </button>
+                                        </div>
+                                        <div class="product-combobox-menu" id="product_id_options" role="listbox"
+                                            data-product-combobox-listbox hidden>
+                                            <div data-product-combobox-options></div>
+                                            <p class="product-combobox-empty" data-product-combobox-empty hidden>
+                                                Produk tidak ditemukan. Pilih kebutuhan umum atau coba kata lain.
+                                            </p>
+                                        </div>
+                                        <p class="visually-hidden" role="status" aria-live="polite"
+                                            data-product-combobox-status></p>
+                                    </div>
+                                    @error('product_id')
+                                        <div class="invalid-feedback d-block" id="product_id_error">{{ $message }}</div>
+                                    @enderror
+                                </div>
                             </div>
                             <div class="col-12"><label class="form-label" for="message">Ceritakan kebutuhan</label>
                                 <textarea class="form-control @error('message') is-invalid @enderror" id="message" name="message" rows="6"
+                                    placeholder="Ceritakan kebutuhan Anda..."
                                     required>{{ old('message') }}</textarea>
                                 @error('message')
                                     <div class="invalid-feedback">{{ $message }}</div>
