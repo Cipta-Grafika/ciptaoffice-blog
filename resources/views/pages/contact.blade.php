@@ -23,39 +23,48 @@
                 <div class="col-lg-4">
                     <h2 class="font-display display-5">Yang akan kami bantu</h2>
                     <ul class="list-unstyled mt-4">
-                        <li class="border-top py-3"><i class="bi bi-check2 me-2 text-primary"></i>Memetakan spesifikasi</li>
-                        <li class="border-top py-3"><i class="bi bi-check2 me-2 text-primary"></i>Mengecek ketersediaan</li>
-                        <li class="border-top py-3"><i class="bi bi-check2 me-2 text-primary"></i>Menyiapkan alternatif
-                            setara</li>
+                        <li class="border-top py-3">
+                            <i class="bi bi-check2 me-2 text-primary"></i>Memetakan spesifikasi
+                        </li>
+                        <li class="border-top py-3">
+                            <i class="bi bi-check2 me-2 text-primary"></i>Mengecek ketersediaan
+                        </li>
+                        <li class="border-top py-3">
+                            <i class="bi bi-check2 me-2 text-primary"></i>Menyiapkan alternatif setara
+                        </li>
                     </ul>
                 </div>
                 <div class="col-lg-8">
                     <form class="cms-card p-4 p-lg-5" method="post" action="{{ route('contact.store') }}">@csrf
-                        <div class="d-none" aria-hidden="true"><label for="website">Website</label><input id="website"
-                                name="website" tabindex="-1" autocomplete="off"></div>
+                        <div class="d-none" aria-hidden="true">
+                            <label for="website">Website</label>
+                            <input id="website" name="website" tabindex="-1" autocomplete="off">
+                        </div>
                         @if ($errors->any())
                             <div class="alert alert-danger">Periksa kembali data yang ditandai.</div>
                         @endif
                         <div class="row g-4">
-                            <div class="col-md-6"><label class="form-label" for="name">Nama</label><input
-                                    class="form-control @error('name') is-invalid @enderror" id="name" name="name"
-                                    value="{{ old('name') }}" required>
+                            <div class="col-md-6">
+                                <label class="form-label" for="name">Nama</label>
+                                <input class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}" required>
                                 @error('name')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="col-md-6"><label class="form-label" for="phone">Telepon/WhatsApp</label><input
-                                    class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone"
-                                    value="{{ old('phone') }}" required>
+                            <div class="col-md-6">
+                                <label class="form-label" for="phone">Telepon/WhatsApp</label>
+                                <input class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone" value="{{ old('phone') }}" required>
                                 @error('phone')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="col-md-6"><label class="form-label" for="email">Email (opsional)</label><input
-                                    class="form-control" type="email" id="email" name="email"
-                                    value="{{ old('email') }}"></div>
-                            <div class="col-md-6"><label class="form-label" for="product_id">Produk terkait</label><select
-                                    class="form-select" id="product_id" name="product_id">
+                            <div class="col-md-6">
+                                <label class="form-label" for="email">Email (opsional)</label>
+                                <input class="form-control" type="email" id="email" name="email" value="{{ old('email') }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="product_id">Produk terkait</label>
+                                <select class="form-select" id="product_id" name="product_id">
                                     <option value="">Kebutuhan umum</option>
                                     @foreach ($products as $product)
                                         <option value="{{ $product->id }}" @selected(old('product_id', request('product')) == $product->id)>
