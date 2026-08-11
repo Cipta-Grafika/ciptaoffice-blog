@@ -520,6 +520,8 @@ a { text-underline-offset: .2em; }
 .cms-image-dropzone.is-dragging .cms-image-dropzone-preview { border-color:var(--dropzone-accent); transform:scale(.985); }
 .cms-image-dropzone.is-dragging .cms-image-dropzone-icon { color:#fff; background:var(--dropzone-accent); }
 .cms-image-dropzone.has-error { border-color:rgba(160,50,50,.52); }
+.cms-image-dropzone--avatar .cms-image-dropzone-preview { width:min(100%,9rem); aspect-ratio:1; justify-self:center; border-color:rgba(164,126,79,.34); border-radius:50%; box-shadow:0 0 0 .35rem rgba(164,126,79,.08); }
+.cms-image-dropzone--avatar .cms-image-dropzone-placeholder { background:rgba(255,255,255,.72); }
 .stat-value { color:var(--forest); font-family:'Cormorant Garamond',serif; font-size:3rem; font-weight:700; }
 .table > :not(caption) > * > * { padding:.9rem .75rem; }
 .form-label { color:#394440; font-size:.78rem; font-weight:700; letter-spacing:.05em; text-transform:uppercase; }

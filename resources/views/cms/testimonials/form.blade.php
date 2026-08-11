@@ -48,15 +48,27 @@
                         <textarea class="form-control @error('quote') is-invalid @enderror" name="quote" rows="5" required>{{ old('quote', $testimonial->quote) }}</textarea>
                         @error('quote')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Avatar</label>
-                        <input class="form-control @error('avatar') is-invalid @enderror" type="file" name="avatar">
-                        @error('avatar')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Alt text avatar</label>
-                        <input class="form-control @error('avatar_alt') is-invalid @enderror" name="avatar_alt" value="{{ old('avatar_alt', $testimonial->avatar_alt) }}">
-                        @error('avatar_alt')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    <div class="col-12">
+                        <label class="form-label" for="avatar">Avatar</label>
+                        <x-cms-image-dropzone
+                            class="cms-image-dropzone--avatar"
+                            name="avatar"
+                            id="avatar"
+                            :current-src="$testimonial->avatar_path ? asset('storage/' . $testimonial->avatar_path) : null"
+                            :current-alt="$testimonial->avatar_alt ?: 'Preview avatar ' . $testimonial->reviewer_name"
+                            current-status="Avatar tersimpan dan tetap digunakan."
+                            empty-status="Testimonial ini belum memiliki avatar."
+                            new-status="Avatar baru siap disimpan."
+                            choose-label="Pilih avatar"
+                            replace-label="Ganti avatar"
+                            help="JPEG, PNG, atau WebP. Maksimum 4 MB."
+                            :error="$errors->first('avatar')"
+                        />
+                        <div class="form-text mt-3 mb-0">
+                            <i class="bi bi-info-circle me-1" aria-hidden="true"></i>
+                            <strong>Rekomendasi resolusi:</strong> 800 × 800 piksel (rasio 1:1). Gunakan foto persegi
+                            dengan wajah atau objek utama berada di tengah agar tetap proporsional saat dipotong menjadi lingkaran.
+                        </div>
                     </div>
                     <div class="col-12">
                         <label class="form-check mb-0">
