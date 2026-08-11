@@ -12,6 +12,16 @@ class TestimonialRequest extends FormRequest
         return $this->user()->isAdmin();
     }
 
+    protected function prepareForValidation(): void
+    {
+        $testimonial = $this->route('testimonial');
+        $reviewerName = trim((string) $this->input('reviewer_name'));
+
+        if ($this->hasFile('avatar') || $testimonial?->avatar_path) {
+            $this->merge(['avatar_alt' => 'Profil '.$reviewerName]);
+        }
+    }
+
     public function rules(): array
     {
         $hasAvatar = $this->hasFile('avatar') || (bool) $this->route('testimonial')?->avatar_path;

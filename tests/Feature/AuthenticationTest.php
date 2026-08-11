@@ -20,6 +20,8 @@ class AuthenticationTest extends TestCase
             ->assertSee('name="email"', false)
             ->assertSee('name="password"', false)
             ->assertSee('data-password-toggle="#password"', false)
+            ->assertSee('class="auth-brand-logo"', false)
+            ->assertSee('images/logos/ciptaoffice-logo.png', false)
             ->assertDontSee("@yield('content')", false);
     }
 

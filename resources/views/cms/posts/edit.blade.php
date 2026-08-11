@@ -72,39 +72,21 @@
                         <h2>Cover artikel</h2>
                         <p>Upload file baru hanya jika ingin mengganti cover saat ini. Maksimum 4 MB.</p>
                     </div>
-                    <div class="cms-cover-field" data-cover-picker>
-                        <div class="cms-cover-preview"><img class="{{ $post->cover_image_path ? '' : 'd-none' }}"
-                                data-cover-preview
-                                src="{{ $post->cover_image_path ? asset('storage/' . $post->cover_image_path) : '' }}"
-                                data-current-src="{{ $post->cover_image_path ? asset('storage/' . $post->cover_image_path) : '' }}"
-                                alt="{{ $post->cover_image_alt ?: 'Preview cover artikel' }}">
-                            <div class="cms-cover-placeholder {{ $post->cover_image_path ? 'd-none' : '' }}"
-                                data-cover-placeholder aria-hidden="true"><i class="bi bi-image"></i></div>
-                        </div>
-                        <div>
-                            <strong class="d-block" data-cover-status
-                                data-current-status="{{ $post->cover_image_path ? 'Cover tersimpan dan tetap digunakan.' : 'Artikel ini belum memiliki cover.' }}">{{ $post->cover_image_path ? 'Cover tersimpan dan tetap digunakan.' : 'Artikel ini belum memiliki cover.' }}</strong>
-                            <p class="small text-muted mt-1 mb-3">
-                                {{ $post->cover_image_path ? 'Pilih file baru untuk mengganti cover.' : 'Pilih gambar cover untuk artikel ini.' }}
-                            </p>
-                            <input class="visually-hidden @error('cover_image') is-invalid @enderror" type="file" id="cover_image" name="cover_image"
-                                accept="image/jpeg,image/png,image/webp" data-cover-input
-                                aria-describedby="cover_image_name cover_image_help">
-                            @error('cover_image')<div class="invalid-feedback d-block mb-2">{{ $message }}</div>@enderror
-                            <input type="hidden" name="remove_cover_image" value="0" data-cover-remove-input>
-                            <div class="d-flex flex-wrap align-items-center gap-2">
-                                <label class="btn btn-sm btn-outline-dark mb-0" for="cover_image">
-                                    <i class="bi bi-upload me-1"></i>{{ $post->cover_image_path ? 'Ganti cover' : 'Pilih cover' }}
-                                </label>
-                                <button type="button" class="btn btn-sm btn-outline-danger mb-0 {{ $post->cover_image_path ? '' : 'd-none' }}" data-cover-remove aria-label="Hapus cover" title="Hapus cover">
-                                    <i class="bi bi-x-lg"></i>
-                                </button>
-                                <span class="small text-muted text-break" id="cover_image_name" data-cover-filename aria-live="polite">Tidak ada file baru dipilih.</span>
-                            </div>
-                            <div class="form-text" id="cover_image_help">JPEG, PNG, atau WebP. Alt text dibuat otomatis dari
-                                judul artikel.</div>
-                        </div>
-                    </div>
+                    <x-cms-image-dropzone
+                        name="cover_image"
+                        id="cover_image"
+                        remove-name="remove_cover_image"
+                        :current-src="$post->cover_image_path ? asset('storage/' . $post->cover_image_path) : null"
+                        :current-alt="$post->cover_image_alt ?: 'Preview cover artikel'"
+                        current-status="Cover tersimpan dan tetap digunakan."
+                        empty-status="Artikel ini belum memiliki cover."
+                        new-status="Cover baru siap disimpan."
+                        removed-status="Cover akan dihapus saat disimpan."
+                        choose-label="Pilih cover"
+                        replace-label="Ganti cover"
+                        help="JPEG, PNG, atau WebP. Maksimum 4 MB. Alt text dibuat otomatis dari judul artikel."
+                        :error="$errors->first('cover_image')"
+                    />
                     <div class="form-text mt-3 mb-0">
                         <i class="bi bi-info-circle me-1"></i>
                         <strong>Rekomendasi resolusi:</strong> 1280 × 640 piksel (rasio 2:1) atau 1280 × 720 piksel (rasio

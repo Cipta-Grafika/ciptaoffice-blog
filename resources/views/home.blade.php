@@ -63,10 +63,10 @@
             </div>
         </div>
     </nav>
-    <section class="section-space" id="produk">
+    <section class="section-space home-product-section" id="produk">
         <div class="container">
             <div class="row align-items-end mb-5 reveal">
-                <div class="col-lg-8">
+                <div class="col-lg-8 home-section-heading">
                     <p class="section-kicker">Ruang kerja, disusun dengan pertimbangan</p>
                     <h2 class="section-title mb-0">Kebutuhan utama kantor.</h2>
                 </div>
@@ -109,7 +109,7 @@
     <section class="section-space bg-white" id="artikel">
         <div class="container">
             <div class="row align-items-end mb-5 reveal">
-                <div class="col-lg-8">
+                <div class="col-lg-8 home-section-heading">
                     <p class="section-kicker">Wawasan ruang kerja</p>
                     <h2 class="section-title mb-0">Latest Article.</h2>
                 </div>
@@ -145,7 +145,7 @@
     <section class="testimonial-section section-space" id="testimoni">
         <div class="container">
             <div class="row mb-5 reveal">
-                <div class="col-lg-8">
+                <div class="col-lg-8 home-section-heading">
                     <p class="section-kicker">Kepercayaan yang dibangun</p>
                     <h2 class="section-title">Pengadaan yang terasa lebih pasti.</h2>
                 </div>
@@ -158,10 +158,34 @@
                     @foreach ($testimonials as $testimonial)
                         <div class="col-lg-4 reveal">
                             <figure class="quote-card mb-0">
-                                <div class="quote-mark">“</div>
-                                <blockquote class="mt-4 mb-5">{{ $testimonial->quote }}</blockquote>
-                                <figcaption><strong>{{ $testimonial->reviewer_name }}</strong><span
-                                        class="d-block small text-white-50">{{ collect([$testimonial->reviewer_title, $testimonial->company])->filter()->join(' · ') }}</span>
+                                <div class="quote-mark" aria-hidden="true">“</div>
+                                <blockquote>{{ $testimonial->quote }}</blockquote>
+                                <figcaption class="quote-card-author">
+                                    @if ($testimonial->avatar_path)
+                                        <img class="quote-card-avatar"
+                                            src="{{ asset('storage/' . $testimonial->avatar_path) }}"
+                                            alt="{{ $testimonial->avatar_alt ?: $testimonial->reviewer_name }}">
+                                    @else
+                                        <span class="quote-card-avatar quote-card-avatar--fallback" aria-hidden="true">
+                                            {{ Str::upper(Str::substr($testimonial->reviewer_name, 0, 1)) }}
+                                        </span>
+                                    @endif
+                                    <span class="quote-card-author-copy">
+                                        <strong class="quote-card-author-name">{{ $testimonial->reviewer_name }}</strong>
+                                        @if ($testimonial->reviewer_title || $testimonial->company)
+                                            <span class="quote-card-author-meta">
+                                                @if ($testimonial->reviewer_title)
+                                                    <span>{{ $testimonial->reviewer_title }}</span>
+                                                @endif
+                                                @if ($testimonial->reviewer_title && $testimonial->company)
+                                                    <span class="quote-card-author-separator" aria-hidden="true">·</span>
+                                                @endif
+                                                @if ($testimonial->company)
+                                                    <span>{{ $testimonial->company }}</span>
+                                                @endif
+                                            </span>
+                                        @endif
+                                    </span>
                                 </figcaption>
                             </figure>
                         </div>

@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Enums\PostStatus;
+use App\Models\HomepageSetting;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -53,6 +54,11 @@ class MediaAndHomepageSecurityTest extends TestCase
         Storage::disk('public')->assertExists($post->cover_image_path);
         $this->actingAs($author)->get(route('cms.posts.edit', $post))
             ->assertOk()
+            ->assertSee('data-image-dropzone', false)
+            ->assertSee('data-image-dropzone-target', false)
+            ->assertSee('data-max-size="4194304"', false)
+            ->assertSee('accept="image/jpeg,image/png,image/webp"', false)
+            ->assertSee('Tarik dan lepaskan gambar di sini')
             ->assertSee('Cover tersimpan dan tetap digunakan.')
             ->assertSee('Ganti cover')
             ->assertSee('/storage/'.$post->cover_image_path, false);
@@ -79,5 +85,43 @@ class MediaAndHomepageSecurityTest extends TestCase
     {
         $admin = User::factory()->admin()->create();
         $this->actingAs($admin)->put(route('cms.homepage.update'), ['title' => 'Judul', 'summary' => 'Ringkasan', 'primary_cta_label' => 'Klik', 'primary_cta_url' => 'javascript:alert(1)'])->assertSessionHasErrors('primary_cta_url');
+    }
+
+    public function test_homepage_editor_uses_reusable_image_dropzone_for_hero(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $settings = HomepageSetting::current();
+        $settings->update([
+            'hero_image_path' => 'homepage/hero-office.webp',
+            'hero_image_alt' => 'Ruang kantor modern',
+        ]);
+
+        $this->actingAs($admin)->get(route('cms.homepage.edit'))
+            ->assertOk()
+            ->assertSee('data-image-dropzone', false)
+            ->assertSee('name="hero_image"', false)
+            ->assertSee('accept="image/jpeg,image/png,image/webp"', false)
+            ->assertSee('data-current-src="'.asset('storage/homepage/hero-office.webp').'"', false)
+            ->assertSee('Gambar hero tersimpan dan tetap digunakan.')
+            ->assertSee('Ganti gambar hero')
+            ->assertDontSee('id="hero_image_alt"', false)
+            ->assertDontSee('Alt text gambar');
+    }
+
+    public function test_homepage_hero_alt_text_is_generated_from_title(): void
+    {
+        Storage::fake('public');
+        $admin = User::factory()->admin()->create();
+        $image = UploadedFile::fake()->createWithContent('hero.png', base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII='))->mimeType('image/png');
+
+        $this->actingAs($admin)->put(route('cms.homepage.update'), [
+            'title' => 'Ruang Kerja yang Produktif',
+            'summary' => 'Solusi ruang kerja untuk kebutuhan perusahaan.',
+            'hero_image' => $image,
+        ])->assertSessionHasNoErrors();
+
+        $settings = HomepageSetting::current();
+        $this->assertSame('Ruang Kerja yang Produktif', $settings->hero_image_alt);
+        Storage::disk('public')->assertExists($settings->hero_image_path);
     }
 }

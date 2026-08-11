@@ -3,6 +3,7 @@ import { initCmsConfirmModal } from '../components/cms/global/confirm-modal';
 import { initCmsNavigationSearch } from '../components/cms/global/navigation-search';
 import { initCmsSidebar } from '../components/cms/global/sidebar';
 import { initCmsAjaxTable } from '../components/cms/global/ajax-table';
+import { initImageDropzones } from '../components/cms/shared/image-dropzone';
 
 const globalInitializers = [
     initCmsSidebar,
@@ -10,6 +11,7 @@ const globalInitializers = [
     initCmsConfirmModal,
     initCmsNavigationSearch,
     initCmsAjaxTable,
+    initImageDropzones,
 ];
 
 const pageLoaders = {
