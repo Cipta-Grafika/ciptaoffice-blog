@@ -28,6 +28,35 @@ class HomepageTest extends TestCase
         $this->get('/')->assertOk()->assertSee('Artikel pertama sedang disiapkan')->assertSee('Ulasan akan segera hadir');
     }
 
+    public function test_homepage_renders_testimonial_identity_with_avatar_and_initial_fallback(): void
+    {
+        Testimonial::create([
+            'reviewer_name' => 'Rina Pratama',
+            'reviewer_title' => 'Office Manager',
+            'company' => 'Perusahaan Distribusi',
+            'quote' => 'Pelayanannya responsif.',
+            'avatar_path' => 'testimonials/rina-pratama.jpg',
+            'avatar_alt' => 'Profil Rina Pratama',
+            'is_active' => true,
+            'sort_order' => 1,
+        ]);
+        Testimonial::create([
+            'reviewer_name' => 'Fajar Nugroho',
+            'quote' => 'Rekomendasinya relevan.',
+            'is_active' => true,
+            'sort_order' => 2,
+        ]);
+
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('class="quote-card-author"', false)
+            ->assertSee('class="quote-card-avatar"', false)
+            ->assertSee('src="'.asset('storage/testimonials/rina-pratama.jpg').'"', false)
+            ->assertSee('alt="Profil Rina Pratama"', false)
+            ->assertSee('quote-card-avatar--fallback', false)
+            ->assertSeeInOrder(['Rina Pratama', 'Office Manager', 'Perusahaan Distribusi']);
+    }
+
     public function test_metric_strip_provides_navigation_to_homepage_sections(): void
     {
         $this->get('/')
