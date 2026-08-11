@@ -13,10 +13,9 @@
 <body data-app-context="auth">
     <main class="auth-shell d-flex align-items-center justify-content-center p-3">
         <div class="auth-card w-100">
-            <a class="d-inline-flex align-items-center gap-2 text-decoration-none text-dark mb-5"
-                href="{{ route('home') }}">
-                <span class="brand-mark">CO</span>
-                <strong>CiptaOffice</strong>
+            <a class="auth-brand" href="{{ route('home') }}" aria-label="CiptaOffice — kembali ke beranda">
+                <img class="auth-brand-logo" src="{{ asset('images/logos/ciptaoffice-logo.png') }}"
+                    width="867" height="60" alt="CiptaOffice">
             </a>
 
             @if (session('status'))
