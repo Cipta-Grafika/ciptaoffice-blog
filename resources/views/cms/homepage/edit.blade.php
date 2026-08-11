@@ -37,18 +37,20 @@
                     <h2>Visual hero</h2>
                     <p>Gunakan JPEG, PNG, atau WebP yang tajam dan relevan dengan pesan utama.</p>
                 </div>
-                <div class="row g-4">
-                    <div class="col-md-6">
-                        <label class="form-label" for="hero_image">Gambar hero</label>
-                        <input class="form-control @error('hero_image') is-invalid @enderror" id="hero_image" type="file" name="hero_image" accept="image/jpeg,image/png,image/webp">
-                        @error('hero_image')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label" for="hero_image_alt">Alt text gambar</label>
-                        <input class="form-control @error('hero_image_alt') is-invalid @enderror" id="hero_image_alt" name="hero_image_alt" value="{{ old('hero_image_alt', $settings->hero_image_alt) }}">
-                        @error('hero_image_alt')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                    </div>
-                </div>
+                <label class="form-label" for="hero_image">Gambar hero</label>
+                <x-cms-image-dropzone
+                    name="hero_image"
+                    id="hero_image"
+                    :current-src="$settings->hero_image_path ? asset('storage/' . $settings->hero_image_path) : null"
+                    :current-alt="$settings->hero_image_alt ?: 'Preview gambar hero'"
+                    current-status="Gambar hero tersimpan dan tetap digunakan."
+                    empty-status="Homepage ini belum memiliki gambar hero."
+                    new-status="Gambar hero baru siap disimpan."
+                    choose-label="Pilih gambar hero"
+                    replace-label="Ganti gambar hero"
+                    help="JPEG, PNG, atau WebP. Maksimum 4 MB."
+                    :error="$errors->first('hero_image')"
+                />
                 <div class="form-text mt-3 mb-0">
                     <i class="bi bi-info-circle me-1"></i>
                     <strong>Rekomendasi resolusi:</strong> 1080 × 1080 piksel (rasio 1:1) atau 1080 × 1350 piksel (rasio

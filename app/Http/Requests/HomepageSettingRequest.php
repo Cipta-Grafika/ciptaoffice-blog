@@ -13,6 +13,19 @@ class HomepageSettingRequest extends FormRequest
         return $this->user()->isAdmin();
     }
 
+    protected function prepareForValidation(): void
+    {
+        $settings = HomepageSetting::current();
+
+        if ($this->hasFile('hero_image')) {
+            $this->merge(['hero_image_alt' => trim((string) $this->input('title'))]);
+        } elseif ($settings->hero_image_path) {
+            $this->merge([
+                'hero_image_alt' => $settings->hero_image_alt ?: trim((string) $this->input('title')),
+            ]);
+        }
+    }
+
     public function rules(): array
     {
         $hasImage = $this->hasFile('hero_image') || (bool) HomepageSetting::current()->hero_image_path;
