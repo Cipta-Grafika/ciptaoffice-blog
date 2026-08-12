@@ -200,6 +200,81 @@ const alignableBlockSelector = [
     'li',
 ].join(',');
 
+const tableCellGrid = (table) => {
+    const grid = [];
+
+    Array.from(table.rows).forEach((row, rowIndex) => {
+        grid[rowIndex] ||= [];
+        let columnIndex = 0;
+
+        Array.from(row.cells).forEach((cell) => {
+            while (grid[rowIndex][columnIndex]) columnIndex += 1;
+
+            const rowSpan = Math.max(cell.rowSpan || 1, 1);
+            const colSpan = Math.max(cell.colSpan || 1, 1);
+            for (let rowOffset = 0; rowOffset < rowSpan; rowOffset += 1) {
+                const targetRow = rowIndex + rowOffset;
+                grid[targetRow] ||= [];
+                for (let colOffset = 0; colOffset < colSpan; colOffset += 1) {
+                    grid[targetRow][columnIndex + colOffset] = cell;
+                }
+            }
+
+            columnIndex += colSpan;
+        });
+    });
+
+    return grid;
+};
+
+const moveTableCaretVertically = (quill, context, direction) => {
+    const currentCell = context.line?.domNode?.closest?.('td.ql-table-cell');
+    const table = currentCell?.closest('table.ql-table');
+    if (!currentCell || !table) return true;
+
+    const rows = Array.from(table.rows);
+    const currentRowIndex = rows.indexOf(currentCell.parentElement);
+    const grid = tableCellGrid(table);
+    const currentColumnIndex = grid[currentRowIndex]?.indexOf(currentCell) ?? -1;
+    if (currentRowIndex < 0 || currentColumnIndex < 0) return true;
+
+    const targetRowIndex = direction > 0
+        ? currentRowIndex + Math.max(currentCell.rowSpan || 1, 1)
+        : currentRowIndex - 1;
+    const targetCell = grid[targetRowIndex]?.[currentColumnIndex];
+    if (!targetCell || targetCell === currentCell) return true;
+
+    const targetLineNode = targetCell.querySelector('.ql-table-cell-inner')?.firstElementChild;
+    const targetLine = targetLineNode ? Quill.find(targetLineNode) : null;
+    if (!targetLine || typeof targetLine.length !== 'function') return true;
+
+    const offset = Math.min(context.offset, Math.max(targetLine.length() - 1, 0));
+    quill.setSelection(quill.getIndex(targetLine) + offset, 0, Quill.sources.USER);
+    return false;
+};
+
+const registerTableArrowNavigation = (quill) => {
+    const keyboard = quill.getModule('keyboard');
+
+    [
+        ['ArrowUp', -1],
+        ['ArrowDown', 1],
+    ].forEach(([key, direction]) => {
+        keyboard.bindings[key] ||= [];
+        keyboard.bindings[key].unshift({
+            key,
+            collapsed: true,
+            shiftKey: false,
+            altKey: false,
+            ctrlKey: false,
+            metaKey: false,
+            handler(_range, context) {
+                return moveTableCaretVertically(quill, context, direction);
+            },
+        });
+    });
+};
+
 export function normalizeEditorHtml(html) {
     const document = new DOMParser().parseFromString(html || '', 'text/html');
     const textWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
@@ -301,6 +376,7 @@ export function initQuillEditors(root = document) {
                 },
             },
         });
+        registerTableArrowNavigation(quill);
         const initialContent = quill.clipboard.convert({ html: prepareEditorHtml(input.value) });
         quill.setContents(initialContent, Quill.sources.SILENT);
         const syncInput = () => {
