@@ -102,6 +102,11 @@
                     @error('body_html')<div class="invalid-feedback d-block mb-2">{{ $message }}</div>@enderror
                     <div data-quill data-input="#body_html" data-upload-url="{{ route('cms.posts.media.store', $post) }}">
                     </div>
+                    <div class="form-text mt-2" data-table-resize-help>
+                        <i class="bi bi-arrows-angle-expand me-1" aria-hidden="true"></i>
+                        Klik tabel untuk menampilkan header spreadsheet. Tarik batas kolom A, B, C atau baris 1, 2, 3
+                        untuk mengubah ukuran; blok beberapa sel lalu gunakan tombol alignment untuk meratakan seluruh isinya.
+                    </div>
                 </section>
             </form>
 

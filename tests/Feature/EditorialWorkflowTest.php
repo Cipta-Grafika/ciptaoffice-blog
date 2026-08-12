@@ -237,6 +237,32 @@ class EditorialWorkflowTest extends TestCase
         $this->assertStringNotContainsString('ql-table-cell-inner', $body);
     }
 
+    public function test_resized_table_dimensions_are_preserved_safely(): void
+    {
+        $author = User::factory()->create();
+        $post = Post::create([
+            'author_id' => $author->id,
+            'title' => 'Tabel dengan Ukuran Kustom',
+            'slug' => 'tabel-ukuran-kustom',
+            'status' => PostStatus::Draft,
+        ]);
+
+        $table = '<div class="ql-table-wrapper"><table data-full="true"><colgroup data-full="true"><col width="35%" data-full="true"><col width="65%" data-full="true"></colgroup><tbody><tr><td rowspan="1" colspan="1" style="height:72px;color:red"><div class="ql-table-cell-inner"><p class="ql-align-center">Produk</p></div></td><td rowspan="1" colspan="1" style="height:72px;color:red"><div class="ql-table-cell-inner"><p class="ql-align-center">Ukuran</p></div></td></tr></tbody></table></div>';
+
+        $this->actingAs($author)->put(route('cms.posts.update', $post), [
+            'title' => 'Tabel dengan Ukuran Kustom',
+            'excerpt' => 'Tabel yang telah diubah ukurannya.',
+            'body_html' => $table,
+        ])->assertSessionHasNoErrors();
+
+        $body = $post->fresh()->body_html;
+        $this->assertStringContainsString('<col width="35%" data-full="true" />', $body);
+        $this->assertStringContainsString('<col width="65%" data-full="true" />', $body);
+        $this->assertSame(2, substr_count($body, 'height:72px'));
+        $this->assertSame(2, substr_count($body, 'class="ql-align-center"'));
+        $this->assertStringNotContainsString('color:red', $body);
+    }
+
     public function test_author_cannot_access_admin_modules(): void
     {
         $this->actingAs(User::factory()->create())->get(route('cms.users.index'))->assertForbidden();

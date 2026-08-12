@@ -2,6 +2,8 @@ import Quill from 'quill';
 import TableUp, {
     defaultCustomSelect,
     TableMenuContextmenu,
+    TableResizeBox,
+    TableResizeScale,
     TableSelection,
 } from 'quill-table-up';
 import 'quill/dist/quill.snow.css';
@@ -9,6 +11,71 @@ import 'quill-table-up/index.css';
 import 'quill-table-up/table-creator.css';
 
 Quill.register({ [`modules/${TableUp.moduleName}`]: TableUp }, true);
+
+const spreadsheetColumnLabel = (index) => {
+    let label = '';
+    let value = index + 1;
+
+    while (value > 0) {
+        value -= 1;
+        label = String.fromCharCode(65 + (value % 26)) + label;
+        value = Math.floor(value / 26);
+    }
+
+    return label;
+};
+
+class SpreadsheetTableResize extends TableResizeBox {
+    constructor(...args) {
+        super(...args);
+        this.size = 24;
+    }
+
+    show() {
+        super.show();
+        if (!this.root) return;
+
+        this.root.classList.add('cms-spreadsheet-resizer');
+        this.root.querySelectorAll('.table-up-resize-box__col-header').forEach((header, index) => {
+            const label = spreadsheetColumnLabel(index);
+            header.dataset.label = label;
+            header.setAttribute('role', 'button');
+            header.setAttribute('aria-label', `Pilih kolom ${label}`);
+            header.setAttribute('title', `Kolom ${label} · tarik batas untuk mengubah lebar`);
+            header.tabIndex = 0;
+            header.addEventListener('keydown', (event) => {
+                if (event.key !== 'Enter' && event.key !== ' ') return;
+                event.preventDefault();
+                header.click();
+            });
+        });
+        this.root.querySelectorAll('.table-up-resize-box__row-header').forEach((header, index) => {
+            const label = String(index + 1);
+            header.dataset.label = label;
+            header.setAttribute('role', 'button');
+            header.setAttribute('aria-label', `Pilih baris ${label}`);
+            header.setAttribute('title', `Baris ${label} · tarik batas untuk mengubah tinggi`);
+            header.tabIndex = 0;
+            header.addEventListener('keydown', (event) => {
+                if (event.key !== 'Enter' && event.key !== ' ') return;
+                event.preventDefault();
+                header.click();
+            });
+        });
+
+        if (this.corner) {
+            this.corner.setAttribute('role', 'button');
+            this.corner.setAttribute('aria-label', 'Pilih seluruh tabel');
+            this.corner.setAttribute('title', 'Pilih seluruh tabel');
+            this.corner.tabIndex = 0;
+            this.corner.addEventListener('keydown', (event) => {
+                if (event.key !== 'Enter' && event.key !== ' ') return;
+                event.preventDefault();
+                this.corner.click();
+            });
+        }
+    }
+}
 
 const tableTexts = {
     fullCheckboxText: 'Gunakan lebar penuh',
@@ -206,6 +273,7 @@ export function initQuillEditors(root = document) {
                         ['clean'],
                     ],
                     handlers: {
+                        align: alignHandler,
                         image: imageHandler,
                         list: listHandler,
                     },
@@ -216,6 +284,11 @@ export function initQuillEditors(root = document) {
                     full: true,
                     fullSwitch: false,
                     texts: tableTexts,
+                    resize: SpreadsheetTableResize,
+                    resizeScale: TableResizeScale,
+                    resizeScaleOptions: {
+                        blockSize: 14,
+                    },
                     selection: TableSelection,
                     selectionOptions: {
                         selectColor: 'rgba(164, 126, 79, .14)',
@@ -234,6 +307,33 @@ export function initQuillEditors(root = document) {
             input.value = normalizeEditorHtml(quill.getSemanticHTML());
         };
         quill.on('text-change', syncInput);
+
+        function alignHandler(value) {
+            const tableModule = quill.getModule(TableUp.moduleName);
+            const tableSelection = tableModule?.tableSelection;
+            const selectedCells = tableSelection?.isDisplaySelection
+                ? [...tableSelection.selectedTds]
+                : [];
+
+            if (selectedCells.length === 0) {
+                quill.format('align', value || false, Quill.sources.USER);
+                return;
+            }
+
+            const alignment = value || false;
+            selectedCells.forEach((cell) => {
+                const index = cell.offset(quill.scroll);
+                const length = Math.max(cell.length() - 1, 1);
+                quill.formatLine(index, length, 'align', alignment, Quill.sources.USER);
+            });
+
+            const connectedCells = selectedCells.filter((cell) => cell.domNode?.isConnected);
+            if (connectedCells.length > 0) {
+                tableSelection.selectedTds = connectedCells;
+                tableSelection.updateWithSelectedTds();
+            }
+            syncInput();
+        }
 
         function listHandler(value) {
             const range = quill.getSelection();
