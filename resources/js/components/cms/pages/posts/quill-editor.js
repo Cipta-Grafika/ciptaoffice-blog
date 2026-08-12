@@ -390,6 +390,35 @@ const registerTableArrowNavigation = (quill) => {
     });
 };
 
+const setupStickyToolbar = (quill) => {
+    const toolbar = quill.getModule('toolbar')?.container;
+    const formSurface = quill.container.closest('.cms-form-surface');
+    if (!toolbar || !formSurface) return;
+
+    formSurface.classList.add('cms-form-surface--quill');
+    toolbar.classList.add('ql-toolbar--sticky');
+
+    let animationFrame = null;
+    const updateStickyState = () => {
+        animationFrame = null;
+        const toolbarRect = toolbar.getBoundingClientRect();
+        const editorRect = quill.container.getBoundingClientRect();
+        const stickyTop = Number.parseFloat(window.getComputedStyle(toolbar).top) || 0;
+        const isStuck = toolbarRect.top <= stickyTop + 1
+            && editorRect.bottom > stickyTop + toolbarRect.height;
+
+        toolbar.classList.toggle('is-stuck', isStuck);
+    };
+    const requestStickyUpdate = () => {
+        if (animationFrame !== null) return;
+        animationFrame = window.requestAnimationFrame(updateStickyState);
+    };
+
+    window.addEventListener('scroll', requestStickyUpdate, { passive: true });
+    window.addEventListener('resize', requestStickyUpdate, { passive: true });
+    requestStickyUpdate();
+};
+
 export function normalizeEditorHtml(html) {
     const document = new DOMParser().parseFromString(html || '', 'text/html');
     const textWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
@@ -493,6 +522,7 @@ export function initQuillEditors(root = document) {
             },
         });
         registerTableArrowNavigation(quill);
+        setupStickyToolbar(quill);
         const initialContent = quill.clipboard.convert({ html: prepareEditorHtml(input.value) });
         quill.setContents(initialContent, Quill.sources.SILENT);
         const syncInput = () => {
