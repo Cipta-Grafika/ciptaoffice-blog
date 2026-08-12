@@ -263,6 +263,37 @@ class EditorialWorkflowTest extends TestCase
         $this->assertStringNotContainsString('color:red', $body);
     }
 
+    public function test_only_supported_video_iframes_are_preserved(): void
+    {
+        $author = User::factory()->create();
+        $post = Post::create([
+            'author_id' => $author->id,
+            'title' => 'Video Ruang Kerja',
+            'slug' => 'video-ruang-kerja',
+            'status' => PostStatus::Draft,
+        ]);
+
+        $videos = '<p>Video pilihan</p>'
+            .'<iframe class="ql-video" src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" title="Video artikel" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" frameborder="0" allowfullscreen="true"></iframe>'
+            .'<iframe class="ql-video" src="https://player.vimeo.com/video/76979871" title="Video artikel" loading="lazy"></iframe>'
+            .'<iframe class="ql-video" src="https://evil.example/embed/video" onload="alert(1)"></iframe>';
+
+        $this->actingAs($author)->put(route('cms.posts.update', $post), [
+            'title' => 'Video Ruang Kerja',
+            'excerpt' => 'Artikel dengan video yang aman.',
+            'body_html' => $videos,
+        ])->assertSessionHasNoErrors();
+
+        $body = $post->fresh()->body_html;
+        $this->assertStringContainsString('class="ql-video"', $body);
+        $this->assertStringContainsString('https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ', $body);
+        $this->assertStringContainsString('https://player.vimeo.com/video/76979871', $body);
+        $this->assertSame(2, substr_count($body, '<iframe'));
+        $this->assertStringContainsString('loading="lazy"', $body);
+        $this->assertStringNotContainsString('evil.example', $body);
+        $this->assertStringNotContainsString('onload', $body);
+    }
+
     public function test_author_cannot_access_admin_modules(): void
     {
         $this->actingAs(User::factory()->create())->get(route('cms.users.index'))->assertForbidden();

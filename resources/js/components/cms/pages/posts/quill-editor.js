@@ -12,6 +12,121 @@ import 'quill-table-up/table-creator.css';
 
 Quill.register({ [`modules/${TableUp.moduleName}`]: TableUp }, true);
 
+const BaseVideo = Quill.import('formats/video');
+
+export const normalizeVideoEmbedUrl = (value) => {
+    const input = value?.trim();
+    if (!input) return null;
+
+    try {
+        const url = new URL(/^https?:\/\//i.test(input) ? input : `https://${input}`);
+        if (url.protocol !== 'https:' || url.username || url.password) return null;
+
+        const host = url.hostname.toLowerCase();
+        const path = url.pathname.split('/').filter(Boolean);
+        let videoId = null;
+
+        if (host === 'youtu.be') {
+            [videoId] = path;
+        } else if (['youtube.com', 'www.youtube.com', 'm.youtube.com', 'music.youtube.com'].includes(host)) {
+            videoId = url.pathname === '/watch'
+                ? url.searchParams.get('v')
+                : (['embed', 'shorts', 'live'].includes(path[0]) ? path[1] : null);
+        } else if (['youtube-nocookie.com', 'www.youtube-nocookie.com'].includes(host) && path[0] === 'embed') {
+            videoId = path[1];
+        }
+
+        if (/^[A-Za-z0-9_-]{11}$/.test(videoId || '')) {
+            return `https://www.youtube-nocookie.com/embed/${videoId}`;
+        }
+
+        const isVimeo = ['vimeo.com', 'www.vimeo.com'].includes(host) && /^\d+$/.test(path.at(-1) || '');
+        const isVimeoPlayer = host === 'player.vimeo.com' && path[0] === 'video' && /^\d+$/.test(path[1] || '');
+        if (isVimeo || isVimeoPlayer) {
+            return `https://player.vimeo.com/video/${isVimeoPlayer ? path[1] : path.at(-1)}`;
+        }
+    } catch {
+        return null;
+    }
+
+    return null;
+};
+
+class SafeVideo extends BaseVideo {
+    static create(value) {
+        const node = super.create(normalizeVideoEmbedUrl(value) || 'about:blank');
+        node.setAttribute('title', 'Video artikel');
+        node.setAttribute('loading', 'lazy');
+        node.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+        return node;
+    }
+
+    static sanitize(value) {
+        return normalizeVideoEmbedUrl(value) || 'about:blank';
+    }
+
+    html() {
+        return this.domNode.outerHTML;
+    }
+}
+
+Quill.register(SafeVideo, true);
+
+const openVideoEmbedDialog = (onSubmit) => {
+    const dialog = document.createElement('dialog');
+    dialog.className = 'cms-video-dialog';
+    dialog.innerHTML = `
+        <form method="dialog" class="cms-video-dialog__surface">
+            <div class="cms-video-dialog__icon" aria-hidden="true"><i class="bi bi-play-btn"></i></div>
+            <div>
+                <p class="cms-video-dialog__eyebrow">Media artikel</p>
+                <h2 class="cms-video-dialog__title">Sematkan video</h2>
+                <p class="cms-video-dialog__copy">Tempel URL YouTube atau Vimeo. Tautan akan diubah otomatis menjadi embed yang aman dan responsif.</p>
+            </div>
+            <label class="cms-video-dialog__field">
+                <span>URL video</span>
+                <input type="url" inputmode="url" placeholder="https://www.youtube.com/watch?v=..." required>
+                <small>Mendukung youtube.com, youtu.be, dan vimeo.com.</small>
+            </label>
+            <div class="cms-video-dialog__actions">
+                <button type="button" class="btn btn-outline-secondary" data-video-cancel>Batal</button>
+                <button type="submit" class="btn btn-primary"><i class="bi bi-plus-circle me-1" aria-hidden="true"></i>Sematkan</button>
+            </div>
+        </form>
+    `;
+
+    const form = dialog.querySelector('form');
+    const input = dialog.querySelector('input');
+    const cancel = dialog.querySelector('[data-video-cancel]');
+    const close = () => {
+        dialog.close();
+        dialog.remove();
+    };
+
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const embedUrl = normalizeVideoEmbedUrl(input.value);
+        input.setCustomValidity(embedUrl ? '' : 'Gunakan URL video YouTube atau Vimeo yang valid.');
+        if (!embedUrl) {
+            input.reportValidity();
+            return;
+        }
+
+        onSubmit(embedUrl);
+        close();
+    });
+    cancel.addEventListener('click', close);
+    dialog.addEventListener('cancel', (event) => {
+        event.preventDefault();
+        close();
+    });
+    input.addEventListener('input', () => input.setCustomValidity(''));
+
+    document.body.appendChild(dialog);
+    dialog.showModal();
+    input.focus();
+};
+
 const spreadsheetColumnLabel = (index) => {
     let label = '';
     let value = index + 1;
@@ -344,13 +459,14 @@ export function initQuillEditors(root = document) {
                             { align: 'right' },
                             { align: 'justify' },
                         ],
-                        ['blockquote', 'link', 'image', { [TableUp.toolName]: [] }],
+                        ['blockquote', 'link', 'image', 'video', { [TableUp.toolName]: [] }],
                         ['clean'],
                     ],
                     handlers: {
                         align: alignHandler,
                         image: imageHandler,
                         list: listHandler,
+                        video: videoHandler,
                     },
                 },
                 [TableUp.moduleName]: {
@@ -458,6 +574,16 @@ export function initQuillEditors(root = document) {
                     window.alert('Gambar gagal diunggah. Pastikan format dan ukuran sesuai.');
                 }
             };
+        }
+
+        function videoHandler() {
+            const range = quill.getSelection(true);
+            openVideoEmbedDialog((embedUrl) => {
+                const index = range.index + range.length;
+                quill.insertEmbed(index, 'video', embedUrl, Quill.sources.USER);
+                quill.setSelection(index + 1, 0, Quill.sources.SILENT);
+                syncInput();
+            });
         }
     });
 }
