@@ -296,6 +296,14 @@ class EditorialWorkflowTest extends TestCase
 
     public function test_author_cannot_access_admin_modules(): void
     {
-        $this->actingAs(User::factory()->create())->get(route('cms.users.index'))->assertForbidden();
+        $this->actingAs(User::factory()->create())
+            ->get(route('cms.users.index'))
+            ->assertForbidden()
+            ->assertSee('Access Denied')
+            ->assertSee('no-access-line.svg', false)
+            ->assertSee('data-cms-sidebar-collapse', false)
+            ->assertSee('cmsQuickMenuButton', false)
+            ->assertSee('data-cms-back', false)
+            ->assertSee(route('cms.dashboard'), false);
     }
 }
