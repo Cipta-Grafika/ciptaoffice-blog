@@ -330,11 +330,14 @@ a { text-underline-offset: .2em; }
 .cms-page { display:grid; width:100%; max-width:96rem; margin-inline:auto; gap:1.5rem; }
 .cms-page--narrow { max-width:64rem; }
 .cms-page-header { display:flex; min-height:5.5rem; align-items:flex-end; justify-content:space-between; gap:2rem; padding:.35rem 0 .15rem; }
+.cms-page-header--with-meta { display:grid; grid-template-columns:minmax(0,1fr); align-items:initial; gap:1.25rem; }
 .cms-page-heading { max-width:46rem; }
 .cms-page-eyebrow { display:flex; align-items:center; gap:.65rem; color:var(--brass); font-size:.67rem; font-weight:700; letter-spacing:.17em; text-transform:uppercase; }
 .cms-page-eyebrow span { width:1.75rem; height:1px; background:var(--brass); }
 .cms-page-title { color:var(--ink); font-family:'Cormorant Garamond',serif; font-size:clamp(2.7rem,4vw,4rem); font-weight:600; line-height:.9; letter-spacing:-.025em; }
 .cms-page-description { max-width:42rem; color:var(--muted); font-size:.8rem; line-height:1.65; }
+.cms-page-meta { display:flex; min-width:0; align-items:center; justify-content:space-between; gap:1rem 2rem; }
+.cms-page-status { display:flex; min-width:0; align-items:center; }
 .cms-page-actions { display:flex; flex:0 0 auto; flex-wrap:wrap; align-items:center; justify-content:flex-end; gap:.55rem; }
 .cms-page-actions .btn { display:inline-flex; min-height:2.55rem; align-items:center; gap:.45rem; padding-inline:1rem; font-size:.76rem; }
 .cms-page-actions .btn-primary { font-weight:700; }
@@ -711,6 +714,9 @@ a { text-underline-offset: .2em; }
     .cms-main{margin-left:0;padding:1rem}.cms-topbar{margin:-1rem -1rem 1.5rem;padding:.65rem .75rem}
     .cms-page { gap:1.1rem; }
     .cms-page-header { min-height:auto; align-items:flex-start; gap:1rem; padding-top:.15rem; }
+    .cms-page-header--with-meta { gap:1rem; }
+    .cms-page-meta { flex-wrap:wrap; align-items:flex-start; gap:.75rem; }
+    .cms-page-meta .cms-page-actions { flex:1 1 auto; justify-content:flex-end; }
     .cms-page-title { font-size:2.7rem; }
     .cms-page-description { font-size:.72rem; }
     .cms-page-actions .btn { min-width:2.55rem; padding-inline:.75rem; justify-content:center; }

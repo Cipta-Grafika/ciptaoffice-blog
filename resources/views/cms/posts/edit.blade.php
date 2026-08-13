@@ -8,6 +8,9 @@
     <div class="cms-page">
         <x-cms-page-header eyebrow="Editor artikel" :title="$post->title"
             description="Perbarui naskah, visual, dan status artikel sebelum dipublikasikan.">
+            <x-slot:status>
+                <span class="cms-status cms-status--{{ $post->status->badge() }}">{{ $post->status->label() }}</span>
+            </x-slot:status>
             <x-slot:actions>
                 <a class="btn btn-outline-dark" href="{{ route('cms.posts.preview', $post) }}" target="_blank"
                     rel="noopener noreferrer"><i class="bi bi-eye"></i>
@@ -36,8 +39,6 @@
                 @endcan
             </x-slot:actions>
         </x-cms-page-header>
-
-        <div><span class="cms-status cms-status--{{ $post->status->badge() }}">{{ $post->status->label() }}</span></div>
 
         @if ($post->review_note)
             <div class="alert alert-warning mb-0"><strong>Catatan reviewer</strong>
