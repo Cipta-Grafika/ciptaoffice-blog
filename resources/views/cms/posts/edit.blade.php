@@ -63,9 +63,14 @@
                     </div>
                     <div>
                         <label class="form-label" for="excerpt">Ringkasan</label>
-                        <textarea class="form-control @error('excerpt') is-invalid @enderror" id="excerpt" name="excerpt" rows="5" maxlength="1000" aria-describedby="excerpt_help" required>{{ old('excerpt', $post->excerpt) }}</textarea>
+                        <textarea class="form-control @error('excerpt') is-invalid @enderror" id="excerpt" name="excerpt" rows="5"
+                            aria-describedby="excerpt_help excerpt_count" data-character-count="#excerpt_count"
+                            data-character-limit="1000" required>{{ old('excerpt', $post->excerpt) }}</textarea>
                         @error('excerpt')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                        <div class="form-text" id="excerpt_help">Maksimum 1.000 karakter.</div>
+                        <div class="cms-field-assist">
+                            <div class="form-text" id="excerpt_help">Maksimum 1.000 karakter. Teks tidak akan dipotong saat batas terlampaui.</div>
+                            <output class="cms-character-count" id="excerpt_count" for="excerpt" aria-live="polite">0 / 1.000 karakter</output>
+                        </div>
                     </div>
                 </section>
                 <section class="cms-form-section">

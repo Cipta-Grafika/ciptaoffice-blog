@@ -80,6 +80,13 @@ class EditorialWorkflowTest extends TestCase
         ]);
         $validExcerpt = str_repeat('a', 1000);
 
+        $this->actingAs($author)->get(route('cms.posts.edit', $post))
+            ->assertOk()
+            ->assertDontSee('maxlength="1000"', false)
+            ->assertSee('data-character-count="#excerpt_count"', false)
+            ->assertSee('data-character-limit="1000"', false)
+            ->assertSee('Teks tidak akan dipotong saat batas terlampaui.');
+
         $this->actingAs($author)->put(route('cms.posts.update', $post), [
             'title' => 'Batas Ringkasan',
             'excerpt' => $validExcerpt,
