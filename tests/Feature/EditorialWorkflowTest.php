@@ -80,6 +80,13 @@ class EditorialWorkflowTest extends TestCase
         ]);
         $validExcerpt = str_repeat('a', 1000);
 
+        $this->actingAs($author)->get(route('cms.posts.edit', $post))
+            ->assertOk()
+            ->assertDontSee('maxlength="1000"', false)
+            ->assertSee('data-character-count="#excerpt_count"', false)
+            ->assertSee('data-character-limit="1000"', false)
+            ->assertSee('Teks tidak akan dipotong saat batas terlampaui.');
+
         $this->actingAs($author)->put(route('cms.posts.update', $post), [
             'title' => 'Batas Ringkasan',
             'excerpt' => $validExcerpt,
@@ -237,8 +244,73 @@ class EditorialWorkflowTest extends TestCase
         $this->assertStringNotContainsString('ql-table-cell-inner', $body);
     }
 
+    public function test_resized_table_dimensions_are_preserved_safely(): void
+    {
+        $author = User::factory()->create();
+        $post = Post::create([
+            'author_id' => $author->id,
+            'title' => 'Tabel dengan Ukuran Kustom',
+            'slug' => 'tabel-ukuran-kustom',
+            'status' => PostStatus::Draft,
+        ]);
+
+        $table = '<div class="ql-table-wrapper"><table data-full="true"><colgroup data-full="true"><col width="35%" data-full="true"><col width="65%" data-full="true"></colgroup><tbody><tr><td rowspan="1" colspan="1" style="height:72px;color:red"><div class="ql-table-cell-inner"><p class="ql-align-center">Produk</p></div></td><td rowspan="1" colspan="1" style="height:72px;color:red"><div class="ql-table-cell-inner"><p class="ql-align-center">Ukuran</p></div></td></tr></tbody></table></div>';
+
+        $this->actingAs($author)->put(route('cms.posts.update', $post), [
+            'title' => 'Tabel dengan Ukuran Kustom',
+            'excerpt' => 'Tabel yang telah diubah ukurannya.',
+            'body_html' => $table,
+        ])->assertSessionHasNoErrors();
+
+        $body = $post->fresh()->body_html;
+        $this->assertStringContainsString('<col width="35%" data-full="true" />', $body);
+        $this->assertStringContainsString('<col width="65%" data-full="true" />', $body);
+        $this->assertSame(2, substr_count($body, 'height:72px'));
+        $this->assertSame(2, substr_count($body, 'class="ql-align-center"'));
+        $this->assertStringNotContainsString('color:red', $body);
+    }
+
+    public function test_only_supported_video_iframes_are_preserved(): void
+    {
+        $author = User::factory()->create();
+        $post = Post::create([
+            'author_id' => $author->id,
+            'title' => 'Video Ruang Kerja',
+            'slug' => 'video-ruang-kerja',
+            'status' => PostStatus::Draft,
+        ]);
+
+        $videos = '<p>Video pilihan</p>'
+            .'<iframe class="ql-video" src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" title="Video artikel" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" frameborder="0" allowfullscreen="true"></iframe>'
+            .'<iframe class="ql-video" src="https://player.vimeo.com/video/76979871" title="Video artikel" loading="lazy"></iframe>'
+            .'<iframe class="ql-video" src="https://evil.example/embed/video" onload="alert(1)"></iframe>';
+
+        $this->actingAs($author)->put(route('cms.posts.update', $post), [
+            'title' => 'Video Ruang Kerja',
+            'excerpt' => 'Artikel dengan video yang aman.',
+            'body_html' => $videos,
+        ])->assertSessionHasNoErrors();
+
+        $body = $post->fresh()->body_html;
+        $this->assertStringContainsString('class="ql-video"', $body);
+        $this->assertStringContainsString('https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ', $body);
+        $this->assertStringContainsString('https://player.vimeo.com/video/76979871', $body);
+        $this->assertSame(2, substr_count($body, '<iframe'));
+        $this->assertStringContainsString('loading="lazy"', $body);
+        $this->assertStringNotContainsString('evil.example', $body);
+        $this->assertStringNotContainsString('onload', $body);
+    }
+
     public function test_author_cannot_access_admin_modules(): void
     {
-        $this->actingAs(User::factory()->create())->get(route('cms.users.index'))->assertForbidden();
+        $this->actingAs(User::factory()->create())
+            ->get(route('cms.users.index'))
+            ->assertForbidden()
+            ->assertSee('Access Denied')
+            ->assertSee('no-access-line.svg', false)
+            ->assertSee('data-cms-sidebar-collapse', false)
+            ->assertSee('cmsQuickMenuButton', false)
+            ->assertSee('data-cms-back', false)
+            ->assertSee(route('cms.dashboard'), false);
     }
 }

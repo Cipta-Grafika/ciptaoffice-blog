@@ -14,7 +14,10 @@ class HtmlSanitizer
     {
         $config = HTMLPurifier_Config::createDefault();
         $config->set('Cache.SerializerPath', storage_path('framework/cache'));
-        $config->set('HTML.Allowed', 'p[class],br,h1[class],h2[class],h3[class],strong,em,u,s,ul,ol,li[class],blockquote[class],a[href|title|target|rel],img[src|alt|title],pre[class],code,div[class],table[data-full],caption,colgroup[data-full],col[width|data-full],thead,tbody,tfoot,tr,th[colspan|rowspan|scope],td[colspan|rowspan]');
+        $config->set('HTML.Allowed', 'p[class],br,h1[class],h2[class],h3[class],strong,em,u,s,ul,ol,li[class],blockquote[class],a[href|title|target|rel],img[src|alt|title],iframe[class|src|title|loading|referrerpolicy|frameborder|allowfullscreen|width|height],pre[class],code,div[class],table[data-full],caption,colgroup[data-full],col[width|data-full],thead,tbody,tfoot,tr,th[colspan|rowspan|scope|style],td[colspan|rowspan|style]');
+        $config->set('CSS.AllowedProperties', ['height']);
+        $config->set('HTML.SafeIframe', true);
+        $config->set('URI.SafeIframeRegexp', '%^https://(?:www\.youtube(?:-nocookie)?\.com/embed/[A-Za-z0-9_-]{11}|player\.vimeo\.com/video/\d+)(?:[/?#].*)?$%D');
         $config->set('Attr.AllowedClasses', [
             'ql-indent-1',
             'ql-indent-2',
@@ -28,6 +31,7 @@ class HtmlSanitizer
             'ql-align-right',
             'ql-align-justify',
             'ql-table-wrapper',
+            'ql-video',
         ]);
         $config->set('URI.AllowedSchemes', ['http' => true, 'https' => true]);
         $config->set('HTML.TargetBlank', true);
@@ -37,6 +41,10 @@ class HtmlSanitizer
         foreach (['table', 'colgroup', 'col'] as $element) {
             $definition->addAttribute($element, 'data-full', 'Enum#true');
         }
+        $definition->addAttribute('iframe', 'title', 'Text');
+        $definition->addAttribute('iframe', 'loading', 'Enum#lazy,eager');
+        $definition->addAttribute('iframe', 'referrerpolicy', 'Enum#strict-origin-when-cross-origin,no-referrer');
+        $definition->addAttribute('iframe', 'allowfullscreen', 'Bool#allowfullscreen');
 
         $cleanHtml = (new HTMLPurifier($config))->purify($html ?? '');
 
@@ -60,6 +68,20 @@ class HtmlSanitizer
         libxml_use_internal_errors($previousState);
 
         $xpath = new DOMXPath($dom);
+        $hasDomChanges = false;
+        $unsafeIframes = [];
+        foreach ($xpath->query('//*[@id="editor-content-root"]//iframe') as $iframe) {
+            if (! $iframe instanceof DOMElement || $this->isAllowedVideoEmbed($iframe->getAttribute('src'))) {
+                continue;
+            }
+
+            $unsafeIframes[] = $iframe;
+        }
+        foreach ($unsafeIframes as $iframe) {
+            $iframe->parentNode?->removeChild($iframe);
+            $hasDomChanges = true;
+        }
+
         $blocks = $xpath->query(
             '//*[@id="editor-content-root"]//*[self::h1 or self::h2 or self::h3 or self::p or self::blockquote or self::li][not(ancestor::*[contains(concat(" ", normalize-space(@class), " "), " ql-table-wrapper ")])]',
         );
@@ -79,7 +101,7 @@ class HtmlSanitizer
             }
         }
 
-        if (! $hasGlobalJustifyArtifact) {
+        if (! $hasGlobalJustifyArtifact && ! $hasDomChanges) {
             return $html;
         }
 
@@ -100,6 +122,14 @@ class HtmlSanitizer
         }
 
         return $normalizedHtml;
+    }
+
+    private function isAllowedVideoEmbed(string $url): bool
+    {
+        return preg_match(
+            '%^https://(?:www\.youtube(?:-nocookie)?\.com/embed/[A-Za-z0-9_-]{11}|player\.vimeo\.com/video/\d+)(?:[/?#].*)?$%D',
+            $url,
+        ) === 1;
     }
 
     private function hasClass(DOMElement $element, string $class): bool

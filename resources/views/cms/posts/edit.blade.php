@@ -8,6 +8,9 @@
     <div class="cms-page">
         <x-cms-page-header eyebrow="Editor artikel" :title="$post->title"
             description="Perbarui naskah, visual, dan status artikel sebelum dipublikasikan.">
+            <x-slot:status>
+                <span class="cms-status cms-status--{{ $post->status->badge() }}">{{ $post->status->label() }}</span>
+            </x-slot:status>
             <x-slot:actions>
                 <a class="btn btn-outline-dark" href="{{ route('cms.posts.preview', $post) }}" target="_blank"
                     rel="noopener noreferrer"><i class="bi bi-eye"></i>
@@ -37,8 +40,6 @@
             </x-slot:actions>
         </x-cms-page-header>
 
-        <div><span class="cms-status cms-status--{{ $post->status->badge() }}">{{ $post->status->label() }}</span></div>
-
         @if ($post->review_note)
             <div class="alert alert-warning mb-0"><strong>Catatan reviewer</strong>
                 <p class="mb-0 mt-1">{{ $post->review_note }}</p>
@@ -62,9 +63,14 @@
                     </div>
                     <div>
                         <label class="form-label" for="excerpt">Ringkasan</label>
-                        <textarea class="form-control @error('excerpt') is-invalid @enderror" id="excerpt" name="excerpt" rows="5" maxlength="1000" aria-describedby="excerpt_help" required>{{ old('excerpt', $post->excerpt) }}</textarea>
+                        <textarea class="form-control @error('excerpt') is-invalid @enderror" id="excerpt" name="excerpt" rows="5"
+                            aria-describedby="excerpt_help excerpt_count" data-character-count="#excerpt_count"
+                            data-character-limit="1000" required>{{ old('excerpt', $post->excerpt) }}</textarea>
                         @error('excerpt')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                        <div class="form-text" id="excerpt_help">Maksimum 1.000 karakter.</div>
+                        <div class="cms-field-assist">
+                            <div class="form-text" id="excerpt_help">Maksimum 1.000 karakter. Teks tidak akan dipotong saat batas terlampaui.</div>
+                            <output class="cms-character-count" id="excerpt_count" for="excerpt" aria-live="polite">0 / 1.000 karakter</output>
+                        </div>
                     </div>
                 </section>
                 <section class="cms-form-section">
@@ -101,6 +107,11 @@
                     <input type="hidden" id="body_html" name="body_html" class="@error('body_html') is-invalid @enderror" value="{{ old('body_html', $post->body_html) }}">
                     @error('body_html')<div class="invalid-feedback d-block mb-2">{{ $message }}</div>@enderror
                     <div data-quill data-input="#body_html" data-upload-url="{{ route('cms.posts.media.store', $post) }}">
+                    </div>
+                    <div class="form-text mt-2" data-table-resize-help>
+                        <i class="bi bi-arrows-angle-expand me-1" aria-hidden="true"></i>
+                        Klik tabel untuk menampilkan header spreadsheet. Tarik batas kolom A, B, C atau baris 1, 2, 3
+                        untuk mengubah ukuran; blok beberapa sel lalu gunakan tombol alignment untuk meratakan seluruh isinya.
                     </div>
                 </section>
             </form>

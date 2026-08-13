@@ -2,6 +2,8 @@ import Quill from 'quill';
 import TableUp, {
     defaultCustomSelect,
     TableMenuContextmenu,
+    TableResizeBox,
+    TableResizeScale,
     TableSelection,
 } from 'quill-table-up';
 import 'quill/dist/quill.snow.css';
@@ -9,6 +11,186 @@ import 'quill-table-up/index.css';
 import 'quill-table-up/table-creator.css';
 
 Quill.register({ [`modules/${TableUp.moduleName}`]: TableUp }, true);
+
+const BaseVideo = Quill.import('formats/video');
+
+export const normalizeVideoEmbedUrl = (value) => {
+    const input = value?.trim();
+    if (!input) return null;
+
+    try {
+        const url = new URL(/^https?:\/\//i.test(input) ? input : `https://${input}`);
+        if (url.protocol !== 'https:' || url.username || url.password) return null;
+
+        const host = url.hostname.toLowerCase();
+        const path = url.pathname.split('/').filter(Boolean);
+        let videoId = null;
+
+        if (host === 'youtu.be') {
+            [videoId] = path;
+        } else if (['youtube.com', 'www.youtube.com', 'm.youtube.com', 'music.youtube.com'].includes(host)) {
+            videoId = url.pathname === '/watch'
+                ? url.searchParams.get('v')
+                : (['embed', 'shorts', 'live'].includes(path[0]) ? path[1] : null);
+        } else if (['youtube-nocookie.com', 'www.youtube-nocookie.com'].includes(host) && path[0] === 'embed') {
+            videoId = path[1];
+        }
+
+        if (/^[A-Za-z0-9_-]{11}$/.test(videoId || '')) {
+            return `https://www.youtube-nocookie.com/embed/${videoId}`;
+        }
+
+        const isVimeo = ['vimeo.com', 'www.vimeo.com'].includes(host) && /^\d+$/.test(path.at(-1) || '');
+        const isVimeoPlayer = host === 'player.vimeo.com' && path[0] === 'video' && /^\d+$/.test(path[1] || '');
+        if (isVimeo || isVimeoPlayer) {
+            return `https://player.vimeo.com/video/${isVimeoPlayer ? path[1] : path.at(-1)}`;
+        }
+    } catch {
+        return null;
+    }
+
+    return null;
+};
+
+class SafeVideo extends BaseVideo {
+    static create(value) {
+        const node = super.create(normalizeVideoEmbedUrl(value) || 'about:blank');
+        node.setAttribute('title', 'Video artikel');
+        node.setAttribute('loading', 'lazy');
+        node.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+        return node;
+    }
+
+    static sanitize(value) {
+        return normalizeVideoEmbedUrl(value) || 'about:blank';
+    }
+
+    html() {
+        return this.domNode.outerHTML;
+    }
+}
+
+Quill.register(SafeVideo, true);
+
+const openVideoEmbedDialog = (onSubmit) => {
+    const dialog = document.createElement('dialog');
+    dialog.className = 'cms-video-dialog';
+    dialog.innerHTML = `
+        <form method="dialog" class="cms-video-dialog__surface">
+            <div class="cms-video-dialog__icon" aria-hidden="true"><i class="bi bi-play-btn"></i></div>
+            <div>
+                <p class="cms-video-dialog__eyebrow">Media artikel</p>
+                <h2 class="cms-video-dialog__title">Sematkan video</h2>
+                <p class="cms-video-dialog__copy">Tempel URL YouTube atau Vimeo. Tautan akan diubah otomatis menjadi embed yang aman dan responsif.</p>
+            </div>
+            <label class="cms-video-dialog__field">
+                <span>URL video</span>
+                <input type="url" inputmode="url" placeholder="https://www.youtube.com/watch?v=..." required>
+                <small>Mendukung youtube.com, youtu.be, dan vimeo.com.</small>
+            </label>
+            <div class="cms-video-dialog__actions">
+                <button type="button" class="btn btn-outline-secondary" data-video-cancel>Batal</button>
+                <button type="submit" class="btn btn-primary"><i class="bi bi-plus-circle me-1" aria-hidden="true"></i>Sematkan</button>
+            </div>
+        </form>
+    `;
+
+    const form = dialog.querySelector('form');
+    const input = dialog.querySelector('input');
+    const cancel = dialog.querySelector('[data-video-cancel]');
+    const close = () => {
+        dialog.close();
+        dialog.remove();
+    };
+
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const embedUrl = normalizeVideoEmbedUrl(input.value);
+        input.setCustomValidity(embedUrl ? '' : 'Gunakan URL video YouTube atau Vimeo yang valid.');
+        if (!embedUrl) {
+            input.reportValidity();
+            return;
+        }
+
+        onSubmit(embedUrl);
+        close();
+    });
+    cancel.addEventListener('click', close);
+    dialog.addEventListener('cancel', (event) => {
+        event.preventDefault();
+        close();
+    });
+    input.addEventListener('input', () => input.setCustomValidity(''));
+
+    document.body.appendChild(dialog);
+    dialog.showModal();
+    input.focus();
+};
+
+const spreadsheetColumnLabel = (index) => {
+    let label = '';
+    let value = index + 1;
+
+    while (value > 0) {
+        value -= 1;
+        label = String.fromCharCode(65 + (value % 26)) + label;
+        value = Math.floor(value / 26);
+    }
+
+    return label;
+};
+
+class SpreadsheetTableResize extends TableResizeBox {
+    constructor(...args) {
+        super(...args);
+        this.size = 24;
+    }
+
+    show() {
+        super.show();
+        if (!this.root) return;
+
+        this.root.classList.add('cms-spreadsheet-resizer');
+        this.root.querySelectorAll('.table-up-resize-box__col-header').forEach((header, index) => {
+            const label = spreadsheetColumnLabel(index);
+            header.dataset.label = label;
+            header.setAttribute('role', 'button');
+            header.setAttribute('aria-label', `Pilih kolom ${label}`);
+            header.setAttribute('title', `Kolom ${label} · tarik batas untuk mengubah lebar`);
+            header.tabIndex = 0;
+            header.addEventListener('keydown', (event) => {
+                if (event.key !== 'Enter' && event.key !== ' ') return;
+                event.preventDefault();
+                header.click();
+            });
+        });
+        this.root.querySelectorAll('.table-up-resize-box__row-header').forEach((header, index) => {
+            const label = String(index + 1);
+            header.dataset.label = label;
+            header.setAttribute('role', 'button');
+            header.setAttribute('aria-label', `Pilih baris ${label}`);
+            header.setAttribute('title', `Baris ${label} · tarik batas untuk mengubah tinggi`);
+            header.tabIndex = 0;
+            header.addEventListener('keydown', (event) => {
+                if (event.key !== 'Enter' && event.key !== ' ') return;
+                event.preventDefault();
+                header.click();
+            });
+        });
+
+        if (this.corner) {
+            this.corner.setAttribute('role', 'button');
+            this.corner.setAttribute('aria-label', 'Pilih seluruh tabel');
+            this.corner.setAttribute('title', 'Pilih seluruh tabel');
+            this.corner.tabIndex = 0;
+            this.corner.addEventListener('keydown', (event) => {
+                if (event.key !== 'Enter' && event.key !== ' ') return;
+                event.preventDefault();
+                this.corner.click();
+            });
+        }
+    }
+}
 
 const tableTexts = {
     fullCheckboxText: 'Gunakan lebar penuh',
@@ -133,6 +315,110 @@ const alignableBlockSelector = [
     'li',
 ].join(',');
 
+const tableCellGrid = (table) => {
+    const grid = [];
+
+    Array.from(table.rows).forEach((row, rowIndex) => {
+        grid[rowIndex] ||= [];
+        let columnIndex = 0;
+
+        Array.from(row.cells).forEach((cell) => {
+            while (grid[rowIndex][columnIndex]) columnIndex += 1;
+
+            const rowSpan = Math.max(cell.rowSpan || 1, 1);
+            const colSpan = Math.max(cell.colSpan || 1, 1);
+            for (let rowOffset = 0; rowOffset < rowSpan; rowOffset += 1) {
+                const targetRow = rowIndex + rowOffset;
+                grid[targetRow] ||= [];
+                for (let colOffset = 0; colOffset < colSpan; colOffset += 1) {
+                    grid[targetRow][columnIndex + colOffset] = cell;
+                }
+            }
+
+            columnIndex += colSpan;
+        });
+    });
+
+    return grid;
+};
+
+const moveTableCaretVertically = (quill, context, direction) => {
+    const currentCell = context.line?.domNode?.closest?.('td.ql-table-cell');
+    const table = currentCell?.closest('table.ql-table');
+    if (!currentCell || !table) return true;
+
+    const rows = Array.from(table.rows);
+    const currentRowIndex = rows.indexOf(currentCell.parentElement);
+    const grid = tableCellGrid(table);
+    const currentColumnIndex = grid[currentRowIndex]?.indexOf(currentCell) ?? -1;
+    if (currentRowIndex < 0 || currentColumnIndex < 0) return true;
+
+    const targetRowIndex = direction > 0
+        ? currentRowIndex + Math.max(currentCell.rowSpan || 1, 1)
+        : currentRowIndex - 1;
+    const targetCell = grid[targetRowIndex]?.[currentColumnIndex];
+    if (!targetCell || targetCell === currentCell) return true;
+
+    const targetLineNode = targetCell.querySelector('.ql-table-cell-inner')?.firstElementChild;
+    const targetLine = targetLineNode ? Quill.find(targetLineNode) : null;
+    if (!targetLine || typeof targetLine.length !== 'function') return true;
+
+    const offset = Math.min(context.offset, Math.max(targetLine.length() - 1, 0));
+    quill.setSelection(quill.getIndex(targetLine) + offset, 0, Quill.sources.USER);
+    return false;
+};
+
+const registerTableArrowNavigation = (quill) => {
+    const keyboard = quill.getModule('keyboard');
+
+    [
+        ['ArrowUp', -1],
+        ['ArrowDown', 1],
+    ].forEach(([key, direction]) => {
+        keyboard.bindings[key] ||= [];
+        keyboard.bindings[key].unshift({
+            key,
+            collapsed: true,
+            shiftKey: false,
+            altKey: false,
+            ctrlKey: false,
+            metaKey: false,
+            handler(_range, context) {
+                return moveTableCaretVertically(quill, context, direction);
+            },
+        });
+    });
+};
+
+const setupStickyToolbar = (quill) => {
+    const toolbar = quill.getModule('toolbar')?.container;
+    const formSurface = quill.container.closest('.cms-form-surface');
+    if (!toolbar || !formSurface) return;
+
+    formSurface.classList.add('cms-form-surface--quill');
+    toolbar.classList.add('ql-toolbar--sticky');
+
+    let animationFrame = null;
+    const updateStickyState = () => {
+        animationFrame = null;
+        const toolbarRect = toolbar.getBoundingClientRect();
+        const editorRect = quill.container.getBoundingClientRect();
+        const stickyTop = Number.parseFloat(window.getComputedStyle(toolbar).top) || 0;
+        const isStuck = toolbarRect.top <= stickyTop + 1
+            && editorRect.bottom > stickyTop + toolbarRect.height;
+
+        toolbar.classList.toggle('is-stuck', isStuck);
+    };
+    const requestStickyUpdate = () => {
+        if (animationFrame !== null) return;
+        animationFrame = window.requestAnimationFrame(updateStickyState);
+    };
+
+    window.addEventListener('scroll', requestStickyUpdate, { passive: true });
+    window.addEventListener('resize', requestStickyUpdate, { passive: true });
+    requestStickyUpdate();
+};
+
 export function normalizeEditorHtml(html) {
     const document = new DOMParser().parseFromString(html || '', 'text/html');
     const textWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
@@ -202,12 +488,14 @@ export function initQuillEditors(root = document) {
                             { align: 'right' },
                             { align: 'justify' },
                         ],
-                        ['blockquote', 'link', 'image', { [TableUp.toolName]: [] }],
+                        ['blockquote', 'link', 'image', 'video', { [TableUp.toolName]: [] }],
                         ['clean'],
                     ],
                     handlers: {
+                        align: alignHandler,
                         image: imageHandler,
                         list: listHandler,
+                        video: videoHandler,
                     },
                 },
                 [TableUp.moduleName]: {
@@ -216,6 +504,11 @@ export function initQuillEditors(root = document) {
                     full: true,
                     fullSwitch: false,
                     texts: tableTexts,
+                    resize: SpreadsheetTableResize,
+                    resizeScale: TableResizeScale,
+                    resizeScaleOptions: {
+                        blockSize: 14,
+                    },
                     selection: TableSelection,
                     selectionOptions: {
                         selectColor: 'rgba(164, 126, 79, .14)',
@@ -228,12 +521,41 @@ export function initQuillEditors(root = document) {
                 },
             },
         });
+        registerTableArrowNavigation(quill);
+        setupStickyToolbar(quill);
         const initialContent = quill.clipboard.convert({ html: prepareEditorHtml(input.value) });
         quill.setContents(initialContent, Quill.sources.SILENT);
         const syncInput = () => {
             input.value = normalizeEditorHtml(quill.getSemanticHTML());
         };
         quill.on('text-change', syncInput);
+
+        function alignHandler(value) {
+            const tableModule = quill.getModule(TableUp.moduleName);
+            const tableSelection = tableModule?.tableSelection;
+            const selectedCells = tableSelection?.isDisplaySelection
+                ? [...tableSelection.selectedTds]
+                : [];
+
+            if (selectedCells.length === 0) {
+                quill.format('align', value || false, Quill.sources.USER);
+                return;
+            }
+
+            const alignment = value || false;
+            selectedCells.forEach((cell) => {
+                const index = cell.offset(quill.scroll);
+                const length = Math.max(cell.length() - 1, 1);
+                quill.formatLine(index, length, 'align', alignment, Quill.sources.USER);
+            });
+
+            const connectedCells = selectedCells.filter((cell) => cell.domNode?.isConnected);
+            if (connectedCells.length > 0) {
+                tableSelection.selectedTds = connectedCells;
+                tableSelection.updateWithSelectedTds();
+            }
+            syncInput();
+        }
 
         function listHandler(value) {
             const range = quill.getSelection();
@@ -282,6 +604,16 @@ export function initQuillEditors(root = document) {
                     window.alert('Gambar gagal diunggah. Pastikan format dan ukuran sesuai.');
                 }
             };
+        }
+
+        function videoHandler() {
+            const range = quill.getSelection(true);
+            openVideoEmbedDialog((embedUrl) => {
+                const index = range.index + range.length;
+                quill.insertEmbed(index, 'video', embedUrl, Quill.sources.USER);
+                quill.setSelection(index + 1, 0, Quill.sources.SILENT);
+                syncInput();
+            });
         }
     });
 }
