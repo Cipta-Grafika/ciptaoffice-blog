@@ -46,6 +46,8 @@ class AuthenticationTest extends TestCase
             ->assertSee('cmsAccountMenuButton')
             ->assertSee($user->email)
             ->assertSee('Profil')
+            ->assertSee(route('cms.profile.edit'), false)
+            ->assertDontSee('cms-account-actions__notice', false)
             ->assertSee('Riwayat')
             ->assertSee('Pengaturan')
             ->assertDontSee("@yield('content')", false);

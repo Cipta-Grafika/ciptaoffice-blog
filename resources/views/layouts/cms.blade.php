@@ -175,8 +175,8 @@
                             </span>
                         </div>
                         <div class="cms-account-actions">
-                            <div class="cms-account-actions__content" aria-hidden="true" inert>
-                                <button class="cms-account-menu-item" type="button" disabled>
+                            <div class="cms-account-actions__content">
+                                <a class="cms-account-menu-item" href="{{ route('cms.profile.edit') }}">
                                     <span class="cms-account-menu-icon"><i class="bi bi-person"
                                             aria-hidden="true"></i></span>
                                     <span class="cms-account-menu-copy">
@@ -184,7 +184,7 @@
                                         <small>Kelola informasi profil</small>
                                     </span>
                                     <i class="bi bi-chevron-right cms-account-menu-arrow" aria-hidden="true"></i>
-                                </button>
+                                </a>
                                 <button class="cms-account-menu-item" type="button" disabled>
                                     <span class="cms-account-menu-icon"><i class="bi bi-clock-history"
                                             aria-hidden="true"></i></span>
@@ -192,7 +192,7 @@
                                         <strong>Riwayat</strong>
                                         <small>Lihat aktivitas editorial</small>
                                     </span>
-                                    <i class="bi bi-chevron-right cms-account-menu-arrow" aria-hidden="true"></i>
+                                    <span class="cms-account-menu-badge">Segera</span>
                                 </button>
                                 <button class="cms-account-menu-item" type="button" disabled>
                                     <span class="cms-account-menu-icon"><i class="bi bi-gear"
@@ -201,15 +201,8 @@
                                         <strong>Pengaturan</strong>
                                         <small>Kelola preferensi akun</small>
                                     </span>
-                                    <i class="bi bi-chevron-right cms-account-menu-arrow" aria-hidden="true"></i>
+                                    <span class="cms-account-menu-badge">Segera</span>
                                 </button>
-                            </div>
-                            <div class="cms-account-actions__notice" role="status">
-                                <i class="bi bi-clock-history" aria-hidden="true"></i>
-                                <span>
-                                    <strong>Segera hadir</strong>
-                                    <small>Fitur akun akan ditambahkan nanti.</small>
-                                </span>
                             </div>
                         </div>
                         <div class="cms-account-divider"></div>

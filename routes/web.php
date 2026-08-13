@@ -10,6 +10,7 @@ use App\Http\Controllers\Cms\InquiryController as CmsInquiryController;
 use App\Http\Controllers\Cms\MediaUploadController;
 use App\Http\Controllers\Cms\PostController as CmsPostController;
 use App\Http\Controllers\Cms\PostWorkflowController;
+use App\Http\Controllers\Cms\ProfileController;
 use App\Http\Controllers\Cms\ProductCategoryController;
 use App\Http\Controllers\Cms\ProductController as CmsProductController;
 use App\Http\Controllers\Cms\TestimonialController;
@@ -43,8 +44,10 @@ Route::middleware('guest')->group(function () {
 Route::prefix('cms')->name('cms.')->middleware(['auth', 'active'])->group(function () {
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
     Route::get('/', DashboardController::class)->name('dashboard');
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [PasswordController::class, 'update'])->name('profile.password.update');
     Route::get('/password', [PasswordController::class, 'edit'])->name('password.edit');
-    Route::put('/password', [PasswordController::class, 'update'])->name('password.update');
 
     Route::resource('posts', CmsPostController::class)->except('show');
     Route::get('/posts/{post}/preview', [CmsPostController::class, 'preview'])->name('posts.preview');
