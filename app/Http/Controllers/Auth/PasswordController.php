@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
 
 /**
  * Handle password update requests for authenticated users.
@@ -15,11 +14,11 @@ class PasswordController extends Controller
     /**
      * Display the change password view.
      *
-     * @return \Illuminate\View\View
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function edit(): View
+    public function edit(): RedirectResponse
     {
-        return view('auth.change-password');
+        return redirect()->route('cms.profile.edit');
     }
 
     /**
@@ -30,9 +29,12 @@ class PasswordController extends Controller
      */
     public function update(Request $request): RedirectResponse
     {
-        $validated = $request->validate(['current_password' => ['required', 'current_password'], 'password' => ['required', 'confirmed', 'min:10']]);
+        $validated = $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', 'string', 'confirmed', 'min:10', 'max:255'],
+        ]);
         $request->user()->update(['password' => $validated['password']]);
 
-        return back()->with('success', 'Kata sandi berhasil diperbarui.');
+        return redirect()->route('cms.profile.edit')->with('success', 'Kata sandi berhasil diperbarui.');
     }
 }
