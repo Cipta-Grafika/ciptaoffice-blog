@@ -1,0 +1,19 @@
+[
+    {
+        "id": 481,
+        "date": "2026-08-14T10:30:00",
+        "slug": "panduan-meja-wordpress",
+        "status": "publish",
+        "title": {
+            "rendered": "Panduan Meja WordPress"
+        },
+        "excerpt": {
+            "rendered": "<p>Perbandingan ukuran meja dari artikel WordPress.</p>",
+            "protected": false
+        },
+        "content": {
+            "rendered": "<p>Tabel berikut berasal dari blok tabel WordPress.</p><figure class=\"wp-block-table\"><table><thead><tr><th rowspan=\"2\" scope=\"col\">Produk</th><th colspan=\"2\" scope=\"colgroup\">Dimensi</th></tr><tr><th scope=\"col\">Lebar</th><th scope=\"col\">Tinggi</th></tr></thead><tbody><tr><td rowspan=\"2\">Meja Point</td><td>120 cm</td><td>75 cm</td></tr><tr><td colspan=\"2\">Dapat disesuaikan</td></tr></tbody></table></figure><p>Penutup artikel WordPress.</p>",
+            "protected": false
+        }
+    }
+]
