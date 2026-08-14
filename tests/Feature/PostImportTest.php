@@ -153,6 +153,32 @@ class PostImportTest extends TestCase
         ]);
     }
 
+    public function test_user_can_import_wordpress_rest_json_fields(): void
+    {
+        $user = User::factory()->create();
+        $json = json_encode([[
+            'title' => ['rendered' => 'Panduan Meja &amp; Kursi'],
+            'excerpt' => ['rendered' => '<p>Ringkasan dari WordPress.</p>', 'protected' => false],
+            'content' => [
+                'rendered' => '<figure class="wp-block-table"><table><thead><tr><th rowspan="2">Produk</th><th colspan="2">Dimensi</th></tr><tr><th>Lebar</th><th>Tinggi</th></tr></thead><tbody><tr><td>Meja Point</td><td>120 cm</td><td>75 cm</td></tr></tbody></table></figure>',
+                'protected' => false,
+            ],
+        ]], JSON_THROW_ON_ERROR);
+
+        $this->actingAs($user)->post(route('cms.posts.import'), [
+            'import_file' => UploadedFile::fake()->createWithContent('wordpress-posts.json', $json),
+        ])->assertRedirect(route('cms.posts.index'))
+            ->assertSessionHasNoErrors();
+
+        $post = Post::where('slug', 'panduan-meja-kursi')->firstOrFail();
+        $this->assertSame('Panduan Meja & Kursi', $post->title);
+        $this->assertSame('Ringkasan dari WordPress.', $post->excerpt);
+        $this->assertStringContainsString('<thead>', $post->body_html);
+        $this->assertStringContainsString('rowspan="2"', $post->body_html);
+        $this->assertStringContainsString('colspan="2"', $post->body_html);
+        $this->assertStringNotContainsString('wp-block-table', $post->body_html);
+    }
+
     public function test_import_rejects_invalid_json_without_creating_posts(): void
     {
         $user = User::factory()->create();

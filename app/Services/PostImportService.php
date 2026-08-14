@@ -245,11 +245,28 @@ class PostImportService
             $column = self::HEADER_ALIASES[$this->normalizeHeader((string) $key)] ?? null;
 
             if ($column !== null && ! array_key_exists($column, $normalized)) {
-                $normalized[$column] = trim($this->stringifyCell($value));
+                $normalized[$column] = $this->jsonFieldValue($column, $value);
             }
         }
 
         return array_merge(array_fill_keys(self::REQUIRED_COLUMNS, ''), $normalized);
+    }
+
+    private function jsonFieldValue(string $column, mixed $value): string
+    {
+        if (is_array($value) && array_key_exists('rendered', $value)) {
+            $value = $value['rendered'];
+        }
+
+        $text = trim($this->stringifyCell($value));
+
+        if (! in_array($column, ['title', 'excerpt'], true)) {
+            return $text;
+        }
+
+        $text = html_entity_decode(strip_tags($text), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+        return trim((string) preg_replace('/\s+/u', ' ', $text));
     }
 
     /**
