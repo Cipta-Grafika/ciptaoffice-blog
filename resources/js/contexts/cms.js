@@ -4,6 +4,7 @@ import { initCmsNavigationSearch } from '../components/cms/global/navigation-sea
 import { initCmsSidebar } from '../components/cms/global/sidebar';
 import { initCmsAjaxTable } from '../components/cms/global/ajax-table';
 import { initImageDropzones } from '../components/cms/shared/image-dropzone';
+import { initCmsImportModals } from '../components/cms/shared/import-modal';
 import { initPasswordToggles } from '../components/auth/password-toggle';
 
 const globalInitializers = [
@@ -13,6 +14,7 @@ const globalInitializers = [
     initCmsNavigationSearch,
     initCmsAjaxTable,
     initImageDropzones,
+    initCmsImportModals,
     initPasswordToggles,
 ];
 

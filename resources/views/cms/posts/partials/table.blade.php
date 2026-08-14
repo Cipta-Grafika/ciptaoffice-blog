@@ -17,9 +17,10 @@
                     <i class="bi bi-funnel" aria-hidden="true"></i> Filter
                 </button>
             </form>
-            <a class="btn btn-sm btn-outline-secondary" href="#">
+            <button class="btn btn-sm btn-outline-secondary" type="button"
+                data-cms-import-open="postsImportDialog">
                 <i class="bi bi-upload" aria-hidden="true"></i><span class="cms-action-label--compact ms-1">Import</span>
-            </a>
+            </button>
             <a class="btn btn-sm btn-primary" href="{{ route('cms.posts.create') }}">
                 <i class="bi bi-plus-lg" aria-hidden="true"></i><span class="cms-action-label--compact ms-1">Create</span>
             </a>
