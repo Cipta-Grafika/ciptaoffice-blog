@@ -1,4 +1,7 @@
 import 'bootstrap/dist/js/bootstrap.bundle';
+import { initViteBfcacheRecovery } from './support/vite-bfcache';
+
+initViteBfcacheRecovery();
 
 const contextLoaders = {
     site: () => import('./contexts/site'),

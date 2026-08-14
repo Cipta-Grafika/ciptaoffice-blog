@@ -488,6 +488,7 @@ a { text-underline-offset: .2em; }
 .cms-profile-security__fields { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1rem; padding:1.25rem clamp(1.25rem,2.5vw,2rem); background:rgba(247,243,235,.42); border-top:1px solid rgba(23,32,30,.09); }
 .cms-profile-security__fields > div { min-width:0; }
 .cms-password-toggle { display:grid; width:2.8rem; flex:0 0 2.8rem; padding:0; place-items:center; color:var(--brass); background:#fff; border-color:rgba(23,32,30,.14); }
+.cms-profile-security__fields .input-group > .cms-password-toggle { border-radius:0 $input-border-radius $input-border-radius 0; }
 .cms-password-toggle:hover,.cms-password-toggle[aria-pressed="true"] { color:#fff; background:var(--forest); border-color:var(--forest); }
 .cms-profile-security__footer { display:flex; min-height:4.75rem; padding:1rem clamp(1.25rem,2.5vw,2rem); align-items:center; justify-content:space-between; gap:1rem; border-top:1px solid rgba(23,32,30,.09); }
 .cms-profile-security__footer p { display:flex; margin:0; align-items:flex-start; gap:.45rem; color:var(--muted); font-size:.62rem; font-weight:400; letter-spacing:0; line-height:1.5; text-transform:none; }

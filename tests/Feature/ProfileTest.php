@@ -34,6 +34,8 @@ class ProfileTest extends TestCase
             ->assertSee($user->role->label())
             ->assertSee('Simpan profil')
             ->assertSee(route('cms.profile.password.update'), false)
+            ->assertSee('name="username"', false)
+            ->assertSee('autocomplete="username"', false)
             ->assertSee('name="current_password"', false)
             ->assertSee('name="password_confirmation"', false)
             ->assertSee('data-password-toggle="#new_password"', false)
