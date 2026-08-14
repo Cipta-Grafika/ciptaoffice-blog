@@ -79,7 +79,7 @@
                 <span class="cms-import-schema__icon" aria-hidden="true"><i class="bi bi-layout-three-columns"></i></span>
                 <div>
                     <strong>Struktur data artikel</strong>
-                    <p>CSV/XLSX menggunakan baris header. JSON dapat berupa array, objek tunggal, atau wrapper <code>articles</code>. Alias <em>judul</em>, <em>ringkasan</em>, dan <em>isi</em> juga diterima.</p>
+                    <p>CSV/XLSX menggunakan baris header. JSON dapat berupa array, objek tunggal, wrapper <code>articles</code>, atau respons WordPress REST dengan field <code>rendered</code>. Alias <em>judul</em>, <em>ringkasan</em>, dan <em>isi</em> juga diterima.</p>
                     <div class="cms-import-schema__columns" aria-label="Kolom wajib file import">
                         <code>title</code>
                         <code>excerpt</code>
