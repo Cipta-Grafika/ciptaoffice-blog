@@ -75,6 +75,8 @@
                 <form class="cms-profile-security" method="post" action="{{ route('cms.profile.password.update') }}">
                     @csrf
                     @method('PUT')
+                    <input class="visually-hidden" name="username" type="email" value="{{ $user->email }}"
+                        autocomplete="username" tabindex="-1" aria-hidden="true" readonly>
                     <header class="cms-profile-security__header">
                         <span class="cms-profile-security__icon"><i class="bi bi-key" aria-hidden="true"></i></span>
                         <div>
