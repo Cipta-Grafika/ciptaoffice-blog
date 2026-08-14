@@ -9,10 +9,11 @@ use App\Http\Controllers\Cms\HomepageSettingController;
 use App\Http\Controllers\Cms\InquiryController as CmsInquiryController;
 use App\Http\Controllers\Cms\MediaUploadController;
 use App\Http\Controllers\Cms\PostController as CmsPostController;
+use App\Http\Controllers\Cms\PostImportController;
 use App\Http\Controllers\Cms\PostWorkflowController;
-use App\Http\Controllers\Cms\ProfileController;
 use App\Http\Controllers\Cms\ProductCategoryController;
 use App\Http\Controllers\Cms\ProductController as CmsProductController;
+use App\Http\Controllers\Cms\ProfileController;
 use App\Http\Controllers\Cms\TestimonialController;
 use App\Http\Controllers\Cms\UserController;
 use App\Http\Controllers\Site\ArticleController;
@@ -49,6 +50,7 @@ Route::prefix('cms')->name('cms.')->middleware(['auth', 'active'])->group(functi
     Route::put('/profile/password', [PasswordController::class, 'update'])->name('profile.password.update');
     Route::get('/password', [PasswordController::class, 'edit'])->name('password.edit');
 
+    Route::post('/posts/import', PostImportController::class)->name('posts.import');
     Route::resource('posts', CmsPostController::class)->except('show');
     Route::get('/posts/{post}/preview', [CmsPostController::class, 'preview'])->name('posts.preview');
     Route::post('/posts/{post}/submit', [PostWorkflowController::class, 'submit'])->name('posts.submit');
