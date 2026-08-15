@@ -13,5 +13,9 @@
                 @include('cms.posts.partials.table')
             </div>
         </section>
+
+        <x-cms-import-modal id="postsImportDialog" :action="route('cms.posts.import')"
+            :error="$errors->postImport->first('import_file')"
+            :open-on-load="$errors->postImport->isNotEmpty()" />
     </div>
 @endsection

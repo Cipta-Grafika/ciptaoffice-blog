@@ -1,6 +1,9 @@
 import Quill from 'quill';
 import TableUp, {
+    blotName,
     defaultCustomSelect,
+    TableCellFormat,
+    TableCellInnerFormat,
     TableMenuContextmenu,
     TableResizeBox,
     TableResizeScale,
@@ -10,7 +13,35 @@ import 'quill/dist/quill.snow.css';
 import 'quill-table-up/index.css';
 import 'quill-table-up/table-creator.css';
 
+class SemanticTableCell extends TableCellFormat {
+    static create(value) {
+        const node = super.create(value);
+        if (value?.header) node.dataset.tableHeader = 'true';
+        return node;
+    }
+
+    static formats(node) {
+        return { ...super.formats(node), header: node.dataset.tableHeader === 'true' };
+    }
+}
+
+class SemanticTableCellInner extends TableCellInnerFormat {
+    static create(value) {
+        const node = super.create(value);
+        if (value?.header) node.dataset.tableHeader = 'true';
+        return node;
+    }
+
+    static formats(node) {
+        return { ...super.formats(node), header: node.dataset.tableHeader === 'true' };
+    }
+}
+
 Quill.register({ [`modules/${TableUp.moduleName}`]: TableUp }, true);
+Quill.register({
+    [`formats/${blotName.tableCell}`]: SemanticTableCell,
+    [`formats/${blotName.tableCellInner}`]: SemanticTableCellInner,
+}, true);
 
 const BaseVideo = Quill.import('formats/video');
 
@@ -440,13 +471,65 @@ export function normalizeEditorHtml(html) {
         });
     }
 
+    document.body.querySelectorAll('.ql-table-wrapper table').forEach((table) => {
+        const tbody = table.querySelector(':scope > tbody');
+        if (!tbody) return;
+
+        const headerRows = [];
+        for (const row of Array.from(tbody.rows)) {
+            const cells = Array.from(row.cells);
+            if (cells.length === 0 || !cells.every((cell) => cell.dataset.tableHeader === 'true')) break;
+            headerRows.push(row);
+        }
+        if (headerRows.length === 0) return;
+
+        const thead = document.createElement('thead');
+        headerRows.forEach((row) => {
+            Array.from(row.cells).forEach((cell) => {
+                const header = document.createElement('th');
+                Array.from(cell.attributes).forEach((attribute) => {
+                    if (attribute.name !== 'data-table-header') {
+                        header.setAttribute(attribute.name, attribute.value);
+                    }
+                });
+                while (cell.firstChild) header.appendChild(cell.firstChild);
+                cell.replaceWith(header);
+            });
+            thead.appendChild(row);
+        });
+        table.insertBefore(thead, tbody);
+    });
+
     return document.body.innerHTML;
 }
 
 export function prepareEditorHtml(html) {
     const document = new DOMParser().parseFromString(html || '', 'text/html');
 
-    document.body.querySelectorAll('.ql-table-wrapper table').forEach((table) => {
+    document.body.querySelectorAll('table').forEach((table) => {
+        const thead = table.querySelector(':scope > thead');
+        if (thead) {
+            let tbody = table.querySelector(':scope > tbody');
+            if (!tbody) {
+                tbody = document.createElement('tbody');
+                table.appendChild(tbody);
+            }
+
+            Array.from(thead.rows).reverse().forEach((row) => {
+                Array.from(row.cells).forEach((cell) => {
+                    const dataCell = document.createElement('td');
+                    Array.from(cell.attributes).forEach((attribute) => {
+                        dataCell.setAttribute(attribute.name, attribute.value);
+                    });
+                    dataCell.dataset.tableHeader = 'true';
+                    while (cell.firstChild) dataCell.appendChild(cell.firstChild);
+                    cell.replaceWith(dataCell);
+                });
+                tbody.prepend(row);
+            });
+            thead.remove();
+        }
+
         const colgroup = table.querySelector('colgroup');
         const columns = Array.from(colgroup?.querySelectorAll('col') || []);
         const hasPercentageWidths = columns.length > 0
@@ -520,6 +603,13 @@ export function initQuillEditors(root = document) {
                     },
                 },
             },
+        });
+        quill.clipboard.addMatcher('td[data-table-header="true"]', (_node, delta) => {
+            delta.ops.forEach((operation) => {
+                const cell = operation.attributes?.[blotName.tableCellInner];
+                if (cell) cell.header = true;
+            });
+            return delta;
         });
         registerTableArrowNavigation(quill);
         setupStickyToolbar(quill);
