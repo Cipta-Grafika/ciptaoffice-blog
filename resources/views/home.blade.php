@@ -1,40 +1,88 @@
 @extends('layouts.app')
 @section('content')
     <section class="hero">
-        <div class="container position-relative">
-            <div class="row align-items-center g-5">
-                <div class="col-lg-7 reveal">
-                    <p class="section-kicker mb-4">{{ $settings->eyebrow }}</p>
-                    <h1 class="hero-title font-display mb-4">{{ $settings->title }}</h1>
-                    <p class="hero-copy mb-4">{{ $settings->summary }}</p>
-                    <div class="d-flex flex-wrap gap-3">
+        <div class="container">
+            <div class="hero-layout">
+                <div class="hero-intro reveal">
+                    <!-- <p class="section-kicker hero-kicker">{{ $settings->eyebrow }}</p> -->
+                    <h1 class="hero-title font-display">{{ $settings->title }}</h1>
+                    <p class="hero-copy">{{ $settings->summary }}</p>
+                    <div class="hero-actions">
                         @if ($settings->primary_cta_label)
-                            <a class="btn btn-primary btn-lg px-4"
-                                href="{{ $settings->primary_cta_url ?: '#produk' }}">{{ $settings->primary_cta_label }}</a>
+                            <a class="btn hero-cta hero-cta--primary"
+                                href="{{ $settings->primary_cta_url ?: '#produk' }}">
+                                <span>{{ $settings->primary_cta_label }}</span>
+                                <i class="bi bi-arrow-up-right" aria-hidden="true"></i>
+                            </a>
                         @endif
                         @if ($settings->secondary_cta_label)
-                            <a class="btn btn-outline-dark btn-lg px-4"
-                                href="{{ $settings->secondary_cta_url ?: route('contact.create') }}">{{ $settings->secondary_cta_label }}</a>
+                            <a class="btn hero-cta hero-cta--secondary"
+                                href="{{ $settings->secondary_cta_url ?: route('contact.create') }}">
+                                {{ $settings->secondary_cta_label }}
+                            </a>
                         @endif
                     </div>
+
+                    <p class="hero-categories" aria-label="Kategori produk utama">
+                        <span>Meja kantor</span><span>Kursi kantor</span><span>Brankas</span>
+                    </p>
                 </div>
-                <div class="col-lg-5 reveal">
-                    <div class="material-board">
+
+                <figure class="hero-media reveal">
+                    <div class="hero-media-frame">
                         @if ($settings->hero_image_path)
-                            <img class="board-image" src="{{ asset('storage/' . $settings->hero_image_path) }}"
-                                alt="{{ $settings->hero_image_alt }}">
+                            <img class="hero-image" src="{{ asset('storage/' . $settings->hero_image_path) }}"
+                                alt="{{ $settings->hero_image_alt }}" fetchpriority="high" decoding="async">
                         @else
-                            <div class="board-image d-flex align-items-center justify-content-center bg-white">
-                                <div class="swatch mx-4" role="img"
-                                    aria-label="Palet material furnitur kantor berwarna hijau, brass, dan kayu"></div>
+                            <div class="hero-image hero-image--placeholder" role="img"
+                                aria-label="Palet material furnitur kantor berwarna hijau, brass, dan kayu">
+                                <div class="swatch mx-4" aria-hidden="true"></div>
                             </div>
                         @endif
-                        <div class="board-panel top"><small class="section-kicker">Pilihan utama</small><strong
-                                class="d-block mt-2">Tepat guna</strong></div>
-                        <div class="board-panel bottom"><small class="section-kicker">Jika stok berubah</small><strong
-                                class="d-block mt-2">Mutu tetap setara</strong></div>
+                        <span class="hero-media-badge"><i class="bi bi-stars" aria-hidden="true"></i> Kurasi ruang
+                            kerja</span>
                     </div>
-                </div>
+                    <figcaption class="hero-media-caption">
+                        <span>01 / Ruang yang mendukung keputusan</span>
+                        <span>Karawang · Jawa Barat</span>
+                    </figcaption>
+                </figure>
+
+                <form class="hero-search reveal" method="get" action="{{ route('products.index') }}"
+                    aria-label="Cari kebutuhan produk kantor">
+                    <div class="hero-search-heading">
+                        <div>
+                            <span class="hero-search-index">Temukan kebutuhan</span>
+                            <strong>Mulai dari ruang Anda</strong>
+                        </div>
+                        <i class="bi bi-grid-1x2" aria-hidden="true"></i>
+                    </div>
+                    <div class="hero-search-fields">
+                        <label class="hero-search-field" for="hero_category">
+                            <span>Kategori</span>
+                            <span class="hero-search-control">
+                                <i class="bi bi-collection" aria-hidden="true"></i>
+                                <select id="hero_category" name="category">
+                                    <option value="">Semua produk</option>
+                                    @foreach ($categories as $category)
+                                        <option value="{{ $category->slug }}">{{ $category->name }}</option>
+                                    @endforeach
+                                </select>
+                            </span>
+                        </label>
+                        <label class="hero-search-field" for="hero_query">
+                            <span>Kata kunci</span>
+                            <span class="hero-search-control">
+                                <i class="bi bi-search" aria-hidden="true"></i>
+                                <input id="hero_query" name="q" type="search" placeholder="Contoh: meja kerja">
+                            </span>
+                        </label>
+                        <button class="hero-search-submit" type="submit">
+                            <span>Cari produk</span>
+                            <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </section>
