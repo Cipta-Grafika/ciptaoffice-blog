@@ -66,4 +66,15 @@ class HomepageTest extends TestCase
             ->assertSee('href="#artikel"', false)
             ->assertSee('href="#testimoni"', false);
     }
+
+    public function test_hero_product_finder_submits_supported_catalog_filters(): void
+    {
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('class="hero-layout"', false)
+            ->assertSee('action="'.route('products.index').'"', false)
+            ->assertSee('name="category"', false)
+            ->assertSee('name="q"', false)
+            ->assertSee('Cari produk');
+    }
 }
