@@ -18,7 +18,7 @@
                         @if ($settings->secondary_cta_label)
                             <a class="btn hero-cta hero-cta--secondary"
                                 href="{{ $settings->secondary_cta_url ?: route('contact.create') }}">
-                                {{ $settings->secondary_cta_label }}
+                                <span>{{ $settings->secondary_cta_label }}</span>
                             </a>
                         @endif
                     </div>
