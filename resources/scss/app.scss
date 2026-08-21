@@ -120,8 +120,8 @@ a { text-underline-offset: .2em; }
 .hero-media-badge { position:absolute; z-index:2; top:1.5rem; left:1.5rem; display:inline-flex; align-items:center; gap:.5rem; padding:.55rem .75rem; color:#fff; background:rgba(16,35,31,.74); border:1px solid rgba(255,255,255,.24); border-radius:999px; font-size:.64rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; backdrop-filter:blur(12px); }
 .hero-media-badge i { color:#d5b17e; }
 .hero-media-caption { display:flex; justify-content:space-between; gap:1rem; margin-top:.8rem; color:rgba(255,255,255,.48); font-size:.59rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; }
-.hero-search { grid-area:search; align-self:end; padding:1rem; background:rgba(255,255,255,.065); border:1px solid rgba(255,255,255,.18); border-radius:.55rem; box-shadow:0 1.25rem 3rem rgba(0,0,0,.12); backdrop-filter:blur(18px); }
-.hero-search-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; margin-bottom:.8rem; }
+.hero-search { grid-area:search; align-self:end; padding:1.1rem 1.15rem 1.15rem; background:rgba(255,255,255,.065); border:1px solid rgba(255,255,255,.18); border-radius:.55rem; box-shadow:0 1.25rem 3rem rgba(0,0,0,.12); backdrop-filter:blur(18px); }
+.hero-search-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; margin-bottom:.9rem; }
 .hero-search-heading > div { display:flex; flex-direction:column; gap:.15rem; }
 .hero-search-heading > i { color:rgba(213,177,126,.72); }
 .hero-search-index { color:#d5b17e; font-size:.56rem; font-weight:700; letter-spacing:.16em; text-transform:uppercase; }
@@ -131,11 +131,13 @@ a { text-underline-offset: .2em; }
 .hero-search-field > span:first-child { display:block; margin:0 0 .32rem .15rem; color:rgba(255,255,255,.52); font-size:.55rem; font-weight:700; letter-spacing:.09em; text-transform:uppercase; }
 .hero-search-control { position:relative; display:block; }
 .hero-search-control > i { position:absolute; z-index:1; top:50%; left:.75rem; color:#d5b17e; font-size:.72rem; pointer-events:none; transform:translateY(-50%); }
-.hero-search-control input,.hero-search-control select { width:100%; height:2.7rem; padding:.55rem 1.75rem .55rem 2rem; color:#fff; background:rgba(8,23,20,.72); border:1px solid rgba(255,255,255,.16); border-radius:.3rem; font-size:.72rem; outline:0; }
+.hero-search-control input,.hero-search-control select { width:100%; height:2.75rem; padding:.55rem 1rem .55rem 2.15rem; color:#fff; background:rgba(8,23,20,.72); border:1px solid rgba(255,255,255,.16); border-radius:.3rem; font-size:.72rem; outline:0; }
 .hero-search-control input::placeholder { color:rgba(255,255,255,.42); }
-.hero-search-control select { color-scheme:dark; cursor:pointer; }
+.hero-search-control select { padding-right:2.65rem; appearance:none; color-scheme:dark; cursor:pointer; }
+.hero-search-control .hero-search-chevron { right:.9rem; left:auto; color:rgba(255,255,255,.8); font-size:.68rem; transition:color .2s ease,transform .2s ease; }
+.hero-search-control--select:focus-within .hero-search-chevron { color:#d5b17e; transform:translateY(-50%) rotate(180deg); }
 .hero-search-control input:focus,.hero-search-control select:focus { border-color:#d5b17e; box-shadow:0 0 0 .18rem rgba(213,177,126,.13); }
-.hero-search-submit { display:inline-flex; height:2.7rem; align-items:center; justify-content:center; gap:.55rem; padding:.55rem .85rem; color:var(--forest); background:#d5b17e; border:1px solid #d5b17e; border-radius:.3rem; font-size:.68rem; font-weight:800; white-space:nowrap; transition:background-color .2s ease,transform .2s ease; }
+.hero-search-submit { display:inline-flex; height:2.75rem; align-items:center; justify-content:center; gap:.55rem; padding:.55rem .9rem; color:var(--forest); background:#d5b17e; border:1px solid #d5b17e; border-radius:.3rem; font-size:.68rem; font-weight:800; white-space:nowrap; transition:background-color .2s ease,transform .2s ease; }
 .hero-search-submit:hover { background:#e4c89f; transform:translateY(-1px); }
 .swatch { width:100%; height:8rem; background:linear-gradient(135deg,#33544a 0 42%,#b08a59 42% 67%,#d8c8b0 67%); border-radius:10rem 10rem .2rem .2rem; }
 
