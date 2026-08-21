@@ -18,7 +18,7 @@
                         @if ($settings->secondary_cta_label)
                             <a class="btn hero-cta hero-cta--secondary"
                                 href="{{ $settings->secondary_cta_url ?: route('contact.create') }}">
-                                {{ $settings->secondary_cta_label }}
+                                <span>{{ $settings->secondary_cta_label }}</span>
                             </a>
                         @endif
                     </div>
@@ -60,7 +60,7 @@
                     <div class="hero-search-fields">
                         <label class="hero-search-field" for="hero_category">
                             <span>Kategori</span>
-                            <span class="hero-search-control">
+                            <span class="hero-search-control hero-search-control--select">
                                 <i class="bi bi-collection" aria-hidden="true"></i>
                                 <select id="hero_category" name="category">
                                     <option value="">Semua produk</option>
@@ -68,6 +68,7 @@
                                         <option value="{{ $category->slug }}">{{ $category->name }}</option>
                                     @endforeach
                                 </select>
+                                <i class="bi bi-chevron-down hero-search-chevron" aria-hidden="true"></i>
                             </span>
                         </label>
                         <label class="hero-search-field" for="hero_query">

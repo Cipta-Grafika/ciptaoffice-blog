@@ -77,4 +77,14 @@ class HomepageTest extends TestCase
             ->assertSee('name="q"', false)
             ->assertSee('Cari produk');
     }
+
+    public function test_site_header_centers_primary_navigation_and_separates_consultation_action(): void
+    {
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('<body class="home-page"', false)
+            ->assertSee('class="navbar-nav site-primary-nav', false)
+            ->assertSee('class="site-nav-action"', false)
+            ->assertSeeInOrder(['Beranda', 'Tentang', 'Artikel', 'Produk', 'Konsultasi kebutuhan']);
+    }
 }

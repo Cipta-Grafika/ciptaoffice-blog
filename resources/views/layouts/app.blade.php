@@ -27,14 +27,14 @@
     $contactPhoneHref = preg_replace('/[^\d+]/', '', $contactPhone);
 @endphp
 
-<body data-app-context="site">
+<body class="{{ request()->routeIs('home') ? 'home-page' : '' }}" data-app-context="site">
     <header class="site-header" data-site-header>
         <div class="site-top-header">
             <div class="container d-flex align-items-center justify-content-between gap-3">
-                {{-- <a class="top-header-logo" href="{{ route('home') }}" aria-label="CiptaOffice — Beranda">
+                <!-- <a class="top-header-logo" href="{{ route('home') }}" aria-label="CiptaOffice — Beranda">
                     <img class="top-header-logo-image" src="{{ asset('images/logos/ciptaoffice-logo.png') }}"
                         width="867" height="60" alt="CiptaOffice">
-                </a> --}}
+                </a> -->
                 <div></div>
                 <div class="site-contact-list" aria-label="Kontak CiptaOffice">
                     <a href="tel:{{ $contactPhoneHref }}">
@@ -63,20 +63,24 @@
                 <button class="navbar-toggler border-0 ms-auto" type="button" data-bs-toggle="collapse"
                     data-bs-target="#siteMenu" aria-controls="siteMenu" aria-expanded="false"
                     aria-label="Buka navigasi"><span class="navbar-toggler-icon"></span></button>
-                <div class="collapse navbar-collapse" id="siteMenu">
-                    <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
+                <div class="collapse navbar-collapse site-menu" id="siteMenu">
+                    <ul class="navbar-nav site-primary-nav align-items-lg-center gap-lg-3">
                         <li class="nav-item"><a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}"
                                 href="{{ route('home') }}">Beranda</a></li>
                         <li class="nav-item"><a class="nav-link {{ request()->routeIs('about') ? 'active' : '' }}"
                                 href="{{ route('about') }}">Tentang</a></li>
-                        <li class="nav-item"><a class="nav-link {{ request()->routeIs('products.*') ? 'active' : '' }}"
-                                href="{{ route('products.index') }}">Produk</a></li>
                         <li class="nav-item"><a
                                 class="nav-link {{ request()->routeIs('articles.*', 'cms.posts.preview') ? 'active' : '' }}"
                                 href="{{ route('articles.index') }}">Artikel</a></li>
-                        <li class="nav-item ms-lg-2"><a class="btn btn-primary px-4"
-                                href="{{ route('contact.create') }}">Konsultasi kebutuhan</a></li>
+                        <li class="nav-item"><a class="nav-link {{ request()->routeIs('products.*') ? 'active' : '' }}"
+                                href="{{ route('products.index') }}">Produk</a></li>
                     </ul>
+                    <div class="site-nav-action">
+                        <a class="btn site-consultation-button" href="{{ route('contact.create') }}">
+                            <span>Konsultasi kebutuhan</span>
+                            <i class="bi bi-arrow-up-right" aria-hidden="true"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
         </nav>
