@@ -29,7 +29,7 @@ class PostImportTest extends TestCase
             ->assertSee('<code>body_html</code>', false);
     }
 
-    public function test_user_can_import_csv_posts_as_own_drafts(): void
+    public function test_user_can_import_csv_posts_as_own_published_posts(): void
     {
         $user = User::factory()->create();
         Post::create([
@@ -50,11 +50,12 @@ class PostImportTest extends TestCase
         ]);
 
         $response->assertRedirect(route('cms.posts.index'))
-            ->assertSessionHas('success', '2 artikel berhasil diimpor sebagai draft.');
+            ->assertSessionHas('success', '2 artikel berhasil diimpor dan diterbitkan.');
 
         $imported = Post::where('title', 'Panduan Ruang Kerja')->where('slug', 'panduan-ruang-kerja-2')->firstOrFail();
         $this->assertSame($user->id, $imported->author_id);
-        $this->assertSame(PostStatus::Draft, $imported->status);
+        $this->assertSame(PostStatus::Published, $imported->status);
+        $this->assertNotNull($imported->published_at);
         $this->assertStringNotContainsString('<script', $imported->body_html);
         $this->assertDatabaseHas('posts', ['title' => 'Memilih Meja Kantor', 'author_id' => $user->id]);
     }
@@ -93,7 +94,7 @@ class PostImportTest extends TestCase
             'title' => 'Ergonomi Ruang Kerja',
             'slug' => 'ergonomi-ruang-kerja',
             'author_id' => $user->id,
-            'status' => PostStatus::Draft->value,
+            'status' => PostStatus::Published->value,
         ]);
     }
 
@@ -120,11 +121,12 @@ class PostImportTest extends TestCase
         ]);
 
         $response->assertRedirect(route('cms.posts.index'))
-            ->assertSessionHas('success', '2 artikel berhasil diimpor sebagai draft.');
+            ->assertSessionHas('success', '2 artikel berhasil diimpor dan diterbitkan.');
 
         $firstPost = Post::where('title', 'Ruang Kerja Produktif')->firstOrFail();
         $this->assertSame($user->id, $firstPost->author_id);
-        $this->assertSame(PostStatus::Draft, $firstPost->status);
+        $this->assertSame(PostStatus::Published, $firstPost->status);
+        $this->assertNotNull($firstPost->published_at);
         $this->assertStringNotContainsString('<script', $firstPost->body_html);
         $this->assertDatabaseHas('posts', [
             'title' => 'Kursi Ergonomis',
@@ -149,8 +151,35 @@ class PostImportTest extends TestCase
         $this->assertDatabaseHas('posts', [
             'title' => 'Meja Kerja Minimalis',
             'author_id' => $user->id,
-            'status' => PostStatus::Draft->value,
+            'status' => PostStatus::Published->value,
         ]);
+    }
+
+    public function test_json_import_preserves_published_and_modified_dates(): void
+    {
+        $user = User::factory()->create();
+        $json = json_encode([
+            'articles' => [
+                [
+                    'title' => 'Arsip Ruang Kerja',
+                    'excerpt' => 'Ringkasan arsip ruang kerja.',
+                    'body_html' => '<p>Isi artikel arsip.</p>',
+                    'published_at' => '2021-06-16T09:53:39',
+                    'modified_at' => '2021-07-20T14:25:10',
+                ],
+            ],
+        ], JSON_THROW_ON_ERROR);
+
+        $this->actingAs($user)->post(route('cms.posts.import'), [
+            'import_file' => UploadedFile::fake()->createWithContent('artikel.json', $json),
+        ])->assertRedirect(route('cms.posts.index'))
+            ->assertSessionHasNoErrors();
+
+        $post = Post::where('slug', 'arsip-ruang-kerja')->firstOrFail();
+
+        $this->assertSame(PostStatus::Published, $post->status);
+        $this->assertSame('2021-06-16 09:53:39', $post->published_at?->format('Y-m-d H:i:s'));
+        $this->assertSame('2021-07-20 14:25:10', $post->updated_at?->format('Y-m-d H:i:s'));
     }
 
     public function test_user_can_import_wordpress_rest_json_fields(): void
@@ -177,6 +206,24 @@ class PostImportTest extends TestCase
         $this->assertStringContainsString('rowspan="2"', $post->body_html);
         $this->assertStringContainsString('colspan="2"', $post->body_html);
         $this->assertStringNotContainsString('wp-block-table', $post->body_html);
+    }
+
+    public function test_import_rejects_invalid_published_at_without_creating_posts(): void
+    {
+        $user = User::factory()->create();
+        $json = json_encode([[
+            'title' => 'Artikel Bertanggal Rusak',
+            'excerpt' => 'Ringkasan artikel.',
+            'body_html' => '<p>Isi artikel.</p>',
+            'published_at' => 'bukan-tanggal',
+        ]], JSON_THROW_ON_ERROR);
+
+        $this->actingAs($user)->from(route('cms.posts.index'))->post(route('cms.posts.import'), [
+            'import_file' => UploadedFile::fake()->createWithContent('artikel.json', $json),
+        ])->assertRedirect(route('cms.posts.index'))
+            ->assertSessionHasErrors('import_file', null, 'postImport');
+
+        $this->assertDatabaseCount('posts', 0);
     }
 
     public function test_import_rejects_invalid_json_without_creating_posts(): void

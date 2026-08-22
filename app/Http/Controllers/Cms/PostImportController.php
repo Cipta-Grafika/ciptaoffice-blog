@@ -18,6 +18,6 @@ class PostImportController extends Controller
 
         return redirect()
             ->route('cms.posts.index')
-            ->with('success', "{$total} artikel berhasil diimpor sebagai draft.");
+            ->with('success', "{$total} artikel berhasil diimpor dan diterbitkan.");
     }
 }

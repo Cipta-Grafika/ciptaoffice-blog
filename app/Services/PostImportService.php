@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Enums\PostStatus;
 use App\Models\Post;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 use DateTimeInterface;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
@@ -24,6 +25,8 @@ class PostImportService
 
     private const REQUIRED_COLUMNS = ['title', 'excerpt', 'body_html'];
 
+    private const OPTIONAL_COLUMNS = ['published_at', 'modified_at'];
+
     private const HEADER_ALIASES = [
         'title' => 'title',
         'judul' => 'title',
@@ -34,6 +37,8 @@ class PostImportService
         'content' => 'body_html',
         'konten' => 'body_html',
         'isi' => 'body_html',
+        'published_at' => 'published_at',
+        'modified_at' => 'modified_at',
     ];
 
     public function __construct(private readonly HtmlSanitizer $sanitizer) {}
@@ -72,7 +77,9 @@ class PostImportService
                     'slug' => $this->uniqueSlug($row['title']),
                     'excerpt' => $row['excerpt'],
                     'body_html' => $this->sanitizer->clean($row['body_html']),
-                    'status' => PostStatus::Draft,
+                    'status' => PostStatus::Published,
+                    'published_at' => $this->importDate($row['published_at']),
+                    'updated_at' => $this->importDate($row['modified_at']),
                 ]);
             }
 
@@ -119,7 +126,7 @@ class PostImportService
     }
 
     /**
-     * @return list<array{title: string, excerpt: string, body_html: string}>
+     * @return list<array{title: string, excerpt: string, body_html: string, published_at: ?string, modified_at: ?string}>
      */
     private function readSpreadsheetRows(ReaderInterface $reader): array
     {
@@ -165,7 +172,7 @@ class PostImportService
     }
 
     /**
-     * @return list<array{title: string, excerpt: string, body_html: string}>
+     * @return list<array{title: string, excerpt: string, body_html: string, published_at: ?string, modified_at: ?string}>
      */
     private function readJsonRows(string $path): array
     {
@@ -235,7 +242,7 @@ class PostImportService
 
     /**
      * @param  array<string, mixed>  $item
-     * @return array{title: string, excerpt: string, body_html: string}
+     * @return array{title: string, excerpt: string, body_html: string, published_at: ?string, modified_at: ?string}
      */
     private function mapJsonItem(array $item): array
     {
@@ -249,7 +256,11 @@ class PostImportService
             }
         }
 
-        return array_merge(array_fill_keys(self::REQUIRED_COLUMNS, ''), $normalized);
+        return array_merge(
+            array_fill_keys(self::REQUIRED_COLUMNS, ''),
+            array_fill_keys(self::OPTIONAL_COLUMNS, null),
+            $normalized,
+        );
     }
 
     private function jsonFieldValue(string $column, mixed $value): string
@@ -270,8 +281,8 @@ class PostImportService
     }
 
     /**
-     * @param  array{title: string, excerpt: string, body_html: string}  $data
-     * @return array{title: string, excerpt: string, body_html: string}
+     * @param  array{title: string, excerpt: string, body_html: string, published_at: ?string, modified_at: ?string}  $data
+     * @return array{title: string, excerpt: string, body_html: string, published_at: ?string, modified_at: ?string}
      */
     private function validateRow(array $data, string $location): array
     {
@@ -279,10 +290,14 @@ class PostImportService
             'title' => ['required', 'string', 'max:180'],
             'excerpt' => ['required', 'string', 'max:1000'],
             'body_html' => ['required', 'string', 'max:100000'],
+            'published_at' => ['nullable', 'date'],
+            'modified_at' => ['nullable', 'date'],
         ], [], [
             'title' => 'title',
             'excerpt' => 'excerpt',
             'body_html' => 'body_html',
+            'published_at' => 'published_at',
+            'modified_at' => 'modified_at',
         ]);
 
         if ($validator->fails()) {
@@ -321,7 +336,7 @@ class PostImportService
     /**
      * @param  array<string, int>  $headerMap
      * @param  list<string>  $values
-     * @return array{title: string, excerpt: string, body_html: string}
+     * @return array{title: string, excerpt: string, body_html: string, published_at: ?string, modified_at: ?string}
      */
     private function mapRow(array $headerMap, array $values): array
     {
@@ -331,7 +346,23 @@ class PostImportService
             $mapped[$column] = trim($values[$headerMap[$column]] ?? '');
         }
 
+        foreach (self::OPTIONAL_COLUMNS as $column) {
+            $mapped[$column] = isset($headerMap[$column])
+                ? (trim($values[$headerMap[$column]] ?? '') ?: null)
+                : null;
+        }
+
         return $mapped;
+    }
+
+    private function importDate(?string $value): CarbonImmutable
+    {
+        if ($value === null || trim($value) === '') {
+            return CarbonImmutable::now();
+        }
+
+        return CarbonImmutable::parse($value, config('app.timezone'))
+            ->setTimezone(config('app.timezone'));
     }
 
     private function normalizeHeader(string $header): string
