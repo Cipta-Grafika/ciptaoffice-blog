@@ -15,7 +15,19 @@ class AdminUserSeeder extends Seeder
             return;
         }
         User::query()->updateOrCreate(['email' => env('CMS_ADMIN_EMAIL', 'admin@ciptaoffice.test')], [
-            'name' => env('CMS_ADMIN_NAME', 'Administrator CiptaOffice'), 'password' => $password, 'role' => UserRole::Admin, 'is_active' => true, 'email_verified_at' => now(),
+            'name' => env('CMS_ADMIN_NAME', 'Administrator CiptaOffice'),
+            'password' => $password,
+            'role' => UserRole::Admin,
+            'is_active' => true,
+            'email_verified_at' => now(),
+        ]);
+
+        User::query()->updateOrCreate(['email' => 'author@ciptaoffice.test'], [
+            'name' => 'Author CiptaOffice',
+            'password' => $password,
+            'role' => UserRole::Author,
+            'is_active' => true,
+            'email_verified_at' => now(),
         ]);
     }
 }
