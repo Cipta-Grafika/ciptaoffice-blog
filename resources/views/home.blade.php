@@ -43,7 +43,7 @@
                             kerja</span>
                     </div>
                     <figcaption class="hero-media-caption">
-                        <span>01 / Ruang yang mendukung keputusan</span>
+                        <span></span>
                         <span>Karawang · Jawa Barat</span>
                     </figcaption>
                 </figure>
