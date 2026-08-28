@@ -25,7 +25,7 @@ class PostImportService
 
     private const REQUIRED_COLUMNS = ['title', 'excerpt', 'body_html'];
 
-    private const OPTIONAL_COLUMNS = ['published_at', 'modified_at'];
+    private const OPTIONAL_COLUMNS = ['published_at', 'modified_at', 'cover_image_path', 'cover_image_alt'];
 
     private const HEADER_ALIASES = [
         'title' => 'title',
@@ -39,6 +39,9 @@ class PostImportService
         'isi' => 'body_html',
         'published_at' => 'published_at',
         'modified_at' => 'modified_at',
+        'cover_image_path' => 'cover_image_path',
+        'cover_image_alt' => 'cover_image_alt',
+        'inline_images' => 'inline_images',
     ];
 
     public function __construct(private readonly HtmlSanitizer $sanitizer) {}
@@ -71,16 +74,26 @@ class PostImportService
 
         return DB::transaction(function () use ($rows, $author): int {
             foreach ($rows as $row) {
-                Post::create([
+                $post = Post::create([
                     'author_id' => $author->id,
                     'title' => $row['title'],
                     'slug' => $this->uniqueSlug($row['title']),
                     'excerpt' => $row['excerpt'],
                     'body_html' => $this->sanitizer->clean($row['body_html']),
                     'status' => PostStatus::Published,
+                    'cover_image_path' => $row['cover_image_path'],
+                    'cover_image_alt' => $row['cover_image_alt'],
                     'published_at' => $this->importDate($row['published_at']),
                     'updated_at' => $this->importDate($row['modified_at']),
                 ]);
+
+                foreach ($row['inline_images'] as $media) {
+                    $post->media()->create([
+                        'uploaded_by' => $author->id,
+                        'path' => $media['storage_path'],
+                        'alt_text' => ($media['alt_text'] ?? null) ?: $row['title'],
+                    ]);
+                }
             }
 
             return count($rows);
@@ -252,13 +265,16 @@ class PostImportService
             $column = self::HEADER_ALIASES[$this->normalizeHeader((string) $key)] ?? null;
 
             if ($column !== null && ! array_key_exists($column, $normalized)) {
-                $normalized[$column] = $this->jsonFieldValue($column, $value);
+                $normalized[$column] = $column === 'inline_images'
+                    ? $value
+                    : $this->jsonFieldValue($column, $value);
             }
         }
 
         return array_merge(
             array_fill_keys(self::REQUIRED_COLUMNS, ''),
             array_fill_keys(self::OPTIONAL_COLUMNS, null),
+            ['inline_images' => []],
             $normalized,
         );
     }
@@ -292,19 +308,35 @@ class PostImportService
             'body_html' => ['required', 'string', 'max:100000'],
             'published_at' => ['nullable', 'date'],
             'modified_at' => ['nullable', 'date'],
+            'cover_image_path' => ['nullable', 'string', 'regex:#\Aarticles/covers/[A-Za-z0-9][A-Za-z0-9._-]*\.(?:jpe?g|png|webp|gif|avif)\z#i'],
+            'cover_image_alt' => ['nullable', 'required_with:cover_image_path', 'string', 'max:180'],
+            'inline_images' => ['array', 'max:5000'],
+            'inline_images.*.storage_path' => ['required', 'string', 'distinct', 'regex:#\Aarticles/[0-9]+/inline/[A-Za-z0-9][A-Za-z0-9._-]*\.(?:jpe?g|png|webp|gif|avif)\z#i'],
+            'inline_images.*.alt_text' => ['nullable', 'string', 'max:180'],
         ], [], [
             'title' => 'title',
             'excerpt' => 'excerpt',
             'body_html' => 'body_html',
             'published_at' => 'published_at',
             'modified_at' => 'modified_at',
+            'cover_image_path' => 'cover_image_path',
+            'cover_image_alt' => 'cover_image_alt',
+            'inline_images' => 'inline_images',
+            'inline_images.*.storage_path' => 'inline image storage_path',
         ]);
 
         if ($validator->fails()) {
             $this->fail("{$location}: ".$validator->errors()->first());
         }
 
-        return $validator->validated();
+        $validated = $validator->validated();
+        foreach ($validated['inline_images'] as $media) {
+            if (! str_contains($validated['body_html'], '/storage/'.$media['storage_path'])) {
+                $this->fail("{$location}: body_html tidak mereferensikan inline image {$media['storage_path']}.");
+            }
+        }
+
+        return $validated;
     }
 
     /**
@@ -352,7 +384,10 @@ class PostImportService
                 : null;
         }
 
+        $mapped['inline_images'] = [];
+
         return $mapped;
+
     }
 
     private function importDate(?string $value): CarbonImmutable
