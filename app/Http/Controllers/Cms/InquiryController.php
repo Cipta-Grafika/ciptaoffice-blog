@@ -12,7 +12,7 @@ class InquiryController extends Controller
 {
     public function index(Request $request): View
     {
-        $query = Inquiry::with('product')->latest();
+        $query = Inquiry::with('product')->latest('created_at')->latest('id');
         if ($request->filled('status')) {
             $query->where('status', $request->string('status'));
         }

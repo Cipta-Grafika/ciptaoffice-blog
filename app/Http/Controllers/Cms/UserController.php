@@ -14,7 +14,7 @@ class UserController extends Controller
 {
     public function index(Request $request): View
     {
-        $query = User::orderBy('name');
+        $query = User::query()->latest('created_at')->latest('id');
         if ($request->filled('status')) {
             $query->where('is_active', $request->boolean('status'));
         }

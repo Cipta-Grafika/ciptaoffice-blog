@@ -14,7 +14,7 @@ class ProductCategoryController extends Controller
 {
     public function index(Request $request): View
     {
-        $query = ProductCategory::withCount('products')->orderBy('sort_order');
+        $query = ProductCategory::withCount('products')->latest('created_at')->latest('id');
         if ($request->filled('status')) {
             $query->where('is_active', $request->boolean('status'));
         }

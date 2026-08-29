@@ -19,7 +19,7 @@ class PostController extends Controller
     public function index(Request $request): View
     {
         $this->authorize('viewAny', Post::class);
-        $query = Post::with('author')->latest();
+        $query = Post::with('author')->latest('created_at')->latest('id');
         if (! $request->user()->isAdmin()) {
             $query->where('author_id', $request->user()->id);
         }
