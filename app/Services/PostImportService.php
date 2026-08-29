@@ -25,7 +25,7 @@ class PostImportService
 
     private const REQUIRED_COLUMNS = ['title', 'excerpt', 'body_html'];
 
-    private const OPTIONAL_COLUMNS = ['published_at', 'modified_at', 'cover_image_path', 'cover_image_alt'];
+    private const OPTIONAL_COLUMNS = ['author_name', 'published_at', 'modified_at', 'cover_image_path', 'cover_image_alt'];
 
     private const HEADER_ALIASES = [
         'title' => 'title',
@@ -37,6 +37,9 @@ class PostImportService
         'content' => 'body_html',
         'konten' => 'body_html',
         'isi' => 'body_html',
+        'author' => 'author_name',
+        'author_name' => 'author_name',
+        'penulis' => 'author_name',
         'published_at' => 'published_at',
         'modified_at' => 'modified_at',
         'cover_image_path' => 'cover_image_path',
@@ -76,6 +79,7 @@ class PostImportService
             foreach ($rows as $row) {
                 $post = Post::create([
                     'author_id' => $author->id,
+                    'author_name' => $row['author_name'],
                     'title' => $row['title'],
                     'slug' => $this->uniqueSlug($row['title']),
                     'excerpt' => $row['excerpt'],
@@ -139,7 +143,7 @@ class PostImportService
     }
 
     /**
-     * @return list<array{title: string, excerpt: string, body_html: string, published_at: ?string, modified_at: ?string}>
+     * @return list<array<string, mixed>>
      */
     private function readSpreadsheetRows(ReaderInterface $reader): array
     {
@@ -185,7 +189,7 @@ class PostImportService
     }
 
     /**
-     * @return list<array{title: string, excerpt: string, body_html: string, published_at: ?string, modified_at: ?string}>
+     * @return list<array<string, mixed>>
      */
     private function readJsonRows(string $path): array
     {
@@ -255,7 +259,7 @@ class PostImportService
 
     /**
      * @param  array<string, mixed>  $item
-     * @return array{title: string, excerpt: string, body_html: string, published_at: ?string, modified_at: ?string}
+     * @return array<string, mixed>
      */
     private function mapJsonItem(array $item): array
     {
@@ -265,9 +269,11 @@ class PostImportService
             $column = self::HEADER_ALIASES[$this->normalizeHeader((string) $key)] ?? null;
 
             if ($column !== null && ! array_key_exists($column, $normalized)) {
-                $normalized[$column] = $column === 'inline_images'
-                    ? $value
-                    : $this->jsonFieldValue($column, $value);
+                $normalized[$column] = match ($column) {
+                    'inline_images' => $value,
+                    'author_name' => $this->jsonAuthorName($value),
+                    default => $this->jsonFieldValue($column, $value),
+                };
             }
         }
 
@@ -296,14 +302,26 @@ class PostImportService
         return trim((string) preg_replace('/\s+/u', ' ', $text));
     }
 
+    private function jsonAuthorName(mixed $value): ?string
+    {
+        if (is_array($value)) {
+            $value = $value['name'] ?? null;
+        }
+
+        $name = trim($this->stringifyCell($value));
+
+        return $name !== '' ? $name : null;
+    }
+
     /**
-     * @param  array{title: string, excerpt: string, body_html: string, published_at: ?string, modified_at: ?string}  $data
-     * @return array{title: string, excerpt: string, body_html: string, published_at: ?string, modified_at: ?string}
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
      */
     private function validateRow(array $data, string $location): array
     {
         $validator = Validator::make($data, [
             'title' => ['required', 'string', 'max:180'],
+            'author_name' => ['nullable', 'string', 'max:120'],
             'excerpt' => ['required', 'string', 'max:1000'],
             'body_html' => ['required', 'string', 'max:100000'],
             'published_at' => ['nullable', 'date'],
@@ -315,6 +333,7 @@ class PostImportService
             'inline_images.*.alt_text' => ['nullable', 'string', 'max:180'],
         ], [], [
             'title' => 'title',
+            'author_name' => 'author name',
             'excerpt' => 'excerpt',
             'body_html' => 'body_html',
             'published_at' => 'published_at',
@@ -368,7 +387,7 @@ class PostImportService
     /**
      * @param  array<string, int>  $headerMap
      * @param  list<string>  $values
-     * @return array{title: string, excerpt: string, body_html: string, published_at: ?string, modified_at: ?string}
+     * @return array<string, mixed>
      */
     private function mapRow(array $headerMap, array $values): array
     {
