@@ -42,7 +42,7 @@
                 <span class="cms-table-secondary text-truncate">/{{ $post->slug }}</span>
             </td>
             @can('admin')
-                <td>{{ $post->author?->name ?? 'Konten impor' }}</td>
+                <td>{{ $post->display_author_name }}</td>
             @endcan
             <td><span
                     class="cms-status cms-status--{{ $post->status->badge() }}">{{ $post->status->label() }}</span>

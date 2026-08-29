@@ -54,12 +54,21 @@
                 <section class="cms-form-section">
                     <div class="cms-form-section-heading">
                         <h2>Informasi artikel</h2>
-                        <p>Judul dan ringkasan tampil pada halaman daftar serta metadata artikel.</p>
+                        <p>Judul, nama author, dan ringkasan tampil pada halaman publik artikel.</p>
                     </div>
                     <div class="mb-3">
                         <label class="form-label" for="title">Judul</label>
                         <input class="form-control @error('title') is-invalid @enderror" id="title" name="title" value="{{ old('title', $post->title) }}" required>
                         @error('title')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="author_name">Nama author</label>
+                        <input class="form-control @error('author_name') is-invalid @enderror" id="author_name"
+                            name="author_name" value="{{ old('author_name', $post->author_name) }}" maxlength="120"
+                            placeholder="Contoh: Tim Editorial CiptaOffice" aria-describedby="author_name_help">
+                        @error('author_name')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        <div class="form-text" id="author_name_help">Opsional. Kosongkan untuk menggunakan nama pemilik
+                            akun: {{ $post->author?->name ?? 'Tim CiptaOffice' }}.</div>
                     </div>
                     <div>
                         <label class="form-label" for="excerpt">Ringkasan</label>
@@ -132,7 +141,7 @@
                             <dt>Slug</dt>
                             <dd class="text-break">{{ $post->slug }}</dd>
                             <dt>Author</dt>
-                            <dd>{{ $post->author?->name ?? 'Konten impor' }}</dd>
+                            <dd>{{ $post->display_author_name }}</dd>
                             <dt>Diajukan</dt>
                             <dd>{{ $post->submitted_at?->translatedFormat('d M Y H:i') ?? '—' }}</dd>
                             <dt>Diterbitkan</dt>

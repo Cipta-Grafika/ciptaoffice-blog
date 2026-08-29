@@ -176,7 +176,7 @@
                                 @include('articles.partials.card-visual', ['post' => $post])
                                 <div class="p-4">
                                     <p class="article-meta mb-3">{{ $post->published_at->translatedFormat('d M Y') }} ·
-                                        {{ $post->author?->name ?? 'Tim CiptaOffice' }}</p>
+                                        {{ $post->display_author_name }}</p>
                                     <h3 class="card-title card-text-clamp mb-3">
                                         <a class="stretched-link text-decoration-none text-dark"
                                             href="{{ route('articles.show', $post) }}">{{ $post->title }}

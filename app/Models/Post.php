@@ -26,6 +26,11 @@ class Post extends Model
         return 'slug';
     }
 
+    public function getDisplayAuthorNameAttribute(): string
+    {
+        return $this->author_name ?: $this->author?->name ?: 'Tim CiptaOffice';
+    }
+
     public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'author_id');

@@ -30,7 +30,7 @@ class ArticleController extends Controller
     {
         abort_unless(Post::published()->whereKey($post->id)->exists(), 404);
         $post->load('author');
-        $latest = Post::published()->whereKeyNot($post->id)->latest('published_at')->limit(3)->get();
+        $latest = Post::published()->with('author')->whereKeyNot($post->id)->latest('published_at')->limit(3)->get();
 
         return view('articles.show', compact('post', 'latest'));
     }

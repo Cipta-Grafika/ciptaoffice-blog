@@ -41,7 +41,7 @@
                     <div class="col-xl-9 text-center">
                         <p class="article-meta mb-4">
                             {{ $post->published_at?->translatedFormat('d F Y') ?? 'Belum diterbitkan' }} ·
-                            {{ $post->author?->name ?? 'Tim CiptaOffice' }}</p>
+                            {{ $post->display_author_name }}</p>
                         <h1 class="page-title">{{ $post->title }}</h1>
                         <p class="lead text-muted mt-4">{{ $post->excerpt }}</p>
                     </div>
@@ -82,16 +82,22 @@
                 <h2 class="section-title mb-5">Artikel terbaru.</h2>
                 <div class="row g-4">
                     @foreach ($latest as $item)
-                        <div class="col-md-4">
-                            <article class="article-card p-4">
-                                <p class="article-meta">{{ $item->published_at->translatedFormat('d M Y') }}</p>
-                                <h3 class="card-title card-text-clamp">
-                                    <a class="stretched-link text-dark text-decoration-none"
-                                        href="{{ route('articles.show', $item) }}">
-                                        {{ $item->title }}
-                                    </a>
-                                </h3>
-                                <p class="card-text-clamp text-muted mt-1">{{ $item->excerpt }}</p>
+                        <div class="col-lg-4 reveal">
+                            <article class="article-card">
+                                @include('articles.partials.card-visual', ['post' => $item])
+                                <div class="p-4">
+                                    <p class="article-meta mb-3">
+                                        {{ $item->published_at->translatedFormat('d M Y') }} ·
+                                        {{ $item->display_author_name }}
+                                    </p>
+                                    <h3 class="card-title card-text-clamp mb-3">
+                                        <a class="stretched-link text-dark text-decoration-none"
+                                            href="{{ route('articles.show', $item) }}">
+                                            {{ $item->title }}
+                                        </a>
+                                    </h3>
+                                    <p class="card-text-clamp text-muted mt-1 mb-0">{{ $item->excerpt }}</p>
+                                </div>
                             </article>
                         </div>
                     @endforeach
