@@ -10,7 +10,8 @@
                 <article class="article-card">
                     @include('articles.partials.card-visual', ['post' => $post])
                     <div class="p-4">
-                        <p class="article-meta">{{ $post->published_at->translatedFormat('d M Y') }}</p>
+                        <p class="article-meta">{{ $post->published_at->translatedFormat('d M Y') }} ·
+                            {{ $post->display_author_name }}</p>
                         <h2 class="card-title card-text-clamp">
                             <a class="stretched-link text-dark text-decoration-none"
                                 href="{{ route('articles.show', $post) }}">

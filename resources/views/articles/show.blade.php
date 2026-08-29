@@ -41,7 +41,7 @@
                     <div class="col-xl-9 text-center">
                         <p class="article-meta mb-4">
                             {{ $post->published_at?->translatedFormat('d F Y') ?? 'Belum diterbitkan' }} ·
-                            {{ $post->author?->name ?? 'Tim CiptaOffice' }}</p>
+                            {{ $post->display_author_name }}</p>
                         <h1 class="page-title">{{ $post->title }}</h1>
                         <p class="lead text-muted mt-4">{{ $post->excerpt }}</p>
                     </div>
