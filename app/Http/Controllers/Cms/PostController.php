@@ -50,9 +50,18 @@ class PostController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $this->authorize('create', Post::class);
-        $data = $request->validate(['title' => ['required', 'string', 'max:180']]);
+        $data = $request->validate([
+            'title' => ['required', 'string', 'max:180'],
+            'author_name' => ['nullable', 'string', 'max:120'],
+        ]);
         $slug = $this->uniqueSlug($data['title']);
-        $post = Post::create(['author_id' => $request->user()->id, 'title' => $data['title'], 'slug' => $slug, 'status' => PostStatus::Draft]);
+        $post = Post::create([
+            'author_id' => $request->user()->id,
+            'author_name' => $data['author_name'] ?? null,
+            'title' => $data['title'],
+            'slug' => $slug,
+            'status' => PostStatus::Draft,
+        ]);
 
         return redirect()->route('cms.posts.edit', $post)->with('success', 'Draft dibuat. Lengkapi isi artikel.');
     }
@@ -68,7 +77,7 @@ class PostController extends Controller
     {
         $this->authorize('view', $post);
         $post->load('author');
-        $latest = Post::published()->whereKeyNot($post->id)->latest('published_at')->limit(3)->get();
+        $latest = Post::published()->with('author')->whereKeyNot($post->id)->latest('published_at')->limit(3)->get();
 
         return view('articles.show', ['post' => $post, 'latest' => $latest, 'isPreview' => true]);
     }
