@@ -6,15 +6,15 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\TestimonialRequest;
 use App\Models\Testimonial;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class TestimonialController extends Controller
 {
     public function index(Request $request): View
     {
-        $query = Testimonial::orderBy('sort_order');
+        $query = Testimonial::query()->latest('created_at')->latest('id');
         if ($request->filled('status')) {
             $query->where('is_active', $request->boolean('status'));
         }

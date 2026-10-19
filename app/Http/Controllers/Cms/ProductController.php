@@ -20,7 +20,7 @@ class ProductController extends Controller
 {
     public function index(Request $request): View
     {
-        $query = Product::with('category')->orderBy('sort_order');
+        $query = Product::with('category')->latest('created_at')->latest('id');
         if ($request->filled('status')) {
             $query->where('is_active', $request->boolean('status'));
         }

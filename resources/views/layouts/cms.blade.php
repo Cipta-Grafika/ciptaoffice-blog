@@ -34,7 +34,7 @@
                 aria-controls="cmsSidebar"><span class="brand-mark cms-brand-mark"><img
                         src="{{ asset('images/logos/ciptaoffice-logo.svg') }}" alt="CO" class="cms-brand-logo"><i
                         class="cms-brand-expand-icon bi bi-chevron-right" aria-hidden="true"></i></span><strong
-                        class="cms-brand-label">CiptaOffice CMS</strong></a>
+                        class="cms-brand-label">Cipta Office</strong></a>
             <button class="btn btn-sm btn-outline-light cms-sidebar-collapse d-none d-md-grid" type="button"
                 data-cms-sidebar-collapse aria-controls="cmsSidebar" aria-expanded="true"
                 aria-label="Perkecil sidebar"><i class="bi bi-chevron-left" aria-hidden="true"></i></button>
