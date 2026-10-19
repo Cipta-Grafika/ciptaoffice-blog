@@ -20,9 +20,9 @@
                         <input class="form-control @error('eyebrow') is-invalid @enderror" id="eyebrow" name="eyebrow" value="{{ old('eyebrow', $settings->eyebrow) }}">
                         @error('eyebrow')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
-                    <div class="col-12">
+                    <div class="col-md-6">
                         <label class="form-label" for="title">Judul hero</label>
-                        <input class="form-control form-control-lg @error('title') is-invalid @enderror" id="title" name="title" value="{{ old('title', $settings->title) }}" required>
+                        <input class="form-control @error('title') is-invalid @enderror" id="title" name="title" value="{{ old('title', $settings->title) }}" required>
                         @error('title')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                     <div class="col-12">
