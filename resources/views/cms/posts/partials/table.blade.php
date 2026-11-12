@@ -28,6 +28,7 @@
     </x-slot:filters>
     <x-slot:head>
         <th>Artikel</th>
+        <th>Kata Kunci</th>
         @can('admin')
             <th>Author</th>
         @endcan
@@ -41,13 +42,17 @@
                 <span class="cms-table-primary d-block text-truncate" data-bs-tooltip>{{ $post->title }}</span>
                 <span class="cms-table-secondary text-truncate">/{{ $post->slug }}</span>
             </td>
+            <td>{{ $post->keywords ?: '-' }}</td>
             @can('admin')
                 <td>{{ $post->display_author_name }}</td>
             @endcan
             <td><span
                     class="cms-status cms-status--{{ $post->status->badge() }}">{{ $post->status->label() }}</span>
             </td>
-            <td>{{ $post->updated_at->diffForHumans() }}</td>
+            <td>
+                <span class="d-block">{{ $post->updated_at->diffForHumans() }}</span>
+                <span class="cms-table-secondary">{{ $post->updated_at->format('d-m-Y H:i') }}</span>
+            </td>
             <td>
                 <div class="cms-table-actions">
                     @can('update', $post)
