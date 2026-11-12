@@ -70,6 +70,14 @@
                         <div class="form-text" id="author_name_help">Opsional. Kosongkan untuk menggunakan nama pemilik
                             akun: {{ $post->author?->name ?? 'Tim CiptaOffice' }}.</div>
                     </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="keywords">Kata Kunci</label>
+                        <input class="form-control @error('keywords') is-invalid @enderror" id="keywords"
+                            name="keywords" value="{{ old('keywords', $post->keywords) }}" maxlength="500"
+                            placeholder="Contoh: kursi kantor, meja kerja, pengadaan kantor..." aria-describedby="keywords_help">
+                        @error('keywords')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        <div class="form-text" id="keywords_help">Opsional. Pisahkan beberapa kata kunci dengan koma.</div>
+                    </div>
                     <div>
                         <label class="form-label" for="excerpt">Ringkasan</label>
                         <textarea class="form-control @error('excerpt') is-invalid @enderror" id="excerpt" name="excerpt" rows="5"
@@ -142,6 +150,8 @@
                             <dd class="text-break">{{ $post->slug }}</dd>
                             <dt>Author</dt>
                             <dd>{{ $post->display_author_name }}</dd>
+                            <dt>Kata Kunci</dt>
+                            <dd class="text-break">{{ $post->keywords ?: '—' }}</dd>
                             <dt>Diajukan</dt>
                             <dd>{{ $post->submitted_at?->translatedFormat('d M Y H:i') ?? '—' }}</dd>
                             <dt>Diterbitkan</dt>

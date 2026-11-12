@@ -13,8 +13,13 @@ class UpdatePostRequest extends FormRequest
 
     public function rules(): array
     {
-        return ['title' => ['required', 'string', 'max:180'], 'author_name' => ['nullable', 'string', 'max:120'],
-            'excerpt' => ['required', 'string', 'max:1000'], 'body_html' => ['required', 'string', 'max:100000'],
-            'cover_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'], 'remove_cover_image' => ['nullable', 'boolean']];
+        return [
+            'title' => ['required', 'string', 'max:180'], 
+            'author_name' => ['nullable', 'string', 'max:120'],
+            'excerpt' => ['required', 'string', 'max:1000'], 
+            'keywords' => ['nullable', 'string', 'max:500'],
+            'body_html' => ['required', 'string', 'max:100000'],
+            'cover_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'], 
+            'remove_cover_image' => ['nullable', 'boolean']];
     }
 }

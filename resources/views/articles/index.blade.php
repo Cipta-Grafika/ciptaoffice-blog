@@ -21,7 +21,7 @@
                 data-live-search-form data-live-search-delay="500">
                 <div class="live-search-field"><label class="visually-hidden" for="q">Cari artikel</label><input
                         class="form-control form-control-lg" id="q" name="q" type="search" value="{{ $q }}"
-                        placeholder="Cari judul atau ringkasan..." autocomplete="off" data-live-search-input><button
+                        placeholder="Cari judul, ringkasan atau kata kunci..." autocomplete="off" data-live-search-input><button
                         class="live-search-clear" type="button" aria-label="Hapus pencarian" title="Hapus pencarian"
                         data-live-search-clear @if (!$q) hidden @endif><i class="bi bi-x-lg" aria-hidden="true"></i></button></div>
                 <noscript><button class="btn btn-primary mt-2" type="submit">Cari</button></noscript>

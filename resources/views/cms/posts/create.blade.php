@@ -28,6 +28,14 @@
                     <div class="form-text" id="author_name_help">Opsional. Kosongkan untuk menggunakan nama akun
                         {{ auth()->user()->name }}.</div>
                 </div>
+                <div class="mt-4">
+                    <label class="form-label" for="keywords">Kata kunci</label>
+                    <input class="form-control @error('keywords') is-invalid @enderror" id="keywords"
+                        name="keywords" value="{{ old('keywords') }}" maxlength="500"
+                        placeholder="Contoh: kursi kantor, meja kerja, pengadaan kantor..." aria-describedby="keywords_help">
+                    @error('keywords')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    <div class="form-text" id="keywords_help">Opsional. Pisahkan beberapa kata kunci dengan koma</div>
+                </div>
             </div>
             <div class="cms-form-actions">
                 <button class="btn btn-primary" type="submit"><i class="bi bi-arrow-right"></i> Buat draft &

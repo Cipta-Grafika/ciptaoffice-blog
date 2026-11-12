@@ -4,6 +4,9 @@
 @section('meta_description', \Illuminate\Support\Str::limit($post->excerpt, 160))
 @section('canonical', route('articles.show', $post))
 @section('og_title', $post->title)
+@if ($post->keywords)
+    @section('meta_keywords', $post->keywords)
+@endif
 @section('og_type', 'article')
 @if ($post->cover_image_path)
     @section('og_image', asset('storage/' . $post->cover_image_path))
@@ -70,6 +73,13 @@
                                 <ol class="article-toc-list" data-article-toc-list></ol>
                             </nav>
                         </div>
+                        @if ($post->keywords)
+                            <div class="mt-4 pt-3 border-top d-flex flex-wrap gap-2">
+                                @foreach (array_filter(array_map('trim', explode(',', $post->keywords))) as $keyword)
+                                    <span class="badge text-bg-light border">{{ $keyword }}</span>
+                                @endforeach
+                            </div>
+                        @endif
                     </aside>
                 </div>
             </div>

@@ -14,7 +14,10 @@ class ArticleController extends Controller
         $q = trim((string) $request->query('q'));
         $posts = Post::published()
             ->with('author')
-            ->when($q, fn ($query) => $query->where(fn ($sub) => $sub->where('title', 'like', '%'.$q.'%')->orWhere('excerpt', 'like', '%'.$q.'%')))
+            ->when($q, fn ($query) => $query->where(fn ($sub) => $sub
+                ->where('title', 'like', '%'.$q.'%')
+                ->orWhere('excerpt', 'like', '%'.$q.'%')
+                ->orWhere('keywords', 'like', '%'.$q.'%')))
             ->latest('published_at')
             ->paginate(9)
             ->withQueryString();

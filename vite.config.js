@@ -17,6 +17,19 @@ export default defineConfig({
             ],
         }),
     ],
+    css: {
+        preprocessorOptions: {
+            scss: {
+                quietDeps: true,
+                silenceDeprecations: [
+                    'import',
+                    'if-function',
+                    'global-builtin',
+                    'color-functions'
+                ]
+            },
+        },
+    },
     server: {
         watch: {
             ignored: ['**/storage/framework/views/**'],
