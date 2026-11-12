@@ -53,12 +53,14 @@ class PostController extends Controller
         $data = $request->validate([
             'title' => ['required', 'string', 'max:180'],
             'author_name' => ['nullable', 'string', 'max:120'],
+            'keywords' => ['nullable', 'string', 'max:500']
         ]);
         $slug = $this->uniqueSlug($data['title']);
         $post = Post::create([
             'author_id' => $request->user()->id,
             'author_name' => $data['author_name'] ?? null,
             'title' => $data['title'],
+            'keywords' => $data['keywords'] ?? null,
             'slug' => $slug,
             'status' => PostStatus::Draft,
         ]);

@@ -13,6 +13,9 @@
     <meta property="og:description" content="@yield('meta_description', 'Furnitur dan perlengkapan kantor dengan rekomendasi alternatif berkualitas setara.')">
     <meta property="og:url" content="@yield('canonical', url()->current())">
     <meta property="og:type" content="@yield('og_type', 'website')">
+    @hasSection('meta_keywords')
+        <meta property="keywords" content="@yield('meta_keywords')">
+    @endif
     @hasSection('og_image')
         <meta property="og:image" content="@yield('og_image')">
         <meta property="og:image:alt" content="@yield('og_image_alt')">
