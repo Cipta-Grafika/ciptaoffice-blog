@@ -1,4 +1,5 @@
 import { initArticleToc } from '../components/site/article-toc';
+import { initArticleShare } from '../components/site/article-share';
 import { initArticleTables } from '../components/site/article-tables';
 import { initMetricStrip } from '../components/site/metric-strip';
 import { initLiveSearch } from '../components/site/live-search';
@@ -12,6 +13,7 @@ const initializers = [
     initRevealElements,
     initArticleTables,
     initArticleToc,
+    initArticleShare,
     initLiveSearch,
     initProductCombobox,
 ];

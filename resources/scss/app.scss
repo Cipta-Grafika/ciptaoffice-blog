@@ -285,6 +285,15 @@ a { text-underline-offset: .2em; }
 .article-toc-item a.active { font-weight:700; }
 .article-toc-item a.active::before { opacity:1; transform:scaleY(1); }
 .article-toc-item--h3 a { padding-left:1.45rem; font-size:.73rem; }
+.article-share { margin-top:1.5rem; padding-top:1.25rem; border-top:1px solid var(--line); }
+.article-share-actions { display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.65rem; }
+.article-share-btn { display:inline-grid; place-items:center; width:2.25rem; height:2.25rem; padding:0; color:var(--muted); background:transparent; border:1px solid var(--line); border-radius:.35rem; text-decoration:none; transition:color .2s ease,border-color .2s ease,background-color .2s ease; }
+.article-share-btn:hover,.article-share-btn.is-copied { color:var(--forest); border-color:var(--forest); background:rgba(23,32,30,.04); }
+.article-share-status { display:block; margin-top:.45rem; color:var(--forest); font-size:.72rem; }
+.article-share-status[hidden] { display:none; }
+.article-keywords { margin-top:1.25rem; padding-top:1.25rem; border-top:1px solid var(--line); }
+.article-keywords-list { display:flex; flex-wrap:wrap; gap:.45rem; margin-top:.65rem; }
+.article-keyword-tag { display:inline-flex; align-items:center; padding:.28rem .65rem; color:var(--forest); font-size:.74rem; font-weight:600; line-height:1.35; letter-spacing:.01em; background:rgba(23,62,54,.06); border:1px solid rgba(23,62,54,.16); border-radius:999px; }
 .empty-state { padding:4rem 2rem; text-align:center; background:rgba(255,253,248,.65); border:1px dashed rgba(23,32,30,.25); }
 .site-footer { padding:4rem 0 2rem; color:#d5ddd9; background:var(--ink); }.site-footer a{color:#fff}
 

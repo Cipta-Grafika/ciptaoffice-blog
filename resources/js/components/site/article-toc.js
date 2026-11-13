@@ -8,9 +8,12 @@ export function initArticleToc(root = document) {
 
         if (!content || !toc || !list || !panel || !toggle) return;
 
-        const headings = [...content.querySelectorAll('h1, h2, h3')];
+        const headings = [...content.querySelectorAll('h1, h2')];
         if (headings.length === 0) {
-            toc.remove();
+            panel.querySelector('nav')?.remove();
+            panel.querySelector('.article-toc-title')?.remove();
+            panel.querySelector('.article-toc-kicker')?.remove();
+            if (!panel.querySelector('.article-share') && !panel.querySelector('.article-keywords')) toc.remove();
             return;
         }
 

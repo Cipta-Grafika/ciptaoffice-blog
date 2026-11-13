@@ -72,14 +72,49 @@
                             <nav aria-label="Bagian artikel">
                                 <ol class="article-toc-list" data-article-toc-list></ol>
                             </nav>
-                        </div>
-                        @if ($post->keywords)
-                            <div class="mt-4 pt-3 border-top d-flex flex-wrap gap-2">
-                                @foreach (array_filter(array_map('trim', explode(',', $post->keywords))) as $keyword)
-                                    <span class="badge text-bg-light border">{{ $keyword }}</span>
-                                @endforeach
+                            @php($shareUrl = route('articles.show', $post))
+                            @php($shareText = $post->title)
+                            <div class="article-share">
+                                <p class="article-toc-kicker">Bagikan</p>
+                                <div class="article-share-actions">
+                                    <a class="article-share-btn"
+                                        href="https://wa.me/?text={{ urlencode($shareText . ' — ' . $shareUrl) }}"
+                                        target="_blank" rel="noopener noreferrer" aria-label="Bagikan ke WhatsApp"
+                                        title="Bagikan ke WhatsApp">
+                                        <i class="bi bi-whatsapp" aria-hidden="true"></i>
+                                    </a>
+                                    <a class="article-share-btn"
+                                        href="https://www.linkedin.com/sharing/share-offsite/?url={{ urlencode($shareUrl) }}"
+                                        target="_blank" rel="noopener noreferrer" aria-label="Bagikan ke LinkedIn"
+                                        title="Bagikan ke LinkedIn">
+                                        <i class="bi bi-linkedin" aria-hidden="true"></i>
+                                    </a>
+                                    <a class="article-share-btn"
+                                        href="https://twitter.com/intent/tweet?text={{ urlencode($shareText) }}&url={{ urlencode($shareUrl) }}"
+                                        target="_blank" rel="noopener noreferrer" aria-label="Bagikan ke X"
+                                        title="Bagikan ke X">
+                                        <i class="bi bi-twitter-x" aria-hidden="true"></i>
+                                    </a>
+                                    <button class="article-share-btn" type="button"
+                                        data-copy-link="{{ $shareUrl }}" aria-label="Salin tautan artikel"
+                                        title="Salin tautan">
+                                        <i class="bi bi-link-45deg" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                                <span class="article-share-status" data-copy-status aria-live="polite" hidden></span>
                             </div>
-                        @endif
+                            @php($keywords = array_filter(array_map('trim', explode(',', (string) $post->keywords))))
+                            @if ($keywords !== [])
+                                <div class="article-keywords">
+                                    <p class="article-toc-kicker">Kata kunci</p>
+                                    <div class="article-keywords-list">
+                                        @foreach ($keywords as $keyword)
+                                            <span class="article-keyword-tag">{{ $keyword }}</span>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
                     </aside>
                 </div>
             </div>
