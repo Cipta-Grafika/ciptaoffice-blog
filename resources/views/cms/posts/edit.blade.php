@@ -56,27 +56,40 @@
                         <h2>Informasi artikel</h2>
                         <p>Judul, nama author, dan ringkasan tampil pada halaman publik artikel.</p>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="title">Judul</label>
-                        <input class="form-control @error('title') is-invalid @enderror" id="title" name="title" value="{{ old('title', $post->title) }}" required>
-                        @error('title')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="author_name">Nama author</label>
-                        <input class="form-control @error('author_name') is-invalid @enderror" id="author_name"
-                            name="author_name" value="{{ old('author_name', $post->author_name) }}" maxlength="120"
-                            placeholder="Contoh: Tim Editorial CiptaOffice" aria-describedby="author_name_help">
-                        @error('author_name')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                        <div class="form-text" id="author_name_help">Opsional. Kosongkan untuk menggunakan nama pemilik
-                            akun: {{ $post->author?->name ?? 'Tim CiptaOffice' }}.</div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="keywords">Kata Kunci</label>
-                        <input class="form-control @error('keywords') is-invalid @enderror" id="keywords"
-                            name="keywords" value="{{ old('keywords', $post->keywords) }}" maxlength="500"
-                            placeholder="Contoh: kursi kantor, meja kerja, pengadaan kantor..." aria-describedby="keywords_help">
-                        @error('keywords')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                        <div class="form-text" id="keywords_help">Opsional. Pisahkan beberapa kata kunci dengan koma.</div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label" for="title">Judul</label>
+                            <input class="form-control @error('title') is-invalid @enderror" id="title" name="title" value="{{ old('title', $post->title) }}" required>
+                            @error('title')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="slug">Slug (URL)</label>
+                            <div class="input-group has-validation">
+                                <span class="input-group-text bg-light text-muted fw-lighter"> /articles/ </span>
+                                <input class="form-control @error('slug') is-invalid @enderror" id="slug" name="slug"
+                                    value="{{ old('slug', $post->slug) }}" maxlength="200"
+                                    placeholder="judul-artikel-anda" aria-describedby="slug_help">
+                                @error('slug')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+                            <div class="form-text" id="slug_help">Identitas URL unik artikel ini. Kosongkan jika ingin dibuat otomatis dari judul.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="author_name">Nama author</label>
+                            <input class="form-control @error('author_name') is-invalid @enderror" id="author_name"
+                                name="author_name" value="{{ old('author_name', $post->author_name) }}" maxlength="120"
+                                placeholder="Contoh: Tim Editorial CiptaOffice" aria-describedby="author_name_help">
+                            @error('author_name')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            <div class="form-text" id="author_name_help">Opsional. Kosongkan untuk menggunakan nama pemilik
+                                akun: {{ $post->author?->name ?? 'Tim CiptaOffice' }}.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="keywords">Kata Kunci</label>
+                            <input class="form-control @error('keywords') is-invalid @enderror" id="keywords"
+                                name="keywords" value="{{ old('keywords', $post->keywords) }}" maxlength="500"
+                                placeholder="Contoh: kursi kantor, meja kerja, pengadaan kantor..." aria-describedby="keywords_help">
+                            @error('keywords')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            <div class="form-text" id="keywords_help">Opsional. Pisahkan beberapa kata kunci dengan koma.</div>
+                        </div>
                     </div>
                     <div>
                         <label class="form-label" for="excerpt">Ringkasan</label>

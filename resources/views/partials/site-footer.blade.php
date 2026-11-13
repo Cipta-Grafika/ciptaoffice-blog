@@ -33,11 +33,22 @@
             </address>
 
             <div class="site-footer-connect">
-                <p class="site-footer-label">Terhubung</p>
                 <div class="site-footer-socials">
                     <a href="https://wa.me/{{ $footerWhatsappHref }}" target="_blank" rel="noopener noreferrer"
                         aria-label="Hubungi CiptaOffice melalui WhatsApp">
                         <i class="bi bi-whatsapp" aria-hidden="true"></i>
+                    </a>
+                    <a href="#" rel="noopener noreferrer"
+                        aria-label="Hubungi CiptaOffice melalui Facebook">
+                        <i class="bi bi-facebook" aria-hidden="true"></i>
+                    </a>
+                    <a href="#" rel="noopener noreferrer"
+                        aria-label="Hubungi CiptaOffice melalui Tiktok">
+                        <i class="bi bi-tiktok" aria-hidden="true"></i>
+                    </a>
+                    <a href="#" rel="noopener noreferrer"
+                        aria-label="Hubungi CiptaOffice melalui Instagram">
+                        <i class="bi bi-instagram" aria-hidden="true"></i>
                     </a>
                     <a href="mailto:{{ $footerEmail }}" aria-label="Kirim email kepada CiptaOffice">
                         <i class="bi bi-envelope" aria-hidden="true"></i>
