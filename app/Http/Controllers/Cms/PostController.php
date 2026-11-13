@@ -52,8 +52,15 @@ class PostController extends Controller
         $this->authorize('create', Post::class);
         $data = $request->validate([
             'title' => ['required', 'string', 'max:180'],
-            'author_name' => ['nullable', 'string', 'max:120'],
-            'keywords' => ['nullable', 'string', 'max:500']
+            'author_name' => [
+                'nullable',
+                'string',
+                'max:120',
+                'regex:/^(?=.*\p{L})[\p{L}\s.\',-]+$/u',
+            ],
+            'keywords' => ['nullable', 'string', 'max:500'],
+        ], [
+            'author_name.regex' => 'Nama author hanya boleh berisi huruf, spasi, titik (.), koma (,), apostrof (\'), atau tanda hubung (-).',
         ]);
         $slug = $this->uniqueSlug($data['title']);
         $post = Post::create([
@@ -108,7 +115,7 @@ class PostController extends Controller
         $post->update($data);
         $this->cleanUnusedMedia($post);
 
-        return back()->with('success', 'Artikel berhasil disimpan.');
+        return redirect()->route('cms.posts.edit', $post)->with('success', 'Artikel berhasil disimpan.');
     }
 
     public function destroy(Post $post): RedirectResponse

@@ -1,4 +1,9 @@
 export async function init() {
+    document.getElementById('post-form')?.addEventListener('keydown', (event) => {
+        if (event.key !== 'Enter') return;
+        if (!event.target.matches?.('input:not([type="submit"], [type="button"], [type="reset"])')) return;
+        event.preventDefault();
+    });
     document.querySelectorAll('[data-character-count]').forEach((field) => {
         const output = document.querySelector(field.dataset.characterCount);
         const limit = Number.parseInt(field.dataset.characterLimit, 10);
