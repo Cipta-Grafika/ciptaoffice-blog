@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
+
 
 class Post extends Model
 {
@@ -53,6 +55,10 @@ class Post extends Model
 
     protected static function booted(): void
     {
+        static::saved(fn () => Cache::forget('sitemap.xml'));
+        static::deleted(fn () => Cache::forget('sitemap.xml'));
+        static::restored(fn () => Cache::forget('sitemap.xml'));
+
         static::forceDeleting(function (Post $post): void {
             if ($post->cover_image_path) {
                 Storage::disk('public')->delete($post->cover_image_path);
