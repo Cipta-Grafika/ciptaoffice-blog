@@ -1,3 +1,5 @@
+import 'bootstrap/js/src/alert';
+import 'bootstrap/js/src/collapse';
 import { initArticleToc } from '../components/site/article-toc';
 import { initArticleShare } from '../components/site/article-share';
 import { initArticleTables } from '../components/site/article-tables';
@@ -18,6 +20,12 @@ const initializers = [
     initProductCombobox,
 ];
 
-export function init() {
+export async function init() {
     initializers.forEach((initialize) => initialize());
+
+    const carousels = document.querySelectorAll('.carousel');
+    if (carousels.length > 0) {
+        const { default: Carousel } = await import('bootstrap/js/src/carousel');
+        carousels.forEach((carousel) => Carousel.getOrCreateInstance(carousel));
+    }
 }

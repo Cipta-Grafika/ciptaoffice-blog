@@ -1,3 +1,6 @@
+import 'bootstrap/js/src/alert';
+import 'bootstrap/js/src/dropdown';
+import 'bootstrap/js/src/offcanvas';
 import { initCmsBackButtons } from '../components/cms/global/back-button';
 import { initCmsConfirmModal } from '../components/cms/global/confirm-modal';
 import { initCmsNavigationSearch } from '../components/cms/global/navigation-search';
