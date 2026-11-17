@@ -8,8 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
+
+/**
+ * Merepresentasikan artikel blog/editorial beserta alur status publikasi dan medianya.
+ */
 class Post extends Model
 {
     use SoftDeletes;
@@ -51,8 +56,20 @@ class Post extends Model
         return $query->where('status', PostStatus::Published->value)->whereNotNull('published_at')->where('published_at', '<=', now());
     }
 
+    /**
+     * Mendaftarkan event lifecycle model untuk invalidasi cache sitemap/beranda dan pembersihan media saat hapus permanen.
+     */
     protected static function booted(): void
     {
+        $flushCache = static function (): void {
+            Cache::forget('sitemap.xml');
+            Cache::forget('home.sections');
+        };
+
+        static::saved($flushCache);
+        static::deleted($flushCache);
+        static::restored($flushCache);
+        
         static::forceDeleting(function (Post $post): void {
             if ($post->cover_image_path) {
                 Storage::disk('public')->delete($post->cover_image_path);

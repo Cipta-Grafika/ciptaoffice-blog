@@ -14,6 +14,9 @@ export default defineConfig({
                 bunny('Manrope', {
                     weights: [400, 500, 600, 700],
                 }),
+                bunny('Montserrat', {
+                    weights: [300, 400, 500, 600 ,700]
+                }),
             ],
         }),
     ],

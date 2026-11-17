@@ -18,7 +18,9 @@
                     <div class="card-visual">
                         @if ($product->cover_image_path)
                             <img src="{{ asset('storage/' . $product->cover_image_path) }}"
-                                alt="{{ $product->cover_image_alt }}">
+                                alt="{{ $product->cover_image_alt }}"
+                                loading="lazy"
+                                decoding="async">
                         @else
                             <i class="bi bi-lamp" aria-hidden="true"></i>
                         @endif

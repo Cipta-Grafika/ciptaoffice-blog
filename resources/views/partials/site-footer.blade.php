@@ -13,8 +13,10 @@
         <div class="site-footer-grid">
             <div class="site-footer-brand">
                 <a href="{{ route('home') }}" aria-label="CiptaOffice — Beranda">
-                    <img src="{{ asset('images/logos/ciptaoffice-logo.svg') }}" width="800" height="800"
-                        alt="CiptaOffice">
+                    <img src="{{ asset('images/logos/ciptaoffice-logo.svg') }}" 
+                        width="800" height="800"
+                        alt="CiptaOffice" loading="lazy"
+                        decoding="async">
                 </a>
                 <p>Partner kebutuhan kantor dengan pilihan yang tepat guna dan mutu setara.</p>
             </div>

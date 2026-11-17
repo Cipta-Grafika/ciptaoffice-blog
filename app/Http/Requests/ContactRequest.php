@@ -14,8 +14,17 @@ class ContactRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:120'], 'email' => ['nullable', 'email', 'max:180'], 'phone' => ['required', 'string', 'max:30'],
-            'message' => ['required', 'string', 'max:3000'], 'product_id' => ['nullable', 'exists:products,id'], 'website' => ['nullable', 'max:0'],
+            'name' => ['required', 'string', 'max:120'], 
+            'email' => ['nullable', 'email', 'max:180'], 
+            'phone' => [
+                'required', 
+                'string', 
+                'max:30',
+                'regex:/^[0-9+\-\s()]{8,30}$/'
+            ],
+            'message' => ['required', 'string', 'max:3000'], 
+            'product_id' => ['nullable', 'exists:products,id'], 
+            'website' => ['nullable', 'max:0'],
         ];
     }
 }

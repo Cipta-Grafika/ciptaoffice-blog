@@ -7,7 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Cache;
 
+/**
+ * Merepresentasikan item produk kantor beserta kategori dan galeri gambarnya.
+ */
 class Product extends Model
 {
     use SoftDeletes;
@@ -37,5 +41,21 @@ class Product extends Model
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('is_active', true);
+    }
+
+    /**
+     * Mendaftarkan event lifecycle model untuk membersihkan cache sitemap, beranda, dan daftar produk kontak.
+     */
+    protected static function booted(): void
+    {
+        $flushCache = static function (): void {
+            Cache::forget('sitemap.xml');
+            Cache::forget('home.sections');
+            Cache::forget('contact.products');
+        };
+
+        static::saved($flushCache);
+        static::deleted($flushCache);
+        static::restored($flushCache);
     }
 }
