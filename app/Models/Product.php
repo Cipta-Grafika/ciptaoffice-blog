@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Cache;
 
+/**
+ * Merepresentasikan item produk kantor beserta kategori dan galeri gambarnya.
+ */
 class Product extends Model
 {
     use SoftDeletes;
@@ -40,10 +43,19 @@ class Product extends Model
         return $query->where('is_active', true);
     }
 
+    /**
+     * Mendaftarkan event lifecycle model untuk membersihkan cache sitemap, beranda, dan daftar produk kontak.
+     */
     protected static function booted(): void
     {
-        static::saved(fn () => Cache::forget('sitemap.xml'));
-        static::deleted(fn () => Cache::forget('sitemap.xml'));
-        static::restored(fn () => Cache::forget('sitemap.xml'));
+        $flushCache = static function (): void {
+            Cache::forget('sitemap.xml');
+            Cache::forget('home.sections');
+            Cache::forget('contact.products');
+        };
+
+        static::saved($flushCache);
+        static::deleted($flushCache);
+        static::restored($flushCache);
     }
 }
