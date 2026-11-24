@@ -123,8 +123,7 @@
     @if ($latest->isNotEmpty())
         <aside class="section-space bg-white">
             <div class="container">
-                <p class="section-kicker">Baca juga. . .</p>
-                <h2 class="section-title mb-5">Artikel terbaru.</h2>
+                <h2 class="section-title mb-5">Baca juga...</h2>
                 <div class="row g-4">
                     @foreach ($latest as $item)
                         <div class="col-lg-4 reveal">
