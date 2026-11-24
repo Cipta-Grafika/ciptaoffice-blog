@@ -18,23 +18,7 @@
                         alt="CiptaOffice" loading="lazy"
                         decoding="async">
                 </a>
-                <p>Partner kebutuhan kantor dengan pilihan yang tepat guna dan mutu setara.</p>
-            </div>
-
-            <div class="site-footer-block site-footer-contact">
-                <p class="site-footer-label">Kontak</p>
-                <a href="mailto:{{ $footerEmail }}">{{ $footerEmail }}</a>
-                <a href="tel:{{ $footerPhoneHref }}">{{ $footerPhone }}</a>
-            </div>
-
-            <address class="site-footer-block site-footer-address">
-                <p class="site-footer-label">Alamat</p>
-                @foreach ($footerAddress as $addressLine)
-                    <span>{{ $addressLine }}</span>
-                @endforeach
-            </address>
-
-            <div class="site-footer-connect">
+                <p>Cipta Office merupakan perusahaan supplier meja, kursi, serta peralatan dan perlengkapan kantor berkualitas lainnya.</p>
                 <div class="site-footer-socials">
                     <a href="https://wa.me/{{ $footerWhatsappHref }}" target="_blank" rel="noopener noreferrer"
                         aria-label="Hubungi CiptaOffice melalui WhatsApp">
@@ -56,6 +40,24 @@
                         <i class="bi bi-envelope" aria-hidden="true"></i>
                     </a>
                 </div>
+            </div>
+
+            <div class="site-footer-block site-footer-contact">
+                <p class="site-footer-label">Kontak</p>
+                <a href="mailto:{{ $footerEmail }}">{{ $footerEmail }}</a>
+                <a href="tel:{{ $footerPhoneHref }}">{{ $footerPhone }}</a>
+            </div>
+
+            <address class="site-footer-block site-footer-address">
+                <p class="site-footer-label">Alamat</p>
+                @foreach ($footerAddress as $addressLine)
+                    <span>{{ $addressLine }}</span>
+                @endforeach
+            </address>
+
+            <div class="site-footer-connect">
+                <p class="site-footer-label">Jam operasional</p>
+                <p>Senin – Sabtu, 08.00 – 17.00</p>
             </div>
         </div>
 
